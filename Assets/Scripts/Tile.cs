@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour {
 
-    public GameObject passenger_prefab;
     private int id;
 
     public void generateTile(int tile_id)

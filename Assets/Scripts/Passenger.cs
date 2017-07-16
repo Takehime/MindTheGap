@@ -4,16 +4,16 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Passenger : MonoBehaviour {
-
-    /*
-    public List<PassengerData> passengers;
+    
     private PassengerData.PassengerType p_type;
+    private int curr_tile_id;
 
-    public void generatePassenger()
+    public void generatePassenger(List<PassengerData> passenger_types, int tile_id)
     {
-        PassengerData passenger = passengers[Random.Range(0, passengers.Capacity)];
+        curr_tile_id = tile_id;
+        PassengerData passenger = passenger_types[Random.Range(0, passenger_types.Capacity)];
         p_type = passenger.type;
         GetComponent<Image>().color = passenger.color;
     }
-    */
+    
 }
