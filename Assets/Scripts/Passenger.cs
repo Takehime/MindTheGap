@@ -12,6 +12,7 @@ public class Passenger : MonoBehaviour {
 
     public int generatePassenger(List<PassengerData> passenger_types, int tile_id)
     {
+        gameObject.name = "Passenger " + tile_id;
         curr_tile_id = tile_id;
         int chosen = Random.Range(0, passenger_types.Capacity);
         p_type = passenger_types[chosen].type;

@@ -9,6 +9,7 @@ public class Grid : MonoBehaviour {
     public int height;
     public GameObject tile_prefab;
     public GameObject passenger_prefab;
+    public GameObject player_prefab;
     public List<PassengerData> passenger_types;
 
     private List<GameObject> tiles = new List<GameObject>();
@@ -33,14 +34,13 @@ public class Grid : MonoBehaviour {
 
     IEnumerator generateGrid()
     {
+        GameObject child_tile = transform.GetChild(0).GetChild(0).gameObject;
 
-        for (int x = 0; x < height; x++)
+        for (int i = 0; i < width * height; i++)
         {
-            for (int y = 0; y < width; y++)
-            {
-                int tile_id = x * width + y;
-                spawnTile(tile_id);
-            }
+            child_tile = transform.GetChild(0).GetChild(i).gameObject;
+            child_tile.GetComponent<Tile>().generateTile(i);
+            tiles.Add(child_tile);
         }
 
         yield return new WaitForEndOfFrame();
@@ -50,7 +50,9 @@ public class Grid : MonoBehaviour {
             for (int y = 0; y < width; y++)
             {
                 int tile_id = x * width + y;
-                spawnPassenger(tile_id);
+                if (tile_id == 55)
+                    spawnPlayer(tile_id);
+                else spawnPassenger(tile_id);
             }
         }
     }
@@ -73,6 +75,16 @@ public class Grid : MonoBehaviour {
             types_counter[chosen]++;
         } while (types_counter[chosen] > max_quantity);
         go.transform.position = tiles[tile_id].transform.position;
+        passengers.Add(go);
+    }
+
+    void spawnPlayer(int tile_id)
+    {
+        GameObject go = Instantiate(player_prefab);
+        go.transform.SetParent(gameObject.transform.GetChild(1), false);
+        go.GetComponent<Player>().generatePlayer(tile_id);
+        go.transform.position = tiles[tile_id].transform.position;
+        go.gameObject.name = "Player";
         passengers.Add(go);
     }
 
