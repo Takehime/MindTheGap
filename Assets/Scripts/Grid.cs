@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class Grid : MonoBehaviour {
     
@@ -18,7 +19,10 @@ public class Grid : MonoBehaviour {
     private List<GameObject> passengers = new List<GameObject>();
     private List<int> types_counter = new List<int>();
     private int max_quantity;
+    private bool swap_mode_active = false;
+    List<GameObject> player_adj;
 
+    #region initialization
     void Start()
     {
         max_quantity = width * height / passenger_types.Capacity;
@@ -26,7 +30,6 @@ public class Grid : MonoBehaviour {
         StartCoroutine(generateGrid());
     }
 
-    #region counter list initialization
     void initializeCounterList()
     {
         for (int i = 0; i < passenger_types.Capacity; i++)
@@ -72,6 +75,7 @@ public class Grid : MonoBehaviour {
         } while (types_counter[chosen] > max_quantity);
         go.transform.position = tiles[tile_id].transform.position;
         passengers.Add(go);
+        go.GetComponent<Passenger>().swapTarget += checkIfCanSwap;
     }
 
     void spawnPlayer(int tile_id)
@@ -86,29 +90,60 @@ public class Grid : MonoBehaviour {
     }
     #endregion
 
+    #region swap mode
+    void checkIfCanSwap(int tile_id)
+    {
+        if (swap_mode_active && player_adj.Contains(tiles[tile_id]))
+            swap(tile_id, 1f);
+    }
+
+    void swap(int target_id, float duration)
+    {
+        GameObject player = FindObjectOfType<Player>().gameObject;
+        GameObject target = passengers[target_id];
+        int player_id = player.GetComponent<Player>().getTileId();
+
+        //animaçao
+        target.transform.DOMove(player.transform.position, duration);
+        player.transform.DOMove(target.transform.position, duration);
+        
+        //troca do curr_tile_id
+        target.GetComponent<Passenger>().setTileId(player_id);
+        player.GetComponent<Player>().setTileId(target_id);
+
+        //troca dos objetos na lista de passageiros
+        passengers[player_id] = target;
+        passengers[target_id] = player;
+
+        //desliga o swap_mode
+        player.GetComponent<Player>().setSwapMode(false);
+
+        //atualiza lista de adjacencias e reseta cor dos tiles
+        leaveSwapMode(player_id, target_id);
+    }
 
     void onSwapMode(int tile_id, bool activate)
     {
         //FindObjectOfType<Player>().swapMode -= onSwapMode;
         if (activate)
             enterSwapMode(tile_id);
-        else leaveSwapMode(tile_id);
+        else leaveSwapMode(tile_id, tile_id);
     }
 
     void enterSwapMode(int tile_id)
     {
+        swap_mode_active = true;
         tiles[tile_id].GetComponent<Image>().color = new Color32(226, 157, 82, 255);
-        List<GameObject> player_adj = calculateAdj(tile_id);
-        //printList(player_adj);
+        player_adj = calculateAdj(tile_id);
         changeAlfa(player_adj, true);
     }
 
-    void leaveSwapMode(int tile_id)
+    void leaveSwapMode(int old_tile_id, int new_tile_id )
     {
-        tiles[tile_id].GetComponent<Image>().color = new Color32(195, 213, 255, 255);
-        List<GameObject> player_adj = calculateAdj(tile_id);
-        //printList(player_adj);
+        swap_mode_active = false;
+        tiles[old_tile_id].GetComponent<Image>().color = new Color32(195, 213, 255, 255);
         changeAlfa(player_adj, false);
+        player_adj = calculateAdj(new_tile_id);
     }
 
     List<GameObject> calculateAdj(int id)
@@ -147,7 +182,9 @@ public class Grid : MonoBehaviour {
             }
         }
     }
+    #endregion
 
+    #region utility
     void printList<T>(List<T> lista)
     {
         string temp = "{ ";
@@ -158,10 +195,6 @@ public class Grid : MonoBehaviour {
         temp = temp + "}";
         Debug.Log(temp);
     }
-
-
-    
-
-    
+    #endregion
 
 }

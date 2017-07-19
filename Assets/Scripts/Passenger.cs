@@ -4,7 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Passenger : MonoBehaviour {
-    
+
+    public delegate void SwapTarget(int id);
+    public event SwapTarget swapTarget;
+
     private PassengerData.PassengerType p_type;
     private Color color;
 
@@ -20,5 +23,18 @@ public class Passenger : MonoBehaviour {
         GetComponent<Image>().color = color;
         return chosen;
     }
-    
+
+    public void setTileId(int newId)
+    {
+        curr_tile_id = newId;
+    }
+
+    public void onSwapMode()
+    {
+        if (swapTarget != null)
+        {
+            swapTarget(curr_tile_id);
+        }
+    }
+
 }
