@@ -94,7 +94,7 @@ public class Grid : MonoBehaviour {
     void checkIfCanSwap(int tile_id)
     {
         if (swap_mode_active && player_adj.Contains(tiles[tile_id]))
-            swap(tile_id, 1f);
+            swap(tile_id, 0.25f);
     }
 
     void swap(int target_id, float duration)
