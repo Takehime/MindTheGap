@@ -7,12 +7,16 @@ public class Player : MonoBehaviour {
     public delegate void SwapMode(int id, bool bo);
     public event SwapMode swapMode;
 
+
     private int curr_tile_id;
     private bool swap_mode_active = false;
+    private TurnManager.Turn curr_turn;
     
     public void generatePlayer(int tile_id)
     {
         curr_tile_id = tile_id;
+        FindObjectOfType<TurnManager>().changeTurn += changeTurn;
+        curr_turn = TurnManager.Turn.BetweenStations;
     }
 
     public void setSwapMode(bool bo)
@@ -28,7 +32,13 @@ public class Player : MonoBehaviour {
     public void setTileId(int newId)
     {
         curr_tile_id = newId;
-        Debug.Log("Player tile_id: " + newId);
+    }
+
+    void changeTurn(TurnManager.Turn turn)
+    {
+        curr_turn = turn;
+        Debug.Log(curr_turn);
+
     }
 
     public void onSwapMode()
@@ -37,13 +47,20 @@ public class Player : MonoBehaviour {
         {
             if (!swap_mode_active)
             {
-                swap_mode_active = true;
-                swapMode(curr_tile_id, true);
+                if (curr_turn == TurnManager.Turn.BetweenStations)
+                {
+                    swap_mode_active = true;
+                    swapMode(curr_tile_id, true);
+                }
             }
             else
             {
-                swap_mode_active = false;
-                swapMode(curr_tile_id, false);
+                if (curr_turn == TurnManager.Turn.BetweenStations)
+                {
+                    swap_mode_active = false;
+                    swapMode(curr_tile_id, false);
+                }
+
             }
         }
     }
