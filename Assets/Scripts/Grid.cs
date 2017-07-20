@@ -95,8 +95,7 @@ public class Grid : MonoBehaviour {
     #region swap mode
     void onSwapMode(int tile_id, bool activate)
     {
-        //FindObjectOfType<Player>().swapMode -= onSwapMode;
-        if (activate /*&& curr_turn == TurnManager.Turn.BetweenStations*/)
+        if (activate)
         {
             enterSwapMode(tile_id);
         }
@@ -110,14 +109,14 @@ public class Grid : MonoBehaviour {
         player_adj = calculateAdj(tile_id);
         Debug.Log("player_id" + tile_id);
         printList(player_adj);
-        changeAlfa(player_adj, true);
+        changePassengersAlpha(player_adj, true);
     }
 
     void leaveSwapMode(int old_tile_id, int new_tile_id )
     {
         swap_mode_active = false;
         tiles[old_tile_id].GetComponent<Image>().color = new Color32(195, 213, 255, 255);
-        changeAlfa(player_adj, false);
+        changePassengersAlpha(player_adj, false);
         player_adj = calculateAdj(new_tile_id);
     }
 
@@ -144,18 +143,19 @@ public class Grid : MonoBehaviour {
         return adj_list;
     }
 
-    void changeAlfa(List<GameObject> adj_list, bool reduce_alpha)
+    void changePassengersAlpha(List<GameObject> adj_list, bool reduce_alpha)
     {
         for (int i = 0; i < tiles.Count; i ++)
         {
             if (!adj_list.Contains(tiles[i]))
             {
-                if (reduce_alpha)
-                {
-                    passengers[i].GetComponent<Image>().color -= new Color32(0, 0, 0, 155);
-                }
-                else
-                    passengers[i].GetComponent<Image>().color += new Color32(0, 0, 0, 155);
+                var color = passengers[i].GetComponent<Image>().color;
+                passengers[i].GetComponent<Image>().color = new Color(
+                    color.r,
+                    color.g,
+                    color.b,
+                    reduce_alpha ? 0.5f : 1
+                );
             }
         }
     }
@@ -207,7 +207,7 @@ public class Grid : MonoBehaviour {
         int temp = FindObjectOfType<Player>().getTileId();
         tiles[temp].GetComponent<Image>().color = new Color32(195, 213, 255, 255);
         player_adj = calculateAdj(temp);
-        changeAlfa(player_adj, false);
+        changePassengersAlpha(player_adj, false);
     }
 
     #endregion

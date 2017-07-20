@@ -26,7 +26,10 @@ public class TurnManager : MonoBehaviour
     public void setTurn(Turn turn)
     {
         curr_turn = turn;
-        changeTurn(curr_turn);
+        if (changeTurn != null)
+        {
+            changeTurn(curr_turn);
+        }
     }
 
     IEnumerator turnLoop()
