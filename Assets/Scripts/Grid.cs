@@ -5,14 +5,16 @@ using UnityEngine.UI;
 using DG.Tweening;
 
 public class Grid : MonoBehaviour {
-    
-    public int width; 
-    public int height;
+
+    [Header("Variables")]
+    [Range(54, 55)]
     public int player_spawn_point;
+    [Header("Prefabs")]
     public GameObject tile_prefab;
     public GameObject passenger_prefab;
     public GameObject player_prefab;
     public GameObject father_tile;
+    [Header("List of passenger types")]
     public List<PassengerData> passenger_types;
 
     [HideInInspector]
@@ -21,18 +23,27 @@ public class Grid : MonoBehaviour {
     public List<GameObject> passengers = new List<GameObject>();
     [HideInInspector]
     public bool scan_mode_active = false;
+    [HideInInspector]
+    public bool pachinko_mode_active = false;
+    [HideInInspector]
+    public bool pachinko_success = false;
 
+    private int width = 10; 
+    private int height = 6;
     private List<int> types_counter = new List<int>();
     private List<GameObject> player_adj;
     private TurnManager.Turn curr_turn = TurnManager.Turn.BetweenStations;
     private bool swap_mode_active = false;
     private int max_quantity;
     private Scan scan;
+    private Pachinko pachinko;
 
     #region initialization
+
     void Start()
     {
         scan = FindObjectOfType<Scan>();
+        pachinko = FindObjectOfType<Pachinko>();
         FindObjectOfType<TurnManager>().changeTurn += changeTurn;
         max_quantity = width * height / passenger_types.Capacity;
         initializeCounterList();
@@ -183,31 +194,45 @@ public class Grid : MonoBehaviour {
     void checkIfPassengerCanSwap(int tile_id, PassengerData.PassengerType p_type)
     {
         if (swap_mode_active && player_adj.Contains(tiles[tile_id]))
-            swapPassengerWithPlayer(tile_id, 0.25f);
-
+        {
+            pachinko.enterPachinkoMode(passengers[tile_id].GetComponent<Image>().color);
+            pachinko_mode_active = true;
+            StartCoroutine(swapPassengerWithPlayer(tile_id, 0.25f));
+        }
     }
 
-    void swapPassengerWithPlayer(int target_id, float duration)
+    IEnumerator waitForEndOfPachinkoMode()
     {
+        while (pachinko_mode_active)
+            yield return null;
+    }
+
+    IEnumerator swapPassengerWithPlayer(int target_id, float duration)
+    {
+        yield return waitForEndOfPachinkoMode();
+
         GameObject player = FindObjectOfType<Player>().gameObject;
-        GameObject target = passengers[target_id];
         int player_id = player.GetComponent<Player>().getTileId();
 
-        //animaçao
-        target.transform.DOMove(player.transform.position, duration);
-        player.transform.DOMove(target.transform.position, duration);
+        if (pachinko_success)
+        {
+            GameObject target = passengers[target_id];
 
-        //troca do curr_tile_id
-        target.GetComponent<Passenger>().setTileId(player_id);
-        player.GetComponent<Player>().setTileId(target_id);
+            //animaçao
+            target.transform.DOMove(player.transform.position, duration);
+            player.transform.DOMove(target.transform.position, duration);
 
-        //troca dos objetos na lista de passageiros
-        passengers[player_id] = target;
-        passengers[target_id] = player;
+            //troca do curr_tile_id
+            target.GetComponent<Passenger>().setTileId(player_id);
+            player.GetComponent<Player>().setTileId(target_id);
 
-        //desliga o swap_mode
-        player.GetComponent<Player>().setSwapMode(false);
+            //troca dos objetos na lista de passageiros
+            passengers[player_id] = target;
+            passengers[target_id] = player;
 
+            //desliga o swap_mode
+            player.GetComponent<Player>().setSwapMode(false);
+        }
         //atualiza lista de adjacencias e reseta cor dos tiles
         leaveSwapMode(player_id, target_id);
     }
