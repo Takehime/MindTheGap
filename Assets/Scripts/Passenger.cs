@@ -5,8 +5,9 @@ using UnityEngine.UI;
 
 public class Passenger : MonoBehaviour {
 
-    public delegate void SwapTarget(int id);
-    public event SwapTarget swapTarget;
+    public delegate void InteractWithPassenger(int id, PassengerData.PassengerType p_type);
+    public event InteractWithPassenger swapTarget;
+    public event InteractWithPassenger scanTarget;
 
     private PassengerData.PassengerType p_type;
     private Color color;
@@ -33,7 +34,15 @@ public class Passenger : MonoBehaviour {
     {
         if (swapTarget != null)
         {
-            swapTarget(curr_tile_id);
+            swapTarget(curr_tile_id, p_type);
+        }
+    }
+
+    public void onScanMode()
+    {
+        if (scanTarget != null)
+        {
+            scanTarget(curr_tile_id, p_type);
         }
     }
 

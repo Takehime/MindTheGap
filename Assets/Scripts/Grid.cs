@@ -15,17 +15,24 @@ public class Grid : MonoBehaviour {
     public GameObject father_tile;
     public List<PassengerData> passenger_types;
 
-    private List<GameObject> tiles = new List<GameObject>();
-    private List<GameObject> passengers = new List<GameObject>();
+    [HideInInspector]
+    public List<GameObject> tiles = new List<GameObject>();
+    [HideInInspector]
+    public List<GameObject> passengers = new List<GameObject>();
+    [HideInInspector]
+    public bool scan_mode_active = false;
+
     private List<int> types_counter = new List<int>();
     private List<GameObject> player_adj;
     private TurnManager.Turn curr_turn = TurnManager.Turn.BetweenStations;
     private bool swap_mode_active = false;
     private int max_quantity;
+    private Scan scan;
 
     #region initialization
     void Start()
     {
+        scan = FindObjectOfType<Scan>();
         FindObjectOfType<TurnManager>().changeTurn += changeTurn;
         max_quantity = width * height / passenger_types.Capacity;
         initializeCounterList();
@@ -77,7 +84,8 @@ public class Grid : MonoBehaviour {
         } while (types_counter[chosen] > max_quantity);
         go.transform.position = tiles[tile_id].transform.position;
         passengers.Add(go);
-        go.GetComponent<Passenger>().swapTarget += checkIfPassengerCanSwap;
+        subscribePassengerForSwap(go);
+        subscribePassengerForScan(go);
     }
 
     void spawnPlayer(int tile_id)
@@ -90,16 +98,28 @@ public class Grid : MonoBehaviour {
         passengers.Add(go);
         go.GetComponent<Player>().swapMode += onSwapMode;
     }
+
+    void subscribePassengerForSwap(GameObject p)
+    {
+        p.GetComponent<Passenger>().swapTarget += checkIfPassengerCanSwap;
+    }
+
+    void subscribePassengerForScan(GameObject p)
+    {
+        p.GetComponent<Passenger>().scanTarget += scan.scanPassenger;
+    }
+
     #endregion
 
     #region swap mode
     void onSwapMode(int tile_id, bool activate)
     {
-        if (activate)
+        if (!scan_mode_active)
         {
-            enterSwapMode(tile_id);
+            if (activate)
+                enterSwapMode(tile_id);
+            else leaveSwapMode(tile_id, tile_id);
         }
-        else leaveSwapMode(tile_id, tile_id);
     }
 
     void enterSwapMode(int tile_id)
@@ -147,7 +167,7 @@ public class Grid : MonoBehaviour {
     {
         for (int i = 0; i < tiles.Count; i ++)
         {
-            if (!adj_list.Contains(tiles[i]))
+            if (adj_list.Count != 0 && !adj_list.Contains(tiles[i]))
             {
                 var color = passengers[i].GetComponent<Image>().color;
                 passengers[i].GetComponent<Image>().color = new Color(
@@ -160,7 +180,7 @@ public class Grid : MonoBehaviour {
         }
     }
 
-    void checkIfPassengerCanSwap(int tile_id)
+    void checkIfPassengerCanSwap(int tile_id, PassengerData.PassengerType p_type)
     {
         if (swap_mode_active && player_adj.Contains(tiles[tile_id]))
             swapPassengerWithPlayer(tile_id, 0.25f);
