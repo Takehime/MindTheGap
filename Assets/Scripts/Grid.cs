@@ -25,8 +25,6 @@ public class Grid : MonoBehaviour {
     public bool scan_mode_active = false;
     [HideInInspector]
     public bool pachinko_mode_active = false;
-    [HideInInspector]
-    public bool pachinko_success = false;
 
     private int width = 10; 
     private int height = 6;
@@ -203,8 +201,8 @@ public class Grid : MonoBehaviour {
 
     IEnumerator waitForEndOfPachinkoMode()
     {
-        while (pachinko_mode_active)
-            yield return null;
+        yield return new WaitUntil(() => pachinko_mode_active);
+        yield return new WaitWhile(() => pachinko.pachinko_go.activeSelf);
     }
 
     IEnumerator swapPassengerWithPlayer(int target_id, float duration)
@@ -213,26 +211,23 @@ public class Grid : MonoBehaviour {
 
         GameObject player = FindObjectOfType<Player>().gameObject;
         int player_id = player.GetComponent<Player>().getTileId();
+        GameObject target = passengers[target_id];
 
-        if (pachinko_success)
-        {
-            GameObject target = passengers[target_id];
+        //animaçao
+        target.transform.DOMove(player.transform.position, duration);
+        player.transform.DOMove(target.transform.position, duration);
 
-            //animaçao
-            target.transform.DOMove(player.transform.position, duration);
-            player.transform.DOMove(target.transform.position, duration);
+        //troca do curr_tile_id
+        target.GetComponent<Passenger>().setTileId(player_id);
+        player.GetComponent<Player>().setTileId(target_id);
 
-            //troca do curr_tile_id
-            target.GetComponent<Passenger>().setTileId(player_id);
-            player.GetComponent<Player>().setTileId(target_id);
+        //troca dos objetos na lista de passageiros
+        passengers[player_id] = target;
+        passengers[target_id] = player;
 
-            //troca dos objetos na lista de passageiros
-            passengers[player_id] = target;
-            passengers[target_id] = player;
-
-            //desliga o swap_mode
-            player.GetComponent<Player>().setSwapMode(false);
-        }
+        //desliga o swap_mode
+        player.GetComponent<Player>().setSwapMode(false);
+        
         //atualiza lista de adjacencias e reseta cor dos tiles
         leaveSwapMode(player_id, target_id);
     }
@@ -258,12 +253,12 @@ public class Grid : MonoBehaviour {
     #endregion
 
     #region utility
-    void printList<T>(List<T> lista)
+    public static void printList<T>(List<T> lista)
     {
         string temp = "{ ";
         foreach(T elem in lista)
         {
-            temp = temp + elem + " ";
+            temp = temp + elem + ", ";
         }
         temp = temp + "}";
         Debug.Log(temp);

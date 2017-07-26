@@ -10,79 +10,65 @@ public class Pachinko : MonoBehaviour {
     public GameObject passenger;
     public GameObject roulette;
     public GameObject signal;
+    public GameObject word_sequence;
 
     private GameObject selected;
     private Grid grid;
+    private List<List<string>> correct_word_sequences = new List<List<string>>();
+    private List<List<string>> generic_word_sequences = new List<List<string>>();
+    private List<string> selected_sequence = new List<string>();
+    private int rounds;
 
     void Start()
     {
         grid = FindObjectOfType<Grid>();
-    } 
-
-    public void enterPachinkoMode(Color color)
-    {
-        pachinko_go.SetActive(true);
-        setPassengerColor(color);
-        StartCoroutine(startRouletteLoop());
+        initializeCorrectWordSequences();
+        initializeGenericWordSequences();
     }
+
+    #region passenger color
 
     void setPassengerColor(Color color)
     {
         passenger.GetComponent<Image>().color = color;
     }
 
-    void setNextSignal()
+    #endregion
+
+    #region pachinko main loop
+    public void enterPachinkoMode(Color color)
     {
-        List<Color> possible_colors = setListOfColorsFromRouletteColors();
-        Color signal_color = possible_colors[Random.Range(0, possible_colors.Count)];
-        signal.GetComponent<Image>().color = signal_color;
+        pachinko_go.SetActive(true);
+        setPassengerColor(color);
+        setCorrectWordSequence();
+        initializeWordSequenceText();
+        StartCoroutine(startRouletteLoop());
     }
 
-    List<Color> setListOfColorsFromRouletteColors()
+    void setNextRound(int value)
     {
-        List<Color> roulette_colors = new List<Color>();
-        for (int i = 0; i < 4; i++)
-        {
-            Color color = roulette.transform.GetChild(i).GetComponent<Image>().color;
-            roulette_colors.Add(color);
-        }
-        return roulette_colors;
+        setNextSignal();
+        setNextWordSequences(value);
     }
 
     IEnumerator startRouletteLoop()
     {
-        bool success = false;
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < rounds; i++)
         {
-            setNextSignal();
+            setNextRound(i);
             Coroutine roulette_loop = StartCoroutine(rouletteLooping());
             yield return StartCoroutine(waitForKeyDown(KeyCode.Space));
             StopCoroutine(roulette_loop);
-            bool isCorrect = checkIfSelectedIsCorrect();
-            if (isCorrect)
-            {
-                Debug.Log("sinal certo");
-                success = true;
-            }
-            else
-            {
-                Debug.Log("sinal errado");
-                yield return new WaitForSeconds(3f);
-                resetRouletteScale();
-                success = false;
-                //cancela o swap (ver com o vinicius o que deve acontecer exatamente)
-                break;
-            }
+            updateWordSequence();
             yield return new WaitForSeconds(2f);
             resetRouletteScale();
         }
-        leavePachinkoMode(success);
+        leavePachinkoMode();
     }
 
     IEnumerator waitForKeyDown(KeyCode keyCode)
     {
-        while (!Input.GetKeyDown(keyCode))
-            yield return null;
+        yield return new WaitUntil(() => Input.GetKeyDown(keyCode));
     }
 
     IEnumerator rouletteLooping()
@@ -97,6 +83,115 @@ public class Pachinko : MonoBehaviour {
         }
     }
 
+    void leavePachinkoMode()
+    {
+        grid.pachinko_mode_active = false;
+
+        pachinko_go.GetComponentInChildren<Animator>().SetTrigger("unshow");
+    }
+    #endregion
+
+    #region word management
+    void setNumberOfRounds(int valor)
+    {
+         rounds = valor;
+    }
+
+    void initializeCorrectWordSequences()
+    {
+        List<string> s1 = new List<string> { "me da", "passagem", "amigo" };
+        correct_word_sequences.Add(s1);
+        List<string> s2 = new List<string> { "com licença", "meu chapa" };
+        correct_word_sequences.Add(s2);
+    }
+
+    void initializeGenericWordSequences()
+    {
+        generic_word_sequences.Add(
+            new List<string> {
+                "com licença",
+                "por favor",
+                "me da uma passagem ai senhora por favor",
+                "me da",
+                "*empurra*",
+                "me deixa"
+            }
+        );
+        generic_word_sequences.Add(
+            new List<string> {
+                "por favor",
+                "com licenca",
+                "na moral",
+                "*empurra*",
+                "*esmaga*",
+                "uma passagem",
+                "licença"
+            }
+        );
+        generic_word_sequences.Add(
+            new List<string> {
+                "meu chapa",
+                "minha senhora",
+                "meu querido",
+                "minha querida",
+                "meu nobre",
+                "*atropela*",
+                "menor",
+                "senhor",
+                "senhora",
+                "amigo",
+                "camarada"
+            }
+        );
+    }
+
+    void initializeWordSequenceText()
+    {
+        word_sequence.GetComponent<Text>().text = "";
+    }
+
+    void updateWordSequence()
+    {
+        word_sequence.GetComponent<Text>().text += " " + selected.transform.GetChild(0).GetComponent<Text>().text;
+    }
+
+    void setCorrectWordSequence()
+    {
+        List<string> selected = correct_word_sequences[(Random.Range(0, correct_word_sequences.Count))];
+        selected_sequence = selected;
+        setNumberOfRounds(selected.Count);
+    }
+
+    void setNextWordSequences(int index)
+    {
+        string correct_fragment = selected_sequence[index];
+        List<string> round_words = new List<string>();
+        round_words = generic_word_sequences[index];
+
+        Grid.printList(round_words);
+
+        List<string> used = new List<string>();
+        used.Add(correct_fragment);
+        string generic_fragment = "";
+
+        for (int i = 0; i < 4; i++)
+        {
+            GameObject roulette_element = roulette.transform.GetChild(i).gameObject;
+            if (roulette_element.GetComponent<Image>().color == signal.GetComponent<Image>().color) //sequencia correta
+                roulette_element.transform.GetChild(0).GetComponent<Text>().text = correct_fragment;
+            else //sequencia generica
+            {
+                do
+                    generic_fragment = round_words[Random.Range(0, round_words.Count)];
+                while (used.Contains(generic_fragment));
+                used.Add(generic_fragment);
+                roulette_element.transform.GetChild(0).GetComponent<Text>().text = generic_fragment;
+            }
+        }
+    }
+    #endregion
+
+    #region roulette management
     void resetRouletteScale()
     {
         for (int i = 0; i < 4; i++)
@@ -114,12 +209,27 @@ public class Pachinko : MonoBehaviour {
         else
             return false;
     }
+    #endregion
 
-    void leavePachinkoMode(bool success)
+    #region signal management
+    void setNextSignal()
     {
-        grid.pachinko_mode_active = false;
-        grid.pachinko_success = success;
-        pachinko_go.SetActive(false);
+        List<Color> possible_colors = setListOfColorsFromRouletteColors();
+        Color signal_color = possible_colors[Random.Range(0, possible_colors.Count)];
+        signal.GetComponent<Image>().color = signal_color;
     }
+
+
+    List<Color> setListOfColorsFromRouletteColors()
+    {
+        List<Color> roulette_colors = new List<Color>();
+        for (int i = 0; i < 4; i++)
+        {
+            Color color = roulette.transform.GetChild(i).GetComponent<Image>().color;
+            roulette_colors.Add(color);
+        }
+        return roulette_colors;
+    }
+    #endregion
 
 }
