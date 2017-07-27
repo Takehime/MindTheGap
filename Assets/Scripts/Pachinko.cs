@@ -11,6 +11,7 @@ public class Pachinko : MonoBehaviour {
     public GameObject roulette;
     public GameObject signal;
     public GameObject word_sequence;
+    public GameObject checkMark;
 
     private GameObject selected;
     private Grid grid;
@@ -63,6 +64,7 @@ public class Pachinko : MonoBehaviour {
             yield return new WaitForSeconds(2f);
             resetRouletteScale();
         }
+        //checkMark.SetActive(true);
         leavePachinkoMode();
     }
 
@@ -86,7 +88,6 @@ public class Pachinko : MonoBehaviour {
     void leavePachinkoMode()
     {
         grid.pachinko_mode_active = false;
-
         pachinko_go.GetComponentInChildren<Animator>().SetTrigger("unshow");
     }
     #endregion
@@ -111,7 +112,7 @@ public class Pachinko : MonoBehaviour {
             new List<string> {
                 "com licença",
                 "por favor",
-                "me da uma passagem ai senhora por favor",
+                "me da uma passagem ai",
                 "me da",
                 "*empurra*",
                 "me deixa"
