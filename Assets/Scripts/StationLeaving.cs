@@ -42,22 +42,54 @@ public class StationLeaving : MonoBehaviour {
 
     IEnumerator getUpLeavers(int id)
     {
-		if (id >= 0 && id < 10) {
-			//Debug.Log ("id: " + id + " swap duas vezes pra baixo");
-			grid.swapTwoPassengers (id, id + 10, swap_duration);
+		yield return new WaitForSeconds (Random.Range(0.3f, 0.5f));
+		if (passengerOnFirstLineOfSeats(id)) {
+			grid.swapTwoPassengers (id, getIDPassengerBellow(id), swap_duration);
+			float threshold = 0.3f;
+			float random_wait_time = Random.Range (0f, threshold);
+			yield return new WaitForSeconds (swap_duration + random_wait_time);
+			grid.swapTwoPassengers (
+				getIDPassengerBellow(id), 
+				getIDPassengerBellow(getIDPassengerBellow(id)), 
+				swap_duration
+			);
+		} else if (passengerOnSecondLineOfSeats(id)) {
+			grid.swapTwoPassengers (id, getIDPassengerBellow(id), swap_duration);
+		} else if (passengerOnFirstLastLineOfSeats(id)) {
+			grid.swapTwoPassengers (id, getIDPassengerUp(id), swap_duration);
+		} else if (passengerOnSecondLastLineOfSeats(id)) {
+			grid.swapTwoPassengers (id, getIDPassengerUp(id), swap_duration);
 			yield return new WaitForSeconds (swap_duration);
-			grid.swapTwoPassengers (id + 10, id + 20, swap_duration);
-		} else if (id >= 10 && id < 20) {
-			//Debug.Log ("id: " + id + " swap uma vez pra baixo");
-			grid.swapTwoPassengers (id, id + 10, swap_duration);
-		} else if ((id >= 40 && id < 44) || (id >= 46 && id < 50)) {
-			//Debug.Log ("id: " + id + " swap uma vez pra cima");
-			grid.swapTwoPassengers (id, id - 10, swap_duration);
-		} else if ((id >= 50 && id < 54) || (id >= 56 && id < 60)) {
-			//Debug.Log ("id: " + id + " swap duas vezes pra cima");
-			grid.swapTwoPassengers (id, id - 10, swap_duration);
-			yield return new WaitForSeconds (swap_duration);
-			grid.swapTwoPassengers (id - 10, id - 20, swap_duration);
+			grid.swapTwoPassengers (
+				getIDPassengerUp(id), 
+				getIDPassengerUp(getIDPassengerUp(id)), 
+				swap_duration
+			);
 		}
     }
+
+	int getIDPassengerBellow(int id) {
+		return id + 10;
+	}
+
+	int getIDPassengerUp(int id) {
+		return id - 10;
+	} 
+
+	bool passengerOnFirstLineOfSeats(int id) {
+		return id >= 0 && id < 10;
+	}
+
+	bool passengerOnSecondLineOfSeats(int id) {
+		return id >= 10 && id < 20;
+	}
+
+	bool passengerOnFirstLastLineOfSeats(int id) {
+		return (id >= 40 && id < 44) || (id >= 46 && id < 50);
+	}
+
+	bool passengerOnSecondLastLineOfSeats(int id) {
+		return (id >= 50 && id < 54) || (id >= 56 && id < 60);
+	}
+
 }
