@@ -136,7 +136,6 @@ public class Grid : MonoBehaviour {
         swap_mode_active = true;
         tiles[tile_id].GetComponent<Image>().color = new Color32(226, 157, 82, 255);
         player_adj = calculateAdj(tile_id);
-        Debug.Log("player_id" + tile_id);
         printList(player_adj);
         changePassengersAlpha(player_adj, true);
     }
@@ -263,6 +262,32 @@ public class Grid : MonoBehaviour {
         temp = temp + "}";
         Debug.Log(temp);
     }
+
+    public bool tileIsSeat(int tile_id)
+    {
+        List<int> seats = getAllSeats();
+        if (seats.Contains(tile_id))
+            return true;
+        else
+            return false;
+    }
+
+    List<int> getAllSeats()
+    {
+        List<int> seats = new List<int>();
+        for (int id = 0; id < 60; id++)
+        {
+            if ((id >= 0 && id < 20)
+                || (id >= 40 && id < 44)
+                || (id >= 46 && id < 54)
+                || (id >= 56 && id < 60))
+            {
+                seats.Add(id);
+            }
+        }
+        return seats;
+    }
+
     #endregion
 
 }

@@ -37,8 +37,6 @@ public class Player : MonoBehaviour {
     void changeTurn(TurnManager.Turn turn)
     {
         curr_turn = turn;
-        Debug.Log(curr_turn);
-
     }
 
     public void onSwapMode()

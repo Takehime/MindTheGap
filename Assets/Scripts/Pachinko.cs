@@ -168,9 +168,6 @@ public class Pachinko : MonoBehaviour {
         string correct_fragment = selected_sequence[index];
         List<string> round_words = new List<string>();
         round_words = generic_word_sequences[index];
-
-        Grid.printList(round_words);
-
         List<string> used = new List<string>();
         used.Add(correct_fragment);
         string generic_fragment = "";
