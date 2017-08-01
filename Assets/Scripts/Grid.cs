@@ -194,41 +194,50 @@ public class Grid : MonoBehaviour {
         {
             pachinko.enterPachinkoMode(passengers[tile_id].GetComponent<Image>().color);
             pachinko_mode_active = true;
-            StartCoroutine(swapPassengerWithPlayer(tile_id, 0.25f));
+			int player_id = FindObjectOfType<Player>().getTileId();
+			StartCoroutine(startSwapMode(player_id, tile_id, 0.25f));
         }
     }
 
+	IEnumerator startSwapMode(int origin_id, int target_id, float duration) {
+		yield return waitForEndOfPachinkoMode();
+		swapTwoPassengers(origin_id, target_id, duration);
+	}
+	
     IEnumerator waitForEndOfPachinkoMode()
     {
         yield return new WaitUntil(() => pachinko_mode_active);
         yield return new WaitWhile(() => pachinko.pachinko_go.activeSelf);
     }
 
-    IEnumerator swapPassengerWithPlayer(int target_id, float duration)
+    public void swapTwoPassengers(int origin_id, int target_id, float duration)
     {
-        yield return waitForEndOfPachinkoMode();
-
-        GameObject player = FindObjectOfType<Player>().gameObject;
-        int player_id = player.GetComponent<Player>().getTileId();
+		GameObject origin = passengers [origin_id];
         GameObject target = passengers[target_id];
 
         //animaçao
-        target.transform.DOMove(player.transform.position, duration);
-        player.transform.DOMove(target.transform.position, duration);
+        target.transform.DOMove(origin.transform.position, duration);
+        origin.transform.DOMove(target.transform.position, duration);
 
         //troca do curr_tile_id
-        target.GetComponent<Passenger>().setTileId(player_id);
-        player.GetComponent<Player>().setTileId(target_id);
+        target.GetComponent<Passenger>().setTileId(origin_id);
+
+		//desliga o swap_mode se o origin for o player
+		if (origin.GetComponent<Player>() != null) {
+			origin.GetComponent<Player>().setTileId (target_id);
+			origin.GetComponent<Player>().setSwapMode(false);
+		} else {
+			origin.GetComponent<Passenger>().setTileId (target_id);
+		}
 
         //troca dos objetos na lista de passageiros
-        passengers[player_id] = target;
-        passengers[target_id] = player;
-
-        //desliga o swap_mode
-        player.GetComponent<Player>().setSwapMode(false);
+        passengers[origin_id] = target;
+        passengers[target_id] = origin;
         
-        //atualiza lista de adjacencias e reseta cor dos tiles
-        leaveSwapMode(player_id, target_id);
+        //atualiza lista de adjacencias e reseta cor dos tiles se o origin for o player
+		if (origin.GetComponent<Player> () != null) {
+			leaveSwapMode (origin_id, target_id);
+		}
     }
     #endregion
 
