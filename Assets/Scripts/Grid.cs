@@ -28,6 +28,8 @@ public class Grid : MonoBehaviour {
 
     private int width = 10; 
     private int height = 6;
+	private int door_id1 = 54;
+	private int door_id2 = 55;
     private List<int> types_counter = new List<int>();
     private List<GameObject> player_adj;
     private TurnManager.Turn curr_turn = TurnManager.Turn.BetweenStations;
@@ -281,7 +283,7 @@ public class Grid : MonoBehaviour {
             return false;
     }
 
-    List<int> getAllSeats()
+    public List<int> getAllSeats()
     {
         List<int> seats = new List<int>();
         for (int id = 0; id < 60; id++)
@@ -296,6 +298,19 @@ public class Grid : MonoBehaviour {
         }
         return seats;
     }
+
+	public enum IDPosFromDoor{
+		LEFT, MID, RIGHT
+	}
+
+	public IDPosFromDoor posFromDoor(int id) {
+		if (id % 10 < door_id1 % 10)
+			return IDPosFromDoor.LEFT;
+		else if (id % 10 > door_id2 % 10)
+			return IDPosFromDoor.RIGHT;
+		else
+			return IDPosFromDoor.MID;
+	}
 
     #endregion
 

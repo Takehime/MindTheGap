@@ -8,31 +8,57 @@ public class StationLeaving : MonoBehaviour {
 
     private int max_of_leavers = 9; // (1/4) dos sentados
     private Grid grid;
+	private List<int> leavers_ids;
 
 	void Start () {
         grid = FindObjectOfType<Grid>();
         FindObjectOfType<TurnManager>().startStationLeaving += startStationLeaving;
     }
 
-    void startStationLeaving()
+	void startStationLeaving()
     {
-        selectPassengersToLeaveBus();
+		StartCoroutine (stationLeavingCoroutine());
+
     }
 
-    void selectPassengersToLeaveBus()
+	IEnumerator stationLeavingCoroutine() {
+
+		//passo 1
+		selectSeats();
+		yield return new WaitForSeconds (3f);
+		Grid.printList (leavers_ids);
+
+		//passo 2
+		selectPassengersFromCorridor();
+
+	}
+
+	void selectPassengersFromCorridor() {
+		for (int i = 0; i < max_of_leavers; i++) {
+			int id = leavers_ids [i];
+			Grid.IDPosFromDoor pos_from_door = grid.posFromDoor (id);
+			Debug.Log ("id: " + id + ", position from door: " + pos_from_door);
+		}
+	}
+
+	void selectSeats()
     {
         List<int> leavers = new List<int>();
         for (int i = 0; i < max_of_leavers; i++)
         {
             int selected;
 			do {
-                selected = Random.Range(0, 60);
-				if (leavers.Contains(selected + 10) || leavers.Contains(selected - 10)) {
-				}
+				List<int> seats = grid.getAllSeats();
+				int index = Random.Range(0, grid.getAllSeats().Count);
+				selected = seats[index];
 			}
-			while (leavers.Contains(selected) || leavers.Contains(selected + 10) || leavers.Contains(selected - 10));
+			while (leavers.Contains(selected) 
+				|| leavers.Contains(getIDPassengerBellow(selected)) 
+				|| leavers.Contains(getIDPassengerUp(selected)));
             leavers.Add(selected);
         }
+		Grid.printList (leavers);
+
 
         for (int i = 0; i < leavers.Count; i++)
         {
@@ -42,30 +68,53 @@ public class StationLeaving : MonoBehaviour {
 
     IEnumerator getUpLeavers(int id)
     {
+		leavers_ids = new List<int> ();
 		yield return new WaitForSeconds (Random.Range(0.3f, 0.5f));
-		if (passengerOnFirstLineOfSeats(id)) {
-			grid.swapTwoPassengers (id, getIDPassengerBellow(id), swap_duration);
+		if (passengerOnFirstLineOfSeats (id)) {
+			grid.swapTwoPassengers (id, 
+				getIDPassengerBellow (id), 
+				swap_duration
+			);
 			float threshold = 0.3f;
 			float random_wait_time = Random.Range (0f, threshold);
 			yield return new WaitForSeconds (swap_duration + random_wait_time);
 			grid.swapTwoPassengers (
-				getIDPassengerBellow(id), 
-				getIDPassengerBellow(getIDPassengerBellow(id)), 
+				getIDPassengerBellow (id), 
+				getIDPassengerBellow (getIDPassengerBellow (id)), 
 				swap_duration
 			);
-		} else if (passengerOnSecondLineOfSeats(id)) {
-			grid.swapTwoPassengers (id, getIDPassengerBellow(id), swap_duration);
-		} else if (passengerOnFirstLastLineOfSeats(id)) {
-			grid.swapTwoPassengers (id, getIDPassengerUp(id), swap_duration);
-		} else if (passengerOnSecondLastLineOfSeats(id)) {
-			grid.swapTwoPassengers (id, getIDPassengerUp(id), swap_duration);
+			leavers_ids.Add (getIDPassengerBellow (getIDPassengerBellow (id)));
+		} else if (passengerOnSecondLineOfSeats (id)) {
+			grid.swapTwoPassengers (
+				id, 
+				getIDPassengerBellow (id), 
+				swap_duration
+			);
+			leavers_ids.Add (getIDPassengerBellow (id));
+		} else if (passengerOnFirstLastLineOfSeats (id)) {
+			grid.swapTwoPassengers (
+				id, 
+				getIDPassengerUp (id), 
+				swap_duration
+			);
+			leavers_ids.Add ((getIDPassengerUp (id)));
+		} else if (passengerOnSecondLastLineOfSeats (id)) {
+			grid.swapTwoPassengers (
+				id, 
+				getIDPassengerUp (id), 
+				swap_duration
+			);
 			yield return new WaitForSeconds (swap_duration);
 			grid.swapTwoPassengers (
-				getIDPassengerUp(id), 
-				getIDPassengerUp(getIDPassengerUp(id)), 
+				getIDPassengerUp (id), 
+				getIDPassengerUp (getIDPassengerUp (id)), 
 				swap_duration
 			);
+			leavers_ids.Add ((getIDPassengerUp (getIDPassengerUp (id))));
+		} else {
+			Debug.Log ("erro, id: " + id);
 		}
+
     }
 
 	int getIDPassengerBellow(int id) {
