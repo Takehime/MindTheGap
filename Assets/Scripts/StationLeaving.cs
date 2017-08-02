@@ -34,7 +34,7 @@ public class StationLeaving : MonoBehaviour {
 	}
 
 	void selectPassengersFromCorridor() {
-		for (int i = 0; i < max_of_leavers; i++) {
+		for (int i = 0; i < leavers_ids.Count; i++) {
 			int id = leavers_ids [i];
 			Grid.IDPosFromDoor pos_from_door = grid.posFromDoor (id);
 			Debug.Log ("id: " + id + ", position from door: " + pos_from_door);
@@ -47,14 +47,20 @@ public class StationLeaving : MonoBehaviour {
         for (int i = 0; i < max_of_leavers; i++)
         {
             int selected;
-			do {
-				List<int> seats = grid.getAllSeats();
-				int index = Random.Range(0, grid.getAllSeats().Count);
-				selected = seats[index];
-			}
-			while (leavers.Contains(selected) 
-				|| leavers.Contains(getIDPassengerBellow(selected)) 
-				|| leavers.Contains(getIDPassengerUp(selected)));
+            do
+            {
+                List<int> seats = grid.getAllSeats();
+                int index = Random.Range(0, grid.getAllSeats().Count);
+                selected = seats[index];
+                if (checkIfTwoPassengersAreOnSameXPos(selected, getIDPlayer())) {
+                    Debug.Log("id player: " + getIDPlayer() + " id passenger: " + selected + " (mesmo X)");
+                }
+            }
+            while (leavers.Contains(selected)
+                || leavers.Contains(getIDPassengerBellow(selected))
+                || leavers.Contains(getIDPassengerUp(selected))
+                || checkIfTwoPassengersAreOnSameXPos(selected, getIDPlayer())
+            );
             leavers.Add(selected);
         }
 		Grid.printList (leavers);
@@ -69,14 +75,15 @@ public class StationLeaving : MonoBehaviour {
     IEnumerator getUpLeavers(int id)
     {
 		leavers_ids = new List<int> ();
-		yield return new WaitForSeconds (Random.Range(0.3f, 0.5f));
+        float threshold = 0.3f;
+        float random_wait_time = Random.Range(0f, threshold);
+        yield return new WaitForSeconds (Random.Range(0.3f, 0.5f));
 		if (passengerOnFirstLineOfSeats (id)) {
 			grid.swapTwoPassengers (id, 
 				getIDPassengerBellow (id), 
 				swap_duration
 			);
-			float threshold = 0.3f;
-			float random_wait_time = Random.Range (0f, threshold);
+
 			yield return new WaitForSeconds (swap_duration + random_wait_time);
 			grid.swapTwoPassengers (
 				getIDPassengerBellow (id), 
@@ -104,7 +111,7 @@ public class StationLeaving : MonoBehaviour {
 				getIDPassengerUp (id), 
 				swap_duration
 			);
-			yield return new WaitForSeconds (swap_duration);
+			yield return new WaitForSeconds (swap_duration + random_wait_time);
 			grid.swapTwoPassengers (
 				getIDPassengerUp (id), 
 				getIDPassengerUp (getIDPassengerUp (id)), 
@@ -140,5 +147,13 @@ public class StationLeaving : MonoBehaviour {
 	bool passengerOnSecondLastLineOfSeats(int id) {
 		return (id >= 50 && id < 54) || (id >= 56 && id < 60);
 	}
+
+    bool checkIfTwoPassengersAreOnSameXPos(int id_tile1, int id_tile2) {
+        return (id_tile1 % 10 == id_tile2 % 10);
+    }
+
+    int getIDPlayer() {
+        return FindObjectOfType<Player>().getTileId();
+    }
 
 }
