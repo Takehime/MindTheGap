@@ -4,6 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 
+public enum IDPosFromDoor{
+	LEFT, MID, RIGHT, ON_DOOR
+}
+
 public class Grid : MonoBehaviour {
 
     [Header("Variables")]
@@ -222,7 +226,8 @@ public class Grid : MonoBehaviour {
         origin.transform.DOMove(target.transform.position, duration);
 
         //troca do curr_tile_id
-        target.GetComponent<Passenger>().setTileId(origin_id);
+		if (target.GetComponent<Passenger>() != null) 
+			target.GetComponent<Passenger>().setTileId(origin_id);
 
 		//desliga o swap_mode se o origin for o player
 		if (origin.GetComponent<Player>() != null) {
@@ -299,19 +304,18 @@ public class Grid : MonoBehaviour {
         return seats;
     }
 
-	public enum IDPosFromDoor{
-		LEFT, MID, RIGHT
-	}
-
 	public IDPosFromDoor posFromDoor(int id) {
-		if (id % 10 < door_id1 % 10)
+		if (id == door_id1 || id == door_id2)
+			return IDPosFromDoor.ON_DOOR;
+		else if (id % 10 < door_id1 % 10)
 			return IDPosFromDoor.LEFT;
 		else if (id % 10 > door_id2 % 10)
 			return IDPosFromDoor.RIGHT;
 		else
 			return IDPosFromDoor.MID;
+			
 	}
 
-    #endregion
+	#endregion
 
 }
