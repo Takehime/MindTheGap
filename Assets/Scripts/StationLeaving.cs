@@ -13,6 +13,8 @@ public class StationLeaving : MonoBehaviour {
 	private int max_of_leavers = 9; // (1/4) dos sentados
 	private Grid grid;
 	private List<Leaver> leavers;
+	private bool player_up;
+	private bool player_left;
 
 	class Leaver {
 		private int id;
@@ -55,8 +57,6 @@ public class StationLeaving : MonoBehaviour {
 		selectSeats();
 		yield return new WaitForSeconds (3f);
 
-		Debug.Log (leavers.Count);
-
 		//passo 2
 		getXPosFromDoor();
 		StartCoroutine(passengersLeavingLoop());
@@ -84,7 +84,6 @@ public class StationLeaving : MonoBehaviour {
 			);
 			leavers.Add(selected);
 		}
-		Debug.Log (leavers.Count);
 
 		for (int i = 0; i < leavers.Count; i++) {
 			StartCoroutine(getUpLeavers(leavers[i]));
@@ -154,72 +153,142 @@ public class StationLeaving : MonoBehaviour {
 			int id = leavers [i].getID();
 			IDPosFromDoor pos_from_door = grid.posFromDoor (id);
 			leavers[i].setPos(pos_from_door);
-			//Debug.Log ("id: " + id + ", position from door: " + leavers[i].getPos());
 		}
 	}
 
 	IEnumerator passengersLeavingLoop() {
-		//Debug.Log("id: " + leavers[0].getID());
-
 		IDPosFromDoor pos = leavers[0].getPos();
+		int id = leavers [0].getID ();
+		int player_id = getIDPlayer ();
+		Direction nextDir;
+
+		Debug.Log ("isOnHorizontalUp: " + isOnHorizontalUp (id));
+		Debug.Log ("isOnHorizontalUp (player): " + isOnHorizontalUp (player_id));
+
 		switch (pos) {
 		case IDPosFromDoor.LEFT:
 			while (leavers [0].getPos () != IDPosFromDoor.MID) {
-				Direction nextDir = Direction.RIGHT;
-				if (!playerIsOnTheWay (nextDir, /*index*/0))
+				
+				id = leavers [0].getID ();
+				player_id = getIDPlayer ();
+
+				if (isOnHorizontalUp (id) && isOnHorizontalUp (player_id)) {
+					
+					nextDir = Direction.DOWN;
 					moveToDirection (nextDir, /*index*/0);
-				else {
-					Debug.Log ("player está no caminho");
-					bypassPlayer (nextDir, /*index*/0);
+					yield return new WaitForSeconds (1.5f);
+
+				} else if (isOnHorizontalDown (id) && isOnHorizontalDown (player_id)) {
+					
+					nextDir = Direction.UP;
+					moveToDirection (nextDir, /*index*/0);
+					yield return new WaitForSeconds (1.5f);
 				}
+
+				nextDir = Direction.RIGHT;
+				moveToDirection (nextDir, /*index*/0);
 				yield return new WaitForSeconds (1.5f);
 			}
 
 			while (leavers [0].getPos () != IDPosFromDoor.ON_DOOR) {
-				Direction nextDir = Direction.DOWN;
-				if (!playerIsOnTheWay (nextDir, /*index*/0))
+
+				id = leavers [0].getID ();
+				player_id = getIDPlayer ();
+
+				Debug.Log ("isOnVerticalLeft: " + isOnVerticalLeft (id) + " isOnVerticalLeft (player): " + isOnVerticalLeft (player_id));
+				Debug.Log ("isOnVerticalRight: " + isOnVerticalRight (id) + " isOnVerticalRight (player): " + isOnVerticalRight (player_id));
+
+				if (isOnVerticalLeft (id) && isOnVerticalLeft (player_id)) {
+					
+					nextDir = Direction.DOWN;
 					moveToDirection (nextDir, /*index*/0);
-				else {
-					Debug.Log ("player está no caminho");
-					bypassPlayer (nextDir, /*index*/0);
+					yield return new WaitForSeconds (1.5f);
+
+				} else if (isOnVerticalRight (id) && isOnVerticalRight (player_id)) {
+					
+					nextDir = Direction.UP;
+					moveToDirection (nextDir, /*index*/0);
+					yield return new WaitForSeconds (1.5f);
 				}
+
+				nextDir = Direction.DOWN;
+				moveToDirection (nextDir, /*index*/0);
 				yield return new WaitForSeconds (1.5f);
 			}
 			break;
 
 		case IDPosFromDoor.RIGHT:
 			while (leavers [0].getPos () != IDPosFromDoor.MID) {
-				Direction nextDir = Direction.LEFT;
-				if (!playerIsOnTheWay (nextDir, /*index*/0))
+
+				id = leavers [0].getID ();
+				player_id = getIDPlayer ();
+
+				if (isOnHorizontalUp (id) && isOnHorizontalUp (player_id)) {
+					
+					nextDir = Direction.DOWN;
 					moveToDirection (nextDir, /*index*/0);
-				else {
-					Debug.Log ("player está no caminho");
-					bypassPlayer (nextDir, /*index*/0);
+					yield return new WaitForSeconds (1.5f);
+
+				} else if (isOnHorizontalDown (id) && isOnHorizontalDown (player_id)) {
+					
+					nextDir = Direction.UP;
+					moveToDirection (nextDir, /*index*/0);
+					yield return new WaitForSeconds (1.5f);
 				}
+
+				nextDir = Direction.LEFT;
+				moveToDirection (nextDir, /*index*/0);
 				yield return new WaitForSeconds (1.5f);
 			}
 
 			while (leavers [0].getPos () != IDPosFromDoor.ON_DOOR) {
-				Direction nextDir = Direction.DOWN;
-				if (!playerIsOnTheWay (nextDir, /*index*/0))
+
+				id = leavers [0].getID ();
+				player_id = getIDPlayer ();
+
+				Debug.Log ("isOnVerticalLeft ("+id+"): " + isOnVerticalLeft (id) + " isOnVerticalLeft ("+player_id+"): " + isOnVerticalLeft (player_id));
+				Debug.Log ("isOnVerticalRight("+id+"): " + isOnVerticalRight (id) + " isOnVerticalRight ("+player_id+"): " + isOnVerticalRight (player_id));
+
+				if (isOnVerticalLeft (id) && isOnVerticalLeft (player_id)) {
+					
+					nextDir = Direction.RIGHT;
 					moveToDirection (nextDir, /*index*/0);
-				else {
-					Debug.Log ("player está no caminho");
-					bypassPlayer (nextDir, /*index*/0);
+					yield return new WaitForSeconds (1.5f);
+
+				} else if (isOnVerticalRight (id) && isOnVerticalRight (player_id)) {
+					
+					nextDir = Direction.LEFT;
+					moveToDirection (nextDir, /*index*/0);
+					yield return new WaitForSeconds (1.5f);
 				}
+
+				nextDir = Direction.DOWN;
+				moveToDirection (nextDir, /*index*/0);
 				yield return new WaitForSeconds (1.5f);
 			}
 			break;
 
 		case IDPosFromDoor.MID:
 			while (leavers [0].getPos () != IDPosFromDoor.ON_DOOR) {
-				Direction nextDir = Direction.DOWN;
-				if (!playerIsOnTheWay (nextDir, /*index*/0))
+
+				id = leavers [0].getID ();
+				player_id = getIDPlayer ();
+
+				if (isOnVerticalLeft (id) && isOnVerticalLeft (player_id)) {
+					
+					nextDir = Direction.RIGHT;
 					moveToDirection (nextDir, /*index*/0);
-				else {
-					Debug.Log ("player está no caminho");
-					bypassPlayer (nextDir, /*index*/0);
+					yield return new WaitForSeconds (1.5f);
+
+				} else if (isOnVerticalRight (id) && isOnVerticalRight (player_id)) {
+					
+					nextDir = Direction.LEFT;
+					moveToDirection (nextDir, /*index*/0);
+					yield return new WaitForSeconds (1.5f);
 				}
+
+				nextDir = Direction.DOWN;
+				moveToDirection (nextDir, /*index*/0);
 				yield return new WaitForSeconds (1.5f);
 			}
 			break;
@@ -230,12 +299,12 @@ public class StationLeaving : MonoBehaviour {
 		int id = leavers [index].getID ();
 		//int targetID = calculateTargetID (nextDir, index);
 		if (nextDir == Direction.LEFT || nextDir == Direction.RIGHT) {
-			if (isOnHorizontalLineUp(index))
+			if (isOnHorizontalUp(index))
 				moveToDirection (Direction.DOWN, index);
 			else
 				moveToDirection (Direction.UP, index);
 		} else {
-			if (isOnVerticalLineLeft(index))
+			if (isOnVerticalLeft(index))
 				moveToDirection (Direction.RIGHT, index);
 			else
 				moveToDirection (Direction.LEFT, index);
@@ -314,18 +383,20 @@ public class StationLeaving : MonoBehaviour {
 		return FindObjectOfType<Player>().getTileId();
 	}
 
-	bool isOnHorizontalLineUp(int index) {
-		if (leavers [index].getID () >= 20 && leavers [index].getID () < 30)
-			return true;
-		else
-			return false;
+	bool isOnHorizontalUp(int id) {
+		return (id >= 20 && id < 30);
 	}
 
-	bool isOnVerticalLineLeft(int index) {
-		if (leavers [index].getID () % 10 <= 4)
-			return true;
-		else 
-			return false;
+	bool isOnHorizontalDown(int id) {
+		return (id >= 30 && id < 40);
+	}
+
+	bool isOnVerticalLeft(int id) {
+		return (id % 10 == 4);
+	}
+
+	bool isOnVerticalRight(int id) {
+		return (id % 10 == 5);
 	}
 
 
