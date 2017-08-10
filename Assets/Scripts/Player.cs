@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour {
+public class IPassenger : MonoBehaviour {}
+
+public class Player : IPassenger {
 
     public delegate void SwapMode(int id, bool bo);
     public event SwapMode swapMode;

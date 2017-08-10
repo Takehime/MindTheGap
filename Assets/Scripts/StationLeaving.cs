@@ -16,7 +16,7 @@ public class StationLeaving : MonoBehaviour {
 	private bool player_up;
 	private bool player_left;
 
-	class Leaver : MonoBehaviour{
+	class Leaver {
 		private int id;
 		private IDPosFromDoor pos;
 
@@ -162,11 +162,11 @@ public class StationLeaving : MonoBehaviour {
 		IDPosFromDoor pos = getPosFromDoor(id);
         l.setPos(pos);
 		Direction nextDir;
-        Debug.Log("id: " + id);
+        //Debug.Log("id: " + id);
 
         if (pos == IDPosFromDoor.ON_DOOR)
         {
-            Debug.Log("na porta");
+//            Debug.Log("na porta");
             return;
         }
 
@@ -204,45 +204,61 @@ public class StationLeaving : MonoBehaviour {
 
     IEnumerator leavingLoop()
     {
+		Leaver who_left = null;
         foreach (Leaver l in leavers)
         {
             if (l.getPos() == IDPosFromDoor.ON_DOOR)
             {
+				//sai
                 Destroy(grid.passengers[l.getID()]);
+				grid.passengers[l.getID()] = null;
+				who_left = l;
+				//passengers[l.getID()] vai ficar null
             }
         }
-        yield return new WaitForSeconds(swap_duration);
+
+		leavers.Remove (who_left);
+        //yield return new WaitForSeconds(swap_duration);
 
         foreach (Leaver l in leavers)
         {
             int id = l.getID();
             List<GameObject> adjs = grid.calculateAdj(id);
 
-            Grid.printList(adjs);
+            //Grid.printList(adjs);
 
-            foreach (GameObject pass in adjs)
+            foreach (GameObject tile in adjs)
             {
-                int tile_id = pass.GetComponent<Tile>().getTileId();
-                GameObject p = grid.passengers[tile_id];
+                int tile_id = tile.GetComponent<Tile>().getTileId();
+				bool empty = grid.tileIsEmpty(tile_id);
+				if (empty) {
+					print ("Tile #" + tile_id + " is empty (detected by passenger #" + id + ").");				
+				} else {
+					//print ("Tile #" + tile_id + " is NOT empty (detected by passenger #" + id + ").");				
+				}
+
+                /*GameObject p = grid.passengers[tile_id];
 
                 if (p != null)
                 {
-                    Debug.Log("epa");
                     if (p.GetComponent<Passenger>() == null)
                     {
-                        Debug.Log("vou pro tile "  + " pq ele ta vazio");
+                        Debug.Log("vou pro tile " +  + " pq ele ta vazio");
 
                     }
                     //int adj_id = p.GetComponent<Passenger>().getTileId();
                     //if (grid.tileIsEmpty(adj_id))
                     {
                     }
-                }
+
+                }*/
             }
 
             //int target_id = calculateTargetID(, id);
             //grid.movePassenger(id, target_id, swap_duration);
         }
+
+		yield break;
     }
 
     void callNextLeaver(int id, Direction dir)

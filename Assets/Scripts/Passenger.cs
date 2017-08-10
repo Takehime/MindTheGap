@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Passenger : MonoBehaviour {
+public class Passenger : IPassenger {
 
     public delegate void InteractWithPassenger(int id, PassengerData.PassengerType p_type);
     public event InteractWithPassenger swapTarget;
