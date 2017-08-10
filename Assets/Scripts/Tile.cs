@@ -11,4 +11,9 @@ public class Tile : MonoBehaviour {
         id = tile_id;
         gameObject.name = "Tile " + tile_id;
     }
+
+    public int getTileId()
+    {
+        return id;
+    }
 }

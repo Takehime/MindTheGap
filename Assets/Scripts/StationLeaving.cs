@@ -10,20 +10,20 @@ public class StationLeaving : MonoBehaviour {
 
 	public float swap_duration;
 
-	private int max_of_leavers = 9; // (1/4) dos sentados
+	private int max_of_leavers = 2; // 9 = (1/4) dos sentados
 	private Grid grid;
 	private List<Leaver> leavers;
 	private bool player_up;
 	private bool player_left;
 
-	class Leaver {
+	class Leaver : MonoBehaviour{
 		private int id;
 		private IDPosFromDoor pos;
 
 		public Leaver(int id) {
 			this.id = id;
 		}
-		public void setID(int id) {
+        public void setID(int id) {
 			this.id = id;
 		} 
 		public void setPos(IDPosFromDoor pos) {
@@ -57,15 +57,18 @@ public class StationLeaving : MonoBehaviour {
 		selectSeats();
 		yield return new WaitForSeconds (3f);
 
-		//passo 2
-		getXPosFromDoor();
-		StartCoroutine(passengersLeavingLoop());
-	}
+        //passo 2
+        printLeaversList();
+        for (int i = 0; i < leavers.Count; i++)
+            setAllLeavers(leavers[i]);
+        printLeaversList();
+        StartCoroutine(leavingLoop());
+    }
 
-	#endregion
+    #endregion
 
-	#region passo 1
-	void selectSeats() {
+    #region passo 1
+    void selectSeats() {
 		List<int> leavers = new List<int>();
 		for (int i = 0; i < max_of_leavers; i++) {
 			int selected;
@@ -148,178 +151,112 @@ public class StationLeaving : MonoBehaviour {
 
 	#region passo 2
 
-	void getXPosFromDoor() {
-		for (int i = 0; i < leavers.Count; i++) {
-			int id = leavers [i].getID();
-			IDPosFromDoor pos_from_door = grid.posFromDoor (id);
-			leavers[i].setPos(pos_from_door);
-		}
+	IDPosFromDoor getPosFromDoor(int id) {
+		return grid.posFromDoor (id);
 	}
 
-	IEnumerator passengersLeavingLoop() {
-		IDPosFromDoor pos = leavers[0].getPos();
-		int id = leavers [0].getID ();
+	void setAllLeavers(Leaver l) {
+
+		int id = l.getID ();
 		int player_id = getIDPlayer ();
+		IDPosFromDoor pos = getPosFromDoor(id);
+        l.setPos(pos);
 		Direction nextDir;
+        Debug.Log("id: " + id);
 
-		Debug.Log ("isOnHorizontalUp: " + isOnHorizontalUp (id));
-		Debug.Log ("isOnHorizontalUp (player): " + isOnHorizontalUp (player_id));
+        if (pos == IDPosFromDoor.ON_DOOR)
+        {
+            Debug.Log("na porta");
+            return;
+        }
 
-		switch (pos) {
-		case IDPosFromDoor.LEFT:
-			while (leavers [0].getPos () != IDPosFromDoor.MID) {
-				
-				id = leavers [0].getID ();
-				player_id = getIDPlayer ();
+        switch (pos)
+        {
+            case IDPosFromDoor.LEFT:
+                if (isOnHorizontalUp(id) && isOnHorizontalUp(player_id))
+                    nextDir = Direction.DOWN;
+                else if (isOnHorizontalDown(id) && isOnHorizontalDown(player_id))
+                    nextDir = Direction.UP;
+                else
+                    nextDir = Direction.RIGHT;
+                callNextLeaver(id, nextDir);
+                break;
+            case IDPosFromDoor.RIGHT:
+                if (isOnHorizontalUp(id) && isOnHorizontalUp(player_id))
+                    nextDir = Direction.DOWN;
+                else if (isOnHorizontalDown(id) && isOnHorizontalDown(player_id))
+                    nextDir = Direction.UP;
+                else
+                    nextDir = Direction.LEFT;
+                callNextLeaver(id, nextDir);
+                break;
+            case IDPosFromDoor.MID:
+                if (isOnVerticalLeft(id) && isOnVerticalLeft(player_id))
+                    nextDir = Direction.RIGHT;
+                else if (isOnVerticalRight(id) && isOnVerticalRight(player_id))
+                    nextDir = Direction.LEFT;
+                else
+                    nextDir = Direction.DOWN;
+                callNextLeaver(id, nextDir);
+                break;
+        }
+    }
 
-				if (isOnHorizontalUp (id) && isOnHorizontalUp (player_id)) {
-					
-					nextDir = Direction.DOWN;
-					moveToDirection (nextDir, /*index*/0);
-					yield return new WaitForSeconds (1.5f);
+    IEnumerator leavingLoop()
+    {
+        foreach (Leaver l in leavers)
+        {
+            if (l.getPos() == IDPosFromDoor.ON_DOOR)
+            {
+                Destroy(grid.passengers[l.getID()]);
+            }
+        }
+        yield return new WaitForSeconds(swap_duration);
 
-				} else if (isOnHorizontalDown (id) && isOnHorizontalDown (player_id)) {
-					
-					nextDir = Direction.UP;
-					moveToDirection (nextDir, /*index*/0);
-					yield return new WaitForSeconds (1.5f);
-				}
+        foreach (Leaver l in leavers)
+        {
+            int id = l.getID();
+            List<GameObject> adjs = grid.calculateAdj(id);
 
-				nextDir = Direction.RIGHT;
-				moveToDirection (nextDir, /*index*/0);
-				yield return new WaitForSeconds (1.5f);
-			}
+            Grid.printList(adjs);
 
-			while (leavers [0].getPos () != IDPosFromDoor.ON_DOOR) {
+            foreach (GameObject pass in adjs)
+            {
+                int tile_id = pass.GetComponent<Tile>().getTileId();
+                GameObject p = grid.passengers[tile_id];
 
-				id = leavers [0].getID ();
-				player_id = getIDPlayer ();
+                if (p != null)
+                {
+                    Debug.Log("epa");
+                    if (p.GetComponent<Passenger>() == null)
+                    {
+                        Debug.Log("vou pro tile "  + " pq ele ta vazio");
 
-				Debug.Log ("isOnVerticalLeft: " + isOnVerticalLeft (id) + " isOnVerticalLeft (player): " + isOnVerticalLeft (player_id));
-				Debug.Log ("isOnVerticalRight: " + isOnVerticalRight (id) + " isOnVerticalRight (player): " + isOnVerticalRight (player_id));
+                    }
+                    //int adj_id = p.GetComponent<Passenger>().getTileId();
+                    //if (grid.tileIsEmpty(adj_id))
+                    {
+                    }
+                }
+            }
 
-				if (isOnVerticalLeft (id) && isOnVerticalLeft (player_id)) {
-					
-					nextDir = Direction.DOWN;
-					moveToDirection (nextDir, /*index*/0);
-					yield return new WaitForSeconds (1.5f);
+            //int target_id = calculateTargetID(, id);
+            //grid.movePassenger(id, target_id, swap_duration);
+        }
+    }
 
-				} else if (isOnVerticalRight (id) && isOnVerticalRight (player_id)) {
-					
-					nextDir = Direction.UP;
-					moveToDirection (nextDir, /*index*/0);
-					yield return new WaitForSeconds (1.5f);
-				}
+    void callNextLeaver(int id, Direction dir)
+    {
+        int newId = calculateTargetID(dir, id);
+        Leaver l = new Leaver(newId);
+        if(!containsByID(l))
+            leavers.Add(l);
+        setAllLeavers(l);
+    }
 
-				nextDir = Direction.DOWN;
-				moveToDirection (nextDir, /*index*/0);
-				yield return new WaitForSeconds (1.5f);
-			}
-			break;
 
-		case IDPosFromDoor.RIGHT:
-			while (leavers [0].getPos () != IDPosFromDoor.MID) {
-
-				id = leavers [0].getID ();
-				player_id = getIDPlayer ();
-
-				if (isOnHorizontalUp (id) && isOnHorizontalUp (player_id)) {
-					
-					nextDir = Direction.DOWN;
-					moveToDirection (nextDir, /*index*/0);
-					yield return new WaitForSeconds (1.5f);
-
-				} else if (isOnHorizontalDown (id) && isOnHorizontalDown (player_id)) {
-					
-					nextDir = Direction.UP;
-					moveToDirection (nextDir, /*index*/0);
-					yield return new WaitForSeconds (1.5f);
-				}
-
-				nextDir = Direction.LEFT;
-				moveToDirection (nextDir, /*index*/0);
-				yield return new WaitForSeconds (1.5f);
-			}
-
-			while (leavers [0].getPos () != IDPosFromDoor.ON_DOOR) {
-
-				id = leavers [0].getID ();
-				player_id = getIDPlayer ();
-
-				Debug.Log ("isOnVerticalLeft ("+id+"): " + isOnVerticalLeft (id) + " isOnVerticalLeft ("+player_id+"): " + isOnVerticalLeft (player_id));
-				Debug.Log ("isOnVerticalRight("+id+"): " + isOnVerticalRight (id) + " isOnVerticalRight ("+player_id+"): " + isOnVerticalRight (player_id));
-
-				if (isOnVerticalLeft (id) && isOnVerticalLeft (player_id)) {
-					
-					nextDir = Direction.RIGHT;
-					moveToDirection (nextDir, /*index*/0);
-					yield return new WaitForSeconds (1.5f);
-
-				} else if (isOnVerticalRight (id) && isOnVerticalRight (player_id)) {
-					
-					nextDir = Direction.LEFT;
-					moveToDirection (nextDir, /*index*/0);
-					yield return new WaitForSeconds (1.5f);
-				}
-
-				nextDir = Direction.DOWN;
-				moveToDirection (nextDir, /*index*/0);
-				yield return new WaitForSeconds (1.5f);
-			}
-			break;
-
-		case IDPosFromDoor.MID:
-			while (leavers [0].getPos () != IDPosFromDoor.ON_DOOR) {
-
-				id = leavers [0].getID ();
-				player_id = getIDPlayer ();
-
-				if (isOnVerticalLeft (id) && isOnVerticalLeft (player_id)) {
-					
-					nextDir = Direction.RIGHT;
-					moveToDirection (nextDir, /*index*/0);
-					yield return new WaitForSeconds (1.5f);
-
-				} else if (isOnVerticalRight (id) && isOnVerticalRight (player_id)) {
-					
-					nextDir = Direction.LEFT;
-					moveToDirection (nextDir, /*index*/0);
-					yield return new WaitForSeconds (1.5f);
-				}
-
-				nextDir = Direction.DOWN;
-				moveToDirection (nextDir, /*index*/0);
-				yield return new WaitForSeconds (1.5f);
-			}
-			break;
-		}
-	}
-
-	void bypassPlayer(Direction nextDir, int index) {
-		int id = leavers [index].getID ();
-		//int targetID = calculateTargetID (nextDir, index);
-		if (nextDir == Direction.LEFT || nextDir == Direction.RIGHT) {
-			if (isOnHorizontalUp(index))
-				moveToDirection (Direction.DOWN, index);
-			else
-				moveToDirection (Direction.UP, index);
-		} else {
-			if (isOnVerticalLeft(index))
-				moveToDirection (Direction.RIGHT, index);
-			else
-				moveToDirection (Direction.LEFT, index);
-		}
-	}
-
-	bool playerIsOnTheWay(Direction dir, int index) {
-		int targetID = calculateTargetID (dir, index);
-		if (getIDPlayer () == targetID)
-			return true;
-		else
-			return false;
-	}
-
-	void moveToDirection(Direction dir, int index) {
+    /*
+    void moveToDirection(Direction dir, int index) {
 		int id = leavers [index].getID ();
 		int newID = calculateTargetID (dir, index);
 		grid.swapTwoPassengers(id, newID, 1f);
@@ -327,21 +264,22 @@ public class StationLeaving : MonoBehaviour {
 		leavers[index].setID(newID);
 		leavers[index].setPos(grid.posFromDoor(newID));
 	}
+    */
 
-	int calculateTargetID(Direction dir, int index) {
+    int calculateTargetID(Direction dir, int id) {
 		int newID = -1;
 		switch (dir) {
 			case Direction.RIGHT:
-				newID = leavers[index].getID() + 1;
+				newID = getIDPassengerRight(id);
 				break;
 			case Direction.LEFT:
-				newID = leavers[index].getID() - 1;
+				newID = getIDPassengerLeft(id);
 				break;
 			case Direction.UP:
-				newID = leavers[index].getID() - 10;
+				newID = getIDPassengerUp(id);
 				break;
 			case Direction.DOWN:
-				newID = leavers[index].getID() + 10;
+				newID = getIDPassengerBellow(id);
 				break;
 		}
 		return newID;
@@ -357,9 +295,19 @@ public class StationLeaving : MonoBehaviour {
 
 	int getIDPassengerUp(int id) {
 		return id - 10;
-	} 
+	}
 
-	bool passengerOnFirstLineOfSeats(int id) {
+    int getIDPassengerLeft(int id)
+    {
+        return id - 1;
+    }
+
+    int getIDPassengerRight(int id)
+    {
+        return id + 1;
+    }
+
+    bool passengerOnFirstLineOfSeats(int id) {
 		return id >= 0 && id < 10;
 	}
 
@@ -399,6 +347,26 @@ public class StationLeaving : MonoBehaviour {
 		return (id % 10 == 5);
 	}
 
+    void printLeaversList()
+    {
+        string temp = "{ ";
+        for (int i = 0; i < leavers.Count; i++)
+        {
+            temp += leavers[i].getID() + ", ";
+        }
+        temp += "}";
+        Debug.Log(temp);
+    }
 
-	#endregion
+    bool containsByID(Leaver l)
+    {
+        foreach (Leaver leaver in leavers)
+        {
+            if (leaver.getID() == l.getID())
+                return true;
+        }
+        return false;
+    }
+
+    #endregion
 }

@@ -30,6 +30,11 @@ public class Passenger : MonoBehaviour {
         curr_tile_id = newId;
     }
 
+    public int getTileId()
+    {
+        return curr_tile_id;
+    }
+
     public void onSwapMode()
     {
         if (swapTarget != null)

@@ -154,10 +154,13 @@ public class Grid : MonoBehaviour {
         player_adj = calculateAdj(new_tile_id);
     }
 
-    List<GameObject> calculateAdj(int id)
+    public List<GameObject> calculateAdj(int id)
     {
         List<GameObject> adj_list = new List<GameObject>();
-        adj_list.Add(tiles[id]); //player eh adj a ele mesmo
+
+        if (FindObjectOfType<Player>().getTileId() == id)
+            adj_list.Add(tiles[id]); //player eh adj a ele mesmo
+
         if (id % width == 0 || id == 44 || id == 54)
             adj_list.Add(tiles[id + 1]);
         else if (id % width == width - 1 || id == 45 || id == 55)
@@ -175,6 +178,21 @@ public class Grid : MonoBehaviour {
             adj_list.Add(tiles[id + width]);
         }
         return adj_list;
+    }
+
+    public bool tileIsEmpty(int tile_id)
+    {
+        for (int i = 0; i < passengers.Count; i++)
+        {
+            Passenger p = passengers[i].GetComponent<Passenger>();
+            if (p != null)
+            {
+                int p_id = p.getTileId();
+                if (p_id == tile_id)
+                    return false;
+            }
+        }
+        return true;
     }
 
     void changePassengersAlpha(List<GameObject> adj_list, bool reduce_alpha)
@@ -214,6 +232,15 @@ public class Grid : MonoBehaviour {
     {
         yield return new WaitUntil(() => pachinko_mode_active);
         yield return new WaitWhile(() => pachinko.pachinko_go.activeSelf);
+    }
+
+    public void movePassenger(int id, int target_id, float duration)
+    {
+        GameObject pass = passengers[id];
+        GameObject target = tiles[target_id];
+        pass.transform.DOMove(target.transform.position, duration);
+        pass.GetComponent<Passenger>().setTileId(target_id);
+        passengers[target_id] = pass;
     }
 
     public void swapTwoPassengers(int origin_id, int target_id, float duration)
