@@ -23,7 +23,7 @@ public class Grid : MonoBehaviour {
 
     [HideInInspector]
     public List<GameObject> tiles = new List<GameObject>();
-    [HideInInspector]
+    //[HideInInspector]
     public List<GameObject> passengers = new List<GameObject>();
     [HideInInspector]
     public bool scan_mode_active = false;
@@ -182,16 +182,30 @@ public class Grid : MonoBehaviour {
 
     public bool tileIsEmpty(int tile_id)
     {
-        for (int i = 0; i < passengers.Count; i++)
+		for (int i = 0; i < passengers.Count; i++)
         {
+			if (passengers [i] == null) {
+				//print ("There is no Passenger with ID #" + i + ".");
+				return true;
+			}
+
             Passenger p = passengers[i].GetComponent<Passenger>();
-            if (p != null)
-            {
-                int p_id = p.getTileId();
-                if (p_id == tile_id)
-                    return false;
-            }
+
+			if (p != null) {
+				int p_id = p.getTileId ();
+				if (p_id == tile_id) {
+					return false;
+				}
+			} else if (passengers [i].GetComponentInChildren<Player> () != null) {
+				//print ("Tile #" + i + " is player.");
+				return false;
+			} else {
+				//print ("This should not be happening.");
+				return false;
+			}
         }
+
+		//print ("Tile #" + tile_id + " vazio.");
         return true;
     }
 
@@ -236,6 +250,7 @@ public class Grid : MonoBehaviour {
 
     public void movePassenger(int id, int target_id, float duration)
     {
+		Debug.Log ("movi o passageiro de id = " + id);
         GameObject pass = passengers[id];
         GameObject target = tiles[target_id];
         pass.transform.DOMove(target.transform.position, duration);
@@ -345,4 +360,9 @@ public class Grid : MonoBehaviour {
 
 	#endregion
 
+	/*public Passenger Get_Passenger_By_TileID(int tile_id) {
+		for (int i = 0; i < passengers.Count; i++) {
+			if (passengers[i].tile_id)
+		}
+	}*/
 }
