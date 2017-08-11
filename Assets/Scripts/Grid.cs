@@ -182,31 +182,37 @@ public class Grid : MonoBehaviour {
 
     public bool tileIsEmpty(int tile_id)
     {
-		for (int i = 0; i < passengers.Count; i++)
-        {
-			if (passengers [i] == null) {
-				//print ("There is no Passenger with ID #" + i + ".");
-				return true;
-			}
+        return passengers[tile_id] == null;
 
-            Passenger p = passengers[i].GetComponent<Passenger>();
+		// for (int i = 0; i < passengers.Count; i++)
+        // {
+		// 	if (passengers [i] == null) {
+		// 		print ("There is no Passenger with ID #" + i + ".");
+        //         if (i == tile_id) {
+        //             return true;
+        //         }
 
-			if (p != null) {
-				int p_id = p.getTileId ();
-				if (p_id == tile_id) {
-					return false;
-				}
-			} else if (passengers [i].GetComponentInChildren<Player> () != null) {
-				//print ("Tile #" + i + " is player.");
-				return false;
-			} else {
-				//print ("This should not be happening.");
-				return false;
-			}
-        }
+		// 		continue;
+		// 	}
 
-		//print ("Tile #" + tile_id + " vazio.");
-        return true;
+        //     Passenger p = passengers[i].GetComponent<Passenger>();
+
+		// 	if (p != null) {
+		// 		int p_id = p.getTileId ();
+		// 		if (p_id == tile_id) {
+		// 			return false;
+		// 		}
+		// 	} else if (passengers [i].GetComponentInChildren<Player> () != null) {
+		// 		//print ("Tile #" + i + " is player.");
+		// 		return false;
+		// 	} else {
+		// 		//print ("This should not be happening.");
+		// 		return false;
+		// 	}
+        // }
+
+		// print ("Tile #" + tile_id + " vazio.");
+        // return true;
     }
 
     void changePassengersAlpha(List<GameObject> adj_list, bool reduce_alpha)
@@ -256,6 +262,7 @@ public class Grid : MonoBehaviour {
         pass.transform.DOMove(target.transform.position, duration);
         pass.GetComponent<Passenger>().setTileId(target_id);
         passengers[target_id] = pass;
+        passengers[id] = null;
     }
 
     public void swapTwoPassengers(int origin_id, int target_id, float duration)

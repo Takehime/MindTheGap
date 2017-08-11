@@ -170,37 +170,40 @@ public class StationLeaving : MonoBehaviour {
             return;
         }
 
-        switch (pos)
+		nextDir = calculateNextDir(pos, id, player_id);
+		callNextLeaver(id, nextDir);
+
+    }
+
+	Direction calculateNextDir(IDPosFromDoor pos, int id, int player_id) {
+		switch (pos)
         {
             case IDPosFromDoor.LEFT:
                 if (isOnHorizontalUp(id) && isOnHorizontalUp(player_id))
-                    nextDir = Direction.DOWN;
+                    return Direction.DOWN;
                 else if (isOnHorizontalDown(id) && isOnHorizontalDown(player_id))
-                    nextDir = Direction.UP;
+                    return Direction.UP;
                 else
-                    nextDir = Direction.RIGHT;
-                callNextLeaver(id, nextDir);
-                break;
+                    return Direction.RIGHT;
             case IDPosFromDoor.RIGHT:
                 if (isOnHorizontalUp(id) && isOnHorizontalUp(player_id))
-                    nextDir = Direction.DOWN;
+                    return Direction.DOWN;
                 else if (isOnHorizontalDown(id) && isOnHorizontalDown(player_id))
-                    nextDir = Direction.UP;
+                    return Direction.UP;
                 else
-                    nextDir = Direction.LEFT;
-                callNextLeaver(id, nextDir);
-                break;
+                    return Direction.LEFT;
             case IDPosFromDoor.MID:
                 if (isOnVerticalLeft(id) && isOnVerticalLeft(player_id))
-                    nextDir = Direction.RIGHT;
+                    return Direction.RIGHT;
                 else if (isOnVerticalRight(id) && isOnVerticalRight(player_id))
-                    nextDir = Direction.LEFT;
+                    return Direction.LEFT;
                 else
-                    nextDir = Direction.DOWN;
-                callNextLeaver(id, nextDir);
-                break;
+                    return Direction.DOWN;
+			default:
+				print("nextDir = sair");
+				return Direction.DOWN;				
         }
-    }
+	}
 
     IEnumerator leavingLoop()
     {
@@ -209,54 +212,69 @@ public class StationLeaving : MonoBehaviour {
         {
             if (l.getPos() == IDPosFromDoor.ON_DOOR)
             {
-				//sai
                 Destroy(grid.passengers[l.getID()]);
 				grid.passengers[l.getID()] = null;
 				who_left = l;
-				//passengers[l.getID()] vai ficar null
             }
         }
 
 		leavers.Remove (who_left);
         //yield return new WaitForSeconds(swap_duration);
 
-        foreach (Leaver l in leavers)
-        {
-            int id = l.getID();
-            List<GameObject> adjs = grid.calculateAdj(id);
+		int lastMoved = -1;
+		int lastLeft = -1;
+		while(leavers.Count > 0) {
 
-            //Grid.printList(adjs);
+			for (int i = 0; i < leavers.Count; i++)
+			{
+				Leaver l = leavers[i];
+				int id = l.getID();
 
-            foreach (GameObject tile in adjs)
-            {
-                int tile_id = tile.GetComponent<Tile>().getTileId();
-				bool empty = grid.tileIsEmpty(tile_id);
-				if (empty) {
-					print ("Tile #" + tile_id + " is empty (detected by passenger #" + id + ").");				
-				} else {
-					//print ("Tile #" + tile_id + " is NOT empty (detected by passenger #" + id + ").");				
+				List<GameObject> adjs = grid.calculateAdj(id);
+				// print("adjs do tile #" + id + ": ");
+				// Grid.printList(adjs);
+				foreach (GameObject tile in adjs)
+				{
+					int player_id = getIDPlayer ();
+					int tile_id = tile.GetComponent<Tile>().getTileId();
+					IDPosFromDoor tile_pos = grid.posFromDoor(tile_id);
+					
+					Direction doorDir = calculateNextDir(tile_pos, tile_id, player_id);
+					Direction tileDir = calculateDirByID(id, tile_id);
+					//print("direction for tile #" + tile_id + " : " + nextDir);
+
+					bool empty = grid.tileIsEmpty(tile_id);
+
+					//if(doorDir == tileDir) {
+					//	print("origin tile #" + id + ", destiny tile #" + tile_id);
+					//	print("doorDir (" + doorDir + ") == tileDir ("  + tileDir + ")");
+					//}
+
+					if (empty) {
+						if (lastMoved == tile_id && lastLeft == l.getID()) {
+							continue;
+						}
+					
+						print ("Tile #" + tile_id + " is empty (detected by passenger #" + id + ").");
+						// print("Last Moved: " + lastMoved.getID() + ", moving " + l.getID());
+						
+						//Debug.Break();	
+						grid.movePassenger(id, tile_id, swap_duration);
+						lastLeft = tile_id;
+						lastMoved = l.getID();
+						
+						yield return new WaitForSeconds(swap_duration);
+						break;
+					} else {
+						//print ("Tile #" + tile_id + " is NOT empty (detected by passenger #" + id + ").");				
+					}
 				}
+			}
 
-                /*GameObject p = grid.passengers[tile_id];
+			yield return new WaitForSeconds(swap_duration);
 
-                if (p != null)
-                {
-                    if (p.GetComponent<Passenger>() == null)
-                    {
-                        Debug.Log("vou pro tile " +  + " pq ele ta vazio");
-
-                    }
-                    //int adj_id = p.GetComponent<Passenger>().getTileId();
-                    //if (grid.tileIsEmpty(adj_id))
-                    {
-                    }
-
-                }*/
-            }
-
-            //int target_id = calculateTargetID(, id);
-            //grid.movePassenger(id, target_id, swap_duration);
-        }
+			// print("Leavers.count: " + leavers.Count);
+		}
 
 		yield break;
     }
@@ -281,6 +299,20 @@ public class StationLeaving : MonoBehaviour {
 		leavers[index].setPos(grid.posFromDoor(newID));
 	}
     */
+
+	Direction calculateDirByID (int origin, int destiny) {
+		if (getIDPassengerRight(origin) == destiny) {
+			return Direction.RIGHT;
+		} else if (getIDPassengerLeft(origin) == destiny) {
+			return Direction.LEFT;
+		} else if (getIDPassengerUp(origin) == destiny) {
+			return Direction.UP;
+		} else if (getIDPassengerBellow(origin) == destiny) {
+			return Direction.DOWN;
+		} 
+		print("opa, isso nao deveria estar acontecendo");
+		return Direction.UP;
+	}
 
     int calculateTargetID(Direction dir, int id) {
 		int newID = -1;
