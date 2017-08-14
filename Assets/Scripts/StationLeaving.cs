@@ -13,8 +13,11 @@ public class StationLeaving : MonoBehaviour {
 	private int max_of_leavers = 2; // 9 = (1/4) dos sentados
 	private Grid grid;
 	private List<Leaver> leavers;
-	private bool player_up;
+	private List<Leaver> enterers;
+    private bool player_up;
 	private bool player_left;
+    private int n_leavers;
+    private int added;
 
 	class Leaver {
 		private int id;
@@ -35,8 +38,6 @@ public class StationLeaving : MonoBehaviour {
 		public IDPosFromDoor getPos() {
 			return this.pos;
 		}
-
-
 	}
 
 	void Start () {
@@ -53,16 +54,25 @@ public class StationLeaving : MonoBehaviour {
 
 	IEnumerator stationLeavingCoroutine() {
 
-		//passo 1
+		//passo 1 : sentados vao pro corredor
 		selectSeats();
 		yield return new WaitForSeconds (3f);
 
-        //passo 2
+        //passo 2 : leavers saem do onibus
         printLeaversList();
         for (int i = 0; i < leavers.Count; i++)
             setAllLeavers(leavers[i]);
         printLeaversList();
         StartCoroutine(leavingLoop());
+
+        //passo 3 : novos passageiros entram no onibus
+        yield return new WaitForSeconds(20f);
+        resetLeaversList();
+        foreach (KeyValuePair<PassengerType, int> d in grid.types_counter)
+        {
+            print("Type = {" + d.Key + "}, Count = {" + d.Value + "}");
+        }
+        StartCoroutine(enteringLoop());
     }
 
     #endregion
@@ -150,7 +160,7 @@ public class StationLeaving : MonoBehaviour {
 	#endregion
 
 	#region passo 2
-
+    
 	IDPosFromDoor getPosFromDoor(int id) {
 		return grid.posFromDoor (id);
 	}
@@ -200,82 +210,124 @@ public class StationLeaving : MonoBehaviour {
                 else
                     return Direction.DOWN;
 			default:
-				print("nextDir = sair");
+				//print("nextDir = sair");
 				return Direction.DOWN;				
         }
 	}
 
+    Direction getOppositeDirection(Direction dir)
+    {
+        switch (dir)
+        {
+            case Direction.UP:
+                return Direction.DOWN;
+            case Direction.DOWN:
+                return Direction.UP;
+            case Direction.LEFT:
+                return Direction.RIGHT;
+            case Direction.RIGHT:
+                return Direction.LEFT;
+        }
+        print("entao... isso nao deveria acontecer");
+        return Direction.DOWN;
+    }
+
+    List<Direction> forbiddenDirections(IDPosFromDoor pos, int id) {
+        List<Direction> forbiddenDirs = new List<Direction>();
+        switch (pos)
+        {
+            case IDPosFromDoor.LEFT:
+                forbiddenDirs.Add(Direction.LEFT);
+                break;
+            case IDPosFromDoor.MID:
+                forbiddenDirs.Add(Direction.UP);
+                if (id % 10 == 4) {
+                    forbiddenDirs.Add(Direction.LEFT);
+                } else if (id % 10 == 5) {
+                    forbiddenDirs.Add(Direction.RIGHT);
+                }
+                break;
+            case IDPosFromDoor.RIGHT:
+                forbiddenDirs.Add(Direction.RIGHT);
+                break;
+            case IDPosFromDoor.ON_DOOR:
+                forbiddenDirs.Add(Direction.UP);
+                break;
+        }
+        return forbiddenDirs;
+    }
+
     IEnumerator leavingLoop()
     {
-		Leaver who_left = null;
+        int leavers_count = leavers.Count;
         foreach (Leaver l in leavers)
         {
             if (l.getPos() == IDPosFromDoor.ON_DOOR)
             {
                 Destroy(grid.passengers[l.getID()]);
 				grid.passengers[l.getID()] = null;
-				who_left = l;
+                leavers_count--;
+                break;
             }
         }
-
-		leavers.Remove (who_left);
-        //yield return new WaitForSeconds(swap_duration);
-
-		int lastMoved = -1;
-		int lastLeft = -1;
-		while(leavers.Count > 0) {
-
-			for (int i = 0; i < leavers.Count; i++)
+		while (leavers_count > 0) {
+            bool moved = false;
+            for (int i = 0; i < leavers.Count; i++)
 			{
 				Leaver l = leavers[i];
 				int id = l.getID();
-
+                IDPosFromDoor pos = l.getPos();
+                if (grid.passengers[id] == null) {
+                    continue;
+                }
 				List<GameObject> adjs = grid.calculateAdj(id);
-				// print("adjs do tile #" + id + ": ");
-				// Grid.printList(adjs);
-				foreach (GameObject tile in adjs)
-				{
+				foreach (GameObject tile in adjs) {
 					int player_id = getIDPlayer ();
 					int tile_id = tile.GetComponent<Tile>().getTileId();
-					IDPosFromDoor tile_pos = grid.posFromDoor(tile_id);
-					
-					Direction doorDir = calculateNextDir(tile_pos, tile_id, player_id);
-					Direction tileDir = calculateDirByID(id, tile_id);
-					//print("direction for tile #" + tile_id + " : " + nextDir);
+                    IDPosFromDoor tile_pos = grid.posFromDoor(tile_id);
+                    bool empty = grid.tileIsEmpty(tile_id);
 
-					bool empty = grid.tileIsEmpty(tile_id);
+                    Direction tileDir = calculateDirByID(id, tile_id);
+                    Direction doorDir = calculateNextDir(pos, id, player_id);
+                    //List<Direction> forbidden = forbiddenDirections(pos, id);
 
-					//if(doorDir == tileDir) {
-					//	print("origin tile #" + id + ", destiny tile #" + tile_id);
-					//	print("doorDir (" + doorDir + ") == tileDir ("  + tileDir + ")");
-					//}
-
-					if (empty) {
-						if (lastMoved == tile_id && lastLeft == l.getID()) {
-							continue;
-						}
-					
-						print ("Tile #" + tile_id + " is empty (detected by passenger #" + id + ").");
-						// print("Last Moved: " + lastMoved.getID() + ", moving " + l.getID());
-						
-						//Debug.Break();	
-						grid.movePassenger(id, tile_id, swap_duration);
-						lastLeft = tile_id;
-						lastMoved = l.getID();
-						
-						yield return new WaitForSeconds(swap_duration);
+                    if (empty) {
+                        if (/*forbidden.Contains(tileDir) || */tileDir != doorDir) {
+                            continue;
+                        }
+                        //print ("Tile #" + tile_id + " is empty (detected by passenger #" + id + ").");
+                        float mov_threshold = 0.3f;
+                        float mov_time = Random.Range(swap_duration - mov_threshold, swap_duration + mov_threshold);
+                        grid.movePassenger(id, tile_id, mov_time);
+                        moved = true;
+						//yield return new WaitForSeconds(0.5f);
 						break;
 					} else {
 						//print ("Tile #" + tile_id + " is NOT empty (detected by passenger #" + id + ").");				
 					}
 				}
 			}
+            if (!moved) {
+                for (int i = 0; i < leavers.Count; i++) {
+                    Leaver l = leavers[i];
+                    int id = l.getID();
+                    if (l.getPos() == IDPosFromDoor.ON_DOOR) {
+                        GameObject go = grid.passengers[l.getID()];
+                        PassengerType p_type = go.GetComponent<Passenger>().getPassengerType();
+                        grid.types_counter[p_type]--;
+                        Destroy(go);
+                        grid.passengers[l.getID()] = null;
+                        leavers_count--;
+                        break;
+                    }
+                }
+            }
+            float cycle_threshold = 0.4f;
+            float cycle_time = Random.Range(swap_duration - cycle_threshold, swap_duration);
+            yield return new WaitForSeconds(cycle_time);
+        }
 
-			yield return new WaitForSeconds(swap_duration);
-
-			// print("Leavers.count: " + leavers.Count);
-		}
-
+        print("Leavers.count: " + leavers.Count);
 		yield break;
     }
 
@@ -333,11 +385,161 @@ public class StationLeaving : MonoBehaviour {
 		return newID;
 	}
 
-	#endregion
+    #endregion
 
-	#region utility
+    #region passo 3
 
-	int getIDPassengerBellow(int id) {
+    void resetLeaversList()
+    {
+        n_leavers = leavers.Count;
+        leavers.Clear();
+        print("leavers.count depois do reset: " + leavers.Count);
+    }
+
+    IEnumerator enteringLoop()
+    {
+        enterers = new List<Leaver>();
+        added = 0;
+        createNewPassenger();
+
+        while (added < n_leavers)
+        {
+
+            for (int i = 0; i < added; i++)
+            {
+                Leaver p = enterers[i];
+                int p_id = p.getID();
+
+                List<GameObject> adjs = grid.calculateAdj(p_id);
+                foreach (GameObject tile in adjs)
+                {
+                    int player_id = getIDPlayer();
+                    int tile_id = tile.GetComponent<Tile>().getTileId();
+                    bool empty = grid.tileIsEmpty(tile_id);
+
+                    if (empty)
+                    {
+                        print ("Tile #" + tile_id + " is empty (detected by passenger #" + p_id + ").");
+                        float mov_threshold = 0.3f;
+                        float mov_time = Random.Range(swap_duration - mov_threshold, swap_duration + mov_threshold);
+                        grid.movePassenger(p_id, tile_id, mov_time);
+                        p.setID(tile_id);
+                        break;
+                    }
+                }
+                yield return new WaitForSeconds(0.5f);
+            }
+            createNewPassenger();
+            yield return new WaitForSeconds(0.3f);
+        }
+    }
+
+    void createNewPassenger ()
+    {
+        int door_id = getDoorID();
+        grid.spawnPassenger(door_id);
+        Leaver l = new Leaver(door_id);
+        added++;
+        enterers.Add(l);
+    }
+
+    int getDoorID()
+    {
+        int door_id = grid.door_id1;
+        if (grid.passengers[door_id] == null) {
+            return door_id;
+        }
+        else {
+            door_id = grid.door_id2;
+            return door_id;
+        }
+    }
+
+    //IEnumerator enteringLoop()
+    //{
+    //    foreach (Leaver l in leavers)
+    //    {
+    //        if (l.getPos() == IDPosFromDoor.ON_DOOR)
+    //        {
+    //            Destroy(grid.passengers[l.getID()]);
+    //            grid.passengers[l.getID()] = null;
+    //            leavers_count--;
+    //            break;
+    //        }
+    //    }
+    //    while (leavers_count > 0)
+    //    {
+    //        bool moved = false;
+    //        for (int i = 0; i < leavers.Count; i++)
+    //        {
+    //            Leaver l = leavers[i];
+    //            int id = l.getID();
+    //            IDPosFromDoor pos = l.getPos();
+    //            if (grid.passengers[id] == null)
+    //            {
+    //                continue;
+    //            }
+    //            List<GameObject> adjs = grid.calculateAdj(id);
+    //            foreach (GameObject tile in adjs)
+    //            {
+    //                int player_id = getIDPlayer();
+    //                int tile_id = tile.GetComponent<Tile>().getTileId();
+    //                IDPosFromDoor tile_pos = grid.posFromDoor(tile_id);
+    //                bool empty = grid.tileIsEmpty(tile_id);
+
+    //                Direction tileDir = calculateDirByID(id, tile_id);
+    //                Direction doorDir = calculateNextDir(pos, id, player_id);
+    //                //List<Direction> forbidden = forbiddenDirections(pos, id);
+
+    //                if (empty)
+    //                {
+    //                    if (/*forbidden.Contains(tileDir) || */tileDir != doorDir)
+    //                    {
+    //                        continue;
+    //                    }
+    //                    //print ("Tile #" + tile_id + " is empty (detected by passenger #" + id + ").");
+    //                    float mov_threshold = 0.3f;
+    //                    float mov_time = Random.Range(swap_duration - mov_threshold, swap_duration + mov_threshold);
+    //                    grid.movePassenger(id, tile_id, mov_time);
+    //                    moved = true;
+    //                    //yield return new WaitForSeconds(0.5f);
+    //                    break;
+    //                }
+    //                else
+    //                {
+    //                    //print ("Tile #" + tile_id + " is NOT empty (detected by passenger #" + id + ").");				
+    //                }
+    //            }
+    //        }
+    //        if (!moved)
+    //        {
+    //            for (int i = 0; i < leavers.Count; i++)
+    //            {
+    //                Leaver l = leavers[i];
+    //                int id = l.getID();
+    //                if (l.getPos() == IDPosFromDoor.ON_DOOR)
+    //                {
+    //                    Destroy(grid.passengers[l.getID()]);
+    //                    grid.passengers[l.getID()] = null;
+    //                    leavers_count--;
+    //                    break;
+    //                }
+    //            }
+    //        }
+    //        float cycle_threshold = 0.4f;
+    //        float cycle_time = Random.Range(swap_duration - cycle_threshold, swap_duration);
+    //        yield return new WaitForSeconds(cycle_time);
+    //    }
+
+    //    print("Leavers.count: " + leavers.Count);
+    //    yield break;
+    //}
+
+    #endregion
+
+    #region utility
+
+    int getIDPassengerBellow(int id) {
 		return id + 10;
 	}
 

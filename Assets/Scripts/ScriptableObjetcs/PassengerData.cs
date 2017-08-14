@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum PassengerType {
+    IDOSO, ESTUDANTE, TURISTA, VAREJISTA
+};
+
 [CreateAssetMenu(menuName = "Custom/Passenger")]
 public class PassengerData : ScriptableObject {
 
-    public enum PassengerType {
-        IDOSO, ESTUDANTE, TURISTA, VAREJISTA
-    };
     
     public Color color;
     public PassengerType type;

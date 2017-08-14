@@ -5,16 +5,16 @@ using UnityEngine.UI;
 
 public class Passenger : IPassenger {
 
-    public delegate void InteractWithPassenger(int id, PassengerData.PassengerType p_type);
+    public delegate void InteractWithPassenger(int id, PassengerType p_type);
     public event InteractWithPassenger swapTarget;
     public event InteractWithPassenger scanTarget;
 
-    private PassengerData.PassengerType p_type;
+    private PassengerType p_type;
     private Color color;
 
     private int curr_tile_id;
 
-    public int generatePassenger(List<PassengerData> passenger_types, int tile_id)
+    public PassengerType generatePassenger(List<PassengerData> passenger_types, int tile_id)
     {
         gameObject.name = "Passenger " + tile_id;
         curr_tile_id = tile_id;
@@ -22,7 +22,7 @@ public class Passenger : IPassenger {
         p_type = passenger_types[chosen].type;
         color = passenger_types[chosen].color;
         GetComponent<Image>().color = color;
-        return chosen;
+        return p_type;
     }
 
     public void setTileId(int newId)
@@ -33,6 +33,11 @@ public class Passenger : IPassenger {
     public int getTileId()
     {
         return curr_tile_id;
+    }
+
+    public PassengerType getPassengerType()
+    {
+        return p_type;
     }
 
     public void onSwapMode()
