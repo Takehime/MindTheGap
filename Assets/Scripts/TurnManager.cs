@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class TurnManager : MonoBehaviour
 {
@@ -16,59 +17,83 @@ public class TurnManager : MonoBehaviour
     public delegate void StartStationLeaving();
     public event StartStationLeaving startStationLeaving;
 
-    public float secs_between_turns;
+    public GameObject map;
+    public float space_between_stations_on_map;
+    public float time_between_turns;
 
     private Turn curr_turn;
+    private MapManager mp;
+    private static int routeMapIndex = 0;
 
     void Start()
     {
-        curr_turn = Turn.BetweenStations ;
-        //StartCoroutine(turnLoop());
+        mp = FindObjectOfType<MapManager>();
+        setTurnToBetweenStations();
     }
 
     void Update()
     {
-        changeTurnByInput();
+        //changeTurnByInput();
     }
 
-    public void setTurn(Turn turn)
-    {
-        curr_turn = turn;
-        Debug.Log(curr_turn);
-        if (changeTurn != null)
-        {
+    void changeTurnByInput() {
+        if (Input.GetKeyDown(KeyCode.T)) {
+            if (curr_turn == Turn.BetweenStations)
+                setTurnToAtStation();
+            else
+                setTurnToBetweenStations();
+        }
+    }
+
+    #region turn main loop
+
+    void setTurnToAtStation() {
+        curr_turn = Turn.AtStation;
+        Debug.Log("turn: " + curr_turn);
+        if (changeTurn != null) {
             changeTurn(curr_turn);
         }
-        if (turn == Turn.AtStation)
-        {
-            if (startStationLeaving != null)
-            {
-                startStationLeaving();
-            }
+        if (startStationLeaving != null) {
+            startStationLeaving();
         }
+
+        advanceOnMapRoute();
+
     }
 
-    void changeTurnByInput()
-    {
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            if (curr_turn == Turn.BetweenStations)
-                setTurn(Turn.AtStation);
-            else
-                setTurn(Turn.BetweenStations);
+    public void setTurnToBetweenStations() {
+        curr_turn = Turn.BetweenStations;
+        Debug.Log("turn: " + curr_turn);
+        if (changeTurn != null) {
+            changeTurn(curr_turn);
         }
+        //moveMap();
+        //print("movi o mapa");
+
+        advanceOnMapRoute();
+        StartCoroutine(BetweenStationTurnLoop());
+
     }
 
-    IEnumerator turnLoop()
+    IEnumerator BetweenStationTurnLoop()
     {
-        while(true)
-        {
-            yield return new WaitForSeconds(secs_between_turns);
-            
-            if (curr_turn == Turn.BetweenStations)
-                setTurn(Turn.AtStation);
-            else
-                setTurn(Turn.BetweenStations);
-        }
+        yield return new WaitForSeconds(time_between_turns);
+        setTurnToAtStation();
     }
+    #endregion
+
+    #region map handling
+
+    void moveMap() {
+        Vector3 target = map.transform.position - new Vector3(space_between_stations_on_map, 0, 0);
+        map.transform.DOMove(target, time_between_turns);
+    }
+
+    void advanceOnMapRoute() {
+        routeMapIndex++;
+        mp.attMap(routeMapIndex);
+    }
+
+    #endregion
+
 }

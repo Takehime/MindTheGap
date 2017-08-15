@@ -52,3 +52,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   swap_duration: 0.5
+  adtional_time_between_phases: 0.5

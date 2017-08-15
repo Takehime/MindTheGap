@@ -51,4 +51,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b75275e5e65bf0e48b040ab60ce51b3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  secs_between_turns: 7
+  map: {fileID: 0}
+  space_between_stations_on_map: 1.6
+  time_between_turns: 20
