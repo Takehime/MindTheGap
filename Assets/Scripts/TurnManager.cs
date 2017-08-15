@@ -22,11 +22,13 @@ public class TurnManager : MonoBehaviour
     public float time_between_turns;
 
     private Turn curr_turn;
+    private MapManager mp;
+    private static int routeMapIndex = 0;
 
     void Start()
     {
+        mp = FindObjectOfType<MapManager>();
         setTurnToBetweenStations();
-        StartCoroutine(turnLoop());
     }
 
     void Update()
@@ -46,35 +48,37 @@ public class TurnManager : MonoBehaviour
     #region turn main loop
 
     void setTurnToAtStation() {
-        Debug.Log("turn: " + curr_turn);
         curr_turn = Turn.AtStation;
+        Debug.Log("turn: " + curr_turn);
         if (changeTurn != null) {
             changeTurn(curr_turn);
         }
         if (startStationLeaving != null) {
             startStationLeaving();
         }
+
+        advanceOnMapRoute();
+
     }
 
     public void setTurnToBetweenStations() {
-        Debug.Log("turn: " + curr_turn);
         curr_turn = Turn.BetweenStations;
+        Debug.Log("turn: " + curr_turn);
         if (changeTurn != null) {
             changeTurn(curr_turn);
         }
-        moveMap();
-        print("movi o mapa");
+        //moveMap();
+        //print("movi o mapa");
+
+        advanceOnMapRoute();
+        StartCoroutine(BetweenStationTurnLoop());
+
     }
 
-    IEnumerator turnLoop()
+    IEnumerator BetweenStationTurnLoop()
     {
-        while(true)
-        {
-            yield return new WaitForSeconds(time_between_turns);
-            
-            if (curr_turn == Turn.BetweenStations)
-                setTurnToAtStation();
-        }
+        yield return new WaitForSeconds(time_between_turns);
+        setTurnToAtStation();
     }
     #endregion
 
@@ -83,6 +87,11 @@ public class TurnManager : MonoBehaviour
     void moveMap() {
         Vector3 target = map.transform.position - new Vector3(space_between_stations_on_map, 0, 0);
         map.transform.DOMove(target, time_between_turns);
+    }
+
+    void advanceOnMapRoute() {
+        routeMapIndex++;
+        mp.attMap(routeMapIndex);
     }
 
     #endregion
