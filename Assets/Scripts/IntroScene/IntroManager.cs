@@ -18,7 +18,13 @@ public class IntroManager : MonoBehaviour {
     [SerializeField]
     GameObject indicator;
     [SerializeField]
+    GameObject passengers_inside_bus_container;
+    [SerializeField]
     Intro_BusCountdown bus_countdown;
+    [SerializeField]
+    List<Intro_PassengerStation> passengers_queue = new List<Intro_PassengerStation>();
+    [SerializeField]
+    List<Intro_PassengerStation> passengers_inside_bus = new List<Intro_PassengerStation>();
 
     void Start () {
         coroutine_shake_player = StartCoroutine(Shake_Player());
@@ -26,7 +32,7 @@ public class IntroManager : MonoBehaviour {
         //StartCoroutine(QTE_Timer());
         //StartCoroutine(Player_Enter_Bus());
 
-        bus.gameObject.SetActive(false);
+        // bus.gameObject.SetActive(false);
         bus_countdown.gameObject.SetActive(false);
     }
 
@@ -37,11 +43,10 @@ public class IntroManager : MonoBehaviour {
 	}
 
     IEnumerator Handle_Bus_Behaviour() {
-        yield return new WaitUntil(() => vtvom.times_checked == 10);
-
-        bus.gameObject.SetActive(true);
+        yield return new WaitUntil(() => vtvom.times_checked == 2);
 
         yield return bus.Enter_Scene();
+        yield return Passengers_To_Bus();
 
         indicator.SetActive(true);
         bus_countdown.gameObject.SetActive(true);
@@ -101,5 +106,28 @@ public class IntroManager : MonoBehaviour {
         player.transform.SetParent(bus.transform);
         player.transform.SetSiblingIndex(0);
         yield return new WaitForSeconds(time / 2);
+    }
+
+    IEnumerator Passengers_To_Bus() {
+        passengers_inside_bus_container.SetActive(true);
+        float time = 0.2f;
+        
+        for (int i = 0; i < passengers_queue.Count; i++) {
+            var tween = passengers_queue[i].rect.DOMove(
+                passengers_inside_bus[i].rect.position,
+                time
+            );
+            tween.SetEase(Ease.InQuint);
+            tween = passengers_queue[i].rect.DORotateQuaternion(
+                passengers_inside_bus[i].rect.rotation,
+                time
+            );
+            tween.SetEase(Ease.InQuint);
+        }
+        yield return new WaitForSeconds(time);
+
+        for (int i = 0; i < passengers_queue.Count; i++) {
+            passengers_queue[i].transform.SetParent(passengers_inside_bus[i].transform.parent);
+        }
     }
 }
