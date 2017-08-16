@@ -26,8 +26,14 @@ public class IntroManager : MonoBehaviour {
     [SerializeField]
     List<Intro_PassengerStation> passengers_inside_bus = new List<Intro_PassengerStation>();
 
+    [Header("Logo Fade")]
+    [SerializeField]
+    Image blackGround;
+    [SerializeField]
+    Image logo;
+
     void Start () {
-        coroutine_shake_player = StartCoroutine(Shake_Player());
+        coroutine_shake_player = StartCoroutine(Shake_Target(player.transform));
         StartCoroutine(Handle_Bus_Behaviour());
         //StartCoroutine(QTE_Timer());
         //StartCoroutine(Player_Enter_Bus());
@@ -42,9 +48,15 @@ public class IntroManager : MonoBehaviour {
         }
 	}
 
-    IEnumerator Handle_Bus_Behaviour() {
-        yield return new WaitUntil(() => vtvom.times_checked == 2);
+    IEnumerator Put_Background_Door() {
+        yield return new WaitForSeconds(0.8f);
+        passengers_inside_bus_container.SetActive(true);
+    }
 
+    IEnumerator Handle_Bus_Behaviour() {
+        yield return new WaitUntil(() => vtvom.times_checked == 10);
+
+        StartCoroutine(Put_Background_Door());
         yield return bus.Enter_Scene();
         yield return Passengers_To_Bus();
 
@@ -60,10 +72,10 @@ public class IntroManager : MonoBehaviour {
         }
 
         yield return Player_Enter_Bus();
-
-        yield return bus.Exit_Scene();
-
+        StartCoroutine(bus.Exit_Scene());
         yield return new WaitForSeconds(2.0f);
+
+        yield return Fade_Title();
 
         SceneLoader.Load_Bus_Scene();
     }
@@ -81,15 +93,15 @@ public class IntroManager : MonoBehaviour {
         }
     }
 
-    IEnumerator Shake_Player() {
-        Vector3 original_player_position = player.transform.position;
+    IEnumerator Shake_Target(Transform target) {
+        Vector3 original_player_position = target.transform.position;
 
         while (true) {
             yield return new WaitUntil(() => last_apm != 0);
 
             float threshold = last_apm * 0.3f;
 
-            player.transform.position = new Vector2(
+            target.transform.position = new Vector2(
                 original_player_position.x + Random.Range(-threshold, threshold),
                 original_player_position.y + Random.Range(-threshold, threshold)
             );
@@ -109,7 +121,6 @@ public class IntroManager : MonoBehaviour {
     }
 
     IEnumerator Passengers_To_Bus() {
-        passengers_inside_bus_container.SetActive(true);
         float time = 0.2f;
         
         for (int i = 0; i < passengers_queue.Count; i++) {
@@ -117,17 +128,24 @@ public class IntroManager : MonoBehaviour {
                 passengers_inside_bus[i].rect.position,
                 time
             );
-            tween.SetEase(Ease.InQuint);
+            tween.SetEase(Ease.InBack);
             tween = passengers_queue[i].rect.DORotateQuaternion(
                 passengers_inside_bus[i].rect.rotation,
                 time
             );
-            tween.SetEase(Ease.InQuint);
+            tween.SetEase(Ease.InBack);
         }
         yield return new WaitForSeconds(time);
 
         for (int i = 0; i < passengers_queue.Count; i++) {
             passengers_queue[i].transform.SetParent(passengers_inside_bus[i].transform.parent);
+            StartCoroutine(Shake_Target(passengers_queue[i].transform));
         }
+    }
+
+    IEnumerator Fade_Title() {
+        blackGround.gameObject.SetActive(true);
+        logo.gameObject.SetActive(true);
+        yield return new WaitForSeconds(2f);
     }
 }

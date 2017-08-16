@@ -2,15 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
+using TMPro;
 
 public class IntroVTVOM : MonoBehaviour {
 
     [SerializeField]
     GameObject VTVOM_screen;
     [SerializeField]
-    Text destination;
+    TextMeshProUGUI destination;
     [SerializeField]
-    Text estimated_arrival;
+    TextMeshProUGUI estimated_arrival;
+    [SerializeField]
+    TextMeshProUGUI clock_text;
 
     public int times_checked = 0;
     
@@ -21,8 +24,21 @@ public class IntroVTVOM : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+        Handle_Clock();
 	}
+
+    void Handle_Clock() {
+        var now = System.DateTime.Now;
+        string hour = "", minute = "";
+
+        hour = now.Hour.ToString();
+        minute = now.Minute.ToString();
+        
+        if (hour.Length == 0) hour.Insert(0, "0");
+        if (minute.Length == 0) minute.Insert(0, "0");
+
+		clock_text.text = hour + ":" + minute;
+    }
 
     void Initialize() {
         destination.text = "UNIVERSIDADE";
@@ -42,7 +58,7 @@ public class IntroVTVOM : MonoBehaviour {
         //was activated
         if (!currently_active) {
             times_checked++;
-            if (times_checked > 1)
+            if (times_checked > 4)
                 Increase_ETA();
         }
     }

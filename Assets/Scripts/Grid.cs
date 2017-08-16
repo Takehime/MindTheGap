@@ -120,6 +120,7 @@ public class Grid : MonoBehaviour {
         go.gameObject.name = "Player";
         passengers[tile_id] = go;
         go.GetComponent<Player>().swapMode += onSwapMode;
+        tiles[tile_id].GetComponent<Image>().color = new Color32(226, 157, 82, 255);
     }
 
     void subscribePassengerForSwap(GameObject p)
@@ -148,7 +149,7 @@ public class Grid : MonoBehaviour {
     void enterSwapMode(int tile_id)
     {
         swap_mode_active = true;
-        tiles[tile_id].GetComponent<Image>().color = new Color32(226, 157, 82, 255);
+        tiles[tile_id].GetComponent<Image>().color = new Color32(242, 95, 78, 255);
         player_adj = calculateAdj(tile_id);
         printList(player_adj);
         changePassengersAlpha(player_adj, true);
@@ -158,6 +159,7 @@ public class Grid : MonoBehaviour {
     {
         swap_mode_active = false;
         tiles[old_tile_id].GetComponent<Image>().color = new Color32(195, 213, 255, 255);
+        tiles[new_tile_id].GetComponent<Image>().color = new Color32(226, 157, 82, 255);
         changePassengersAlpha(player_adj, false);
         player_adj = calculateAdj(new_tile_id);
     }

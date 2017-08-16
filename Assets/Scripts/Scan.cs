@@ -45,7 +45,7 @@ public class Scan : MonoBehaviour
         grid_ref.scan_mode_active = true;
     }
 
-    void leaveScanMode()
+    public void leaveScanMode()
     {
         scan_mask.enabled = false;
         scan_is_active = false;
