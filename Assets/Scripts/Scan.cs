@@ -22,25 +22,18 @@ public class Scan : MonoBehaviour
         grid_ref = FindObjectOfType<Grid>();
     }
 
-    void Update()
+    public void _checkIfScanWasActivated()
     {
-        checkIfScanWasActivated();
-    }
-
-    void checkIfScanWasActivated()
-    {
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            if (!scan_is_active)
-                enterScanMode();
-            else
-                leaveScanMode();
-        }
+        if (!scan_is_active)
+            enterScanMode();
+        else
+            leaveScanMode();
     }
 
     void enterScanMode()
     {
         scan_mask.enabled = true;
+        print(scan_mask.enabled);
         scan_is_active = true;
         grid_ref.scan_mode_active = true;
     }

@@ -42,6 +42,8 @@ public class Grid : MonoBehaviour {
     private Scan scan;
     private Pachinko pachinko;
     private Coroutine swapMode;
+    private TurnManager tm;
+    private bool alreadySwaped = false;
 
     #region initialization
 
@@ -51,6 +53,7 @@ public class Grid : MonoBehaviour {
         //print("passengers.count: " + passengers.Length);
         scan = FindObjectOfType<Scan>();
         pachinko = FindObjectOfType<Pachinko>();
+        tm = FindObjectOfType<TurnManager>();
         FindObjectOfType<TurnManager>().changeTurn += changeTurn;
         max_quantity = width * height / passenger_types.Capacity;
         initializeCounterList();
@@ -271,11 +274,17 @@ public class Grid : MonoBehaviour {
         //troca dos objetos na lista de passageiros
         passengers[origin_id] = target;
         passengers[target_id] = origin;
-        
+
         //atualiza lista de adjacencias e reseta cor dos tiles se o origin for o player
-		if (origin.GetComponent<Player> () != null) {
+        if (origin.GetComponent<Player> () != null) {
 			leaveSwapMode (origin_id, target_id);
 		}
+
+        //inicia o turno
+        if (!alreadySwaped) {
+            tm.setTurnToBetweenStations();
+            alreadySwaped = true;
+        }
     }
     #endregion
 
