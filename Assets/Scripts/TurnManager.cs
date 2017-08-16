@@ -23,11 +23,13 @@ public class TurnManager : MonoBehaviour
 
     private Turn curr_turn;
     private MapManager mp;
+    private Scan scan;
     private static int routeMapIndex = 0;
 
     void Start()
     {
         mp = FindObjectOfType<MapManager>();
+        scan = FindObjectOfType<Scan>();
         setTurnToBetweenStations();
     }
 
@@ -56,7 +58,7 @@ public class TurnManager : MonoBehaviour
         if (startStationLeaving != null) {
             startStationLeaving();
         }
-
+        scan.leaveScanMode();
         advanceOnMapRoute();
 
     }
