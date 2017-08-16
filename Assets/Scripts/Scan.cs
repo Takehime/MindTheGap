@@ -45,7 +45,7 @@ public class Scan : MonoBehaviour
         grid_ref.scan_mode_active = true;
     }
 
-    void leaveScanMode()
+    public void leaveScanMode()
     {
         scan_mask.enabled = false;
         scan_is_active = false;
@@ -56,7 +56,7 @@ public class Scan : MonoBehaviour
             Destroy(curr_scan_window);
     }
 
-    public void scanPassenger(int tile_id, PassengerData.PassengerType p_type)
+    public void scanPassenger(int tile_id, PassengerType p_type)
     {
         if (scan_is_active)
         {
@@ -74,7 +74,7 @@ public class Scan : MonoBehaviour
             Destroy(curr_scan_window);
     }
 
-    void spawnOuterInfoWindow(int tile_id, PassengerData.PassengerType p_type)
+    void spawnOuterInfoWindow(int tile_id, PassengerType p_type)
     {
         curr_scan_window = Instantiate(outer_window_info);
         curr_scan_window.transform.SetParent(gameObject.transform, false);
@@ -83,20 +83,20 @@ public class Scan : MonoBehaviour
         spawnInnerInfoWindow(tile_id, p_type);
     }
 
-    void setImageByPassengerType(GameObject go, PassengerData.PassengerType p_type)
+    void setImageByPassengerType(GameObject go, PassengerType p_type)
     {
         switch (p_type)
         {
-            case PassengerData.PassengerType.TURISTA:
+            case PassengerType.TURISTA:
                 go.GetComponent<Image>().sprite = turista_info;
                 break;
-            case PassengerData.PassengerType.IDOSO:
+            case PassengerType.IDOSO:
                 go.GetComponent<Image>().sprite = idoso_info;
                 break;
-            case PassengerData.PassengerType.ESTUDANTE:
+            case PassengerType.ESTUDANTE:
                 go.GetComponent<Image>().sprite = estudante_info;
                 break;
-            case PassengerData.PassengerType.VAREJISTA:
+            case PassengerType.VAREJISTA:
                 go.GetComponent<Image>().sprite = varejista_info;
                 break;
         }
@@ -120,7 +120,7 @@ public class Scan : MonoBehaviour
             go.transform.localScale = new Vector3(scale, -scale, scale);
     }
 
-    void spawnInnerInfoWindow(int tile_id, PassengerData.PassengerType p_type)
+    void spawnInnerInfoWindow(int tile_id, PassengerType p_type)
     {
         GameObject child = Instantiate(inner_window_info);
         child.transform.SetParent(curr_scan_window.transform, false);

@@ -13,6 +13,10 @@ public class Pachinko : MonoBehaviour {
     public GameObject word_sequence;
     public GameObject checkMark;
 
+    [Header("Timers")]
+    public float time_to_start_next_roulette_round;
+    public float time_roulette_spot_is_selected;
+
     private GameObject selected;
     private Grid grid;
     private List<List<string>> correct_word_sequences = new List<List<string>>();
@@ -61,11 +65,11 @@ public class Pachinko : MonoBehaviour {
             yield return StartCoroutine(waitForKeyDown(KeyCode.Space));
             StopCoroutine(roulette_loop);
             updateWordSequence();
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(time_to_start_next_roulette_round);
             resetRouletteScale();
         }
         //checkMark.SetActive(true);
-        leavePachinkoMode();
+        leavePachinkoMode(true);
     }
 
     IEnumerator waitForKeyDown(KeyCode keyCode)
@@ -80,15 +84,21 @@ public class Pachinko : MonoBehaviour {
             i = i % 4;
             selected = roulette.transform.GetChild(i).gameObject;
             selected.transform.localScale = new Vector3(1.1f, 1, 1);
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(time_roulette_spot_is_selected);
             selected.transform.localScale = new Vector3(1f, 1, 1);
         }
     }
 
-    void leavePachinkoMode()
+    public void leavePachinkoMode(bool confirm)
     {
         grid.pachinko_mode_active = false;
-        pachinko_go.GetComponentInChildren<Animator>().SetTrigger("unshow");
+        string trigger = "";
+        if (confirm) {
+            trigger = "unshow_confirm";
+        } else {
+            trigger = "unshow_cancel";
+        }
+        pachinko_go.GetComponentInChildren<Animator>().SetTrigger(trigger);
     }
     #endregion
 
