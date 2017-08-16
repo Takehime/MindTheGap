@@ -61,14 +61,34 @@ public class AtStation : MonoBehaviour {
         float time_stop_mov_anim = 1f;
         yield return new WaitForSeconds(time_stop_mov_anim);
 
-		//phase 1 : sentados vao pro corredor
-		selectSeats();
-		yield return waitForReadyForAdvance();
+        //phase 1 : sentados vao pro corredor
+
+        //print("etrei no passo 1, vou selecionar os seats");
+        //Debug.Break();
+
+        selectSeats();
+
+        //print("vou esperar por wait for advance");
+        //Debug.Break();
+
+        yield return waitForReadyForAdvance();
 
         //phase 2 : leavers saem do onibus
+
+        //print("entrei no passo 2, vou printar a lista de leavers");
+        //Debug.Break();
+
         printLeaversList();
+
+        //print("vou entrar no for que chama setAllLeavers");
+        //Debug.Break();
+
         for (int i = 0; i < leavers.Count; i++)
             setAllLeavers(leavers[i]);
+
+        //print("vou printar os leavers de novo");
+        //Debug.Break();
+
         printLeaversList();
         StartCoroutine(leavingLoop());
         yield return waitForReadyForAdvance();
@@ -77,6 +97,7 @@ public class AtStation : MonoBehaviour {
         resetLeaversList();
         StartCoroutine(enteringLoop());
         yield return waitForReadyForAdvance();
+        resetEnterersList();
 
         //muda o turno
         tm.setTurnToBetweenStations();
@@ -84,10 +105,13 @@ public class AtStation : MonoBehaviour {
 
     IEnumerator waitForReadyForAdvance()
     {
+        //print("1!!!ready_for_advance: " + ready_to_advance);
         yield return new WaitUntil(() => ready_to_advance);
+        //print("2!!!ready_for_advance: " + ready_to_advance);
         yield return new WaitForSeconds(adtional_time_between_phases);
         ready_to_advance = false;
-        //print("ready_for_advance: " + ready_to_advance);
+        //print("3!!!ready_for_advance: " + ready_to_advance);
+
     }
 
     #endregion
@@ -95,23 +119,25 @@ public class AtStation : MonoBehaviour {
     #region passo 1
     void selectSeats() {
 		List<int> leavers = new List<int>();
-		for (int i = 0; i < max_of_leavers; i++) {
-			int selected;
-			do {
-				List<int> seats = grid.getAllSeats();
-				int index = Random.Range(0, grid.getAllSeats().Count);
-				selected = seats[index];
-				if (checkIfTwoPassengersAreOnSameXPos(selected, getIDPlayer())) {
-					//Debug.Log("id player: " + getIDPlayer() + " id passenger: " + selected + " (mesmo X)");
-				}
-			}
-			while (leavers.Contains(selected)
-				|| leavers.Contains(getIDPassengerBellow(selected))
-				|| leavers.Contains(getIDPassengerUp(selected))
-				|| checkIfTwoPassengersAreOnSameXPos(selected, getIDPlayer())
-			);
-			leavers.Add(selected);
-		}
+        for (int i = 0; i < max_of_leavers; i++) {
+            int selected;
+            do {
+                List<int> seats = grid.getAllSeats();
+                int index = Random.Range(0, grid.getAllSeats().Count);
+                selected = seats[index];
+                if (checkIfTwoPassengersAreOnSameXPos(selected, getIDPlayer())) {
+                    //Debug.Log("id player: " + getIDPlayer() + " id passenger: " + selected + " (mesmo X)");
+                }
+            }
+            while (leavers.Contains(selected)
+                || leavers.Contains(getIDPassengerBellow(selected))
+                || leavers.Contains(getIDPassengerUp(selected))
+                || checkIfTwoPassengersAreOnSameXPos(selected, getIDPlayer())
+            );
+            leavers.Add(selected);
+        }
+        //leavers.Add(42);
+        //leavers.Add(49);
         StartCoroutine(joinThreads(leavers));
 	}
 
@@ -121,6 +147,7 @@ public class AtStation : MonoBehaviour {
             Coroutine ci = StartCoroutine(getUpLeavers(leavers[i]));
             c.Add(ci);
         }
+
         for (int i = 0; i < leavers.Count; i++) {
             yield return c[i];
         }
@@ -129,7 +156,7 @@ public class AtStation : MonoBehaviour {
 
 	IEnumerator getUpLeavers(int id) {
 		leavers = new List<Leaver>();
-		float threshold = 0.3f;
+        float threshold = 0.3f;
 		float random_wait_time = Random.Range(0f, threshold);
 		yield return new WaitForSeconds(Random.Range(0.3f, 0.5f));
 		if (passengerOnFirstLineOfSeats(id)) {
@@ -180,11 +207,11 @@ public class AtStation : MonoBehaviour {
 			Debug.Log("erro, id: " + id);
 		}
 	}
-	#endregion
+    #endregion
 
-	#region passo 2
-    
+    #region passo 2
 	IDPosFromDoor getPosFromDoor(int id) {
+        print("id #" + id + ", posFromDoor: " + grid.posFromDoor(id));
 		return grid.posFromDoor (id);
 	}
 
@@ -394,6 +421,11 @@ public class AtStation : MonoBehaviour {
 
     #region passo 3
 
+    void resetEnterersList() {
+        n_leavers = 0;
+        enterers.Clear();
+    }
+
     void resetLeaversList()
     {
         n_leavers = leavers.Count;
@@ -430,12 +462,16 @@ public class AtStation : MonoBehaviour {
                         break;
                     }
                 }
-                yield return new WaitForSeconds(0.5f);
+                yield return new WaitForSeconds(0.3f);
             }
             createNewPassenger();
             yield return new WaitForSeconds(0.3f);
         }
+        print("aaaaaaaa, added: " + added + ", n_leavers: " + n_leavers);
         ready_to_advance = true;
+
+        print("vou pausar");
+        Debug.Break();
     }
 
     void createNewPassenger ()

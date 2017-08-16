@@ -284,15 +284,19 @@ public class Grid : MonoBehaviour {
     void changeTurn(TurnManager.Turn next_turn)
     {
         curr_turn = next_turn;
-        cancelSwap();
+        if (curr_turn == TurnManager.Turn.AtStation) {
+            cancelSwap(new Color32(195, 213, 255, 255));
+        } else {
+            cancelSwap(new Color32(226, 157, 82, 255));
+        }
         cancelPachinko();
     }
 
-    void cancelSwap()
+    void cancelSwap(Color color)
     {
         FindObjectOfType<Player>().setSwapMode(false);
         int temp = FindObjectOfType<Player>().getTileId();
-        tiles[temp].GetComponent<Image>().color = new Color32(195, 213, 255, 255);
+        tiles[temp].GetComponent<Image>().color = color;
         player_adj = calculateAdj(temp);
         swap_mode_active = false;
         changePassengersAlpha(player_adj, false);
@@ -345,22 +349,46 @@ public class Grid : MonoBehaviour {
     }
 
 	public IDPosFromDoor posFromDoor(int id) {
-		if (id == door_id1 || id == door_id2)
-			return IDPosFromDoor.ON_DOOR;
-		else if (id % 10 < door_id1 % 10)
-			return IDPosFromDoor.LEFT;
-		else if (id % 10 > door_id2 % 10)
-			return IDPosFromDoor.RIGHT;
-		else
-			return IDPosFromDoor.MID;
-			
-	}
+        //if (id % 10 < door_id1 % 10)
+        //    return IDPosFromDoor.LEFT;
+        //else if (id % 10 > door_id2 % 10)
+        //    return IDPosFromDoor.RIGHT;
+        //else if (id % 10 == door_id1 % 10) {
+        //    if (getPlayerID() % 10 == door_id1 % 10) {
+        //        return IDPosFromDoor.RIGHT;
+        //    } else {
+        //        return IDPosFromDoor.MID;
+        //    }
+        //} else if (id % 10 == door_id2 % 10) {
+        //    if (getPlayerID() % 10 == door_id2 % 10) {
+        //        return IDPosFromDoor.LEFT;
+        //    } else {
+        //        return IDPosFromDoor.MID;
+        //    }
+        //} else //if (id == door_id1 || id == door_id2)
+        //    return IDPosFromDoor.ON_DOOR;
+
+        //=========
+
+        if (id == door_id1 || id == door_id2)
+            return IDPosFromDoor.ON_DOOR;
+        else if (id % 10 < door_id1 % 10)
+            return IDPosFromDoor.LEFT;
+        else if (id % 10 > door_id2 % 10)
+            return IDPosFromDoor.RIGHT;
+        else
+            return IDPosFromDoor.MID;
+    }
 
     public void printTypesCounter()
     {
         foreach (KeyValuePair<PassengerType, int> d in types_counter) {
             print("Type = {" + d.Key + "}, Count = {" + d.Value + "}");
         }
+    }
+
+    int getPlayerID() {
+        return FindObjectOfType<Player>().getTileId();
     }
 
 	#endregion

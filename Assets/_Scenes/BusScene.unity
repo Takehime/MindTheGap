@@ -7584,11 +7584,6 @@ Prefab:
       propertyPath: m_Name
       value: AtStationManager
       objectReference: {fileID: 0}
-    - target: {fileID: 1643838680771770, guid: fc1669d741afc5e4ab6577275682b9c2, type: 2}
-      propertyPath: m_Icon
-      value: 
-      objectReference: {fileID: 2974397684917235467, guid: 0000000000000000d000000000000000,
-        type: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fc1669d741afc5e4ab6577275682b9c2, type: 2}
   m_IsPrefabParent: 0
