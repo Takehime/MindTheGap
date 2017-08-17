@@ -357,7 +357,21 @@ public class Grid : MonoBehaviour {
         return seats;
     }
 
-	public IDPosFromDoor posFromDoor(int id) {
+    public List<int> getAllNotSeats() {
+        List<int> not_seats = new List<int>();
+        for (int id = 0; id < 60; id++) {
+            if ((id >= 20 && id < 40)
+                || (id >= 44 && id < 46)
+                || (id >= 54 && id < 56)) {
+                if (id != getPlayerID()) {
+                    not_seats.Add(id);
+                }
+            }
+        }
+        return not_seats;
+    }
+
+    public IDPosFromDoor posFromDoor(int id) {
         //if (id % 10 < door_id1 % 10)
         //    return IDPosFromDoor.LEFT;
         //else if (id % 10 > door_id2 % 10)

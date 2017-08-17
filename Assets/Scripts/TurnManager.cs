@@ -20,6 +20,7 @@ public class TurnManager : MonoBehaviour
     public GameObject map;
     public float space_between_stations_on_map;
     public float time_between_turns;
+    public Coroutine turn_loop;
 
     private Turn curr_turn;
     private MapManager mp;
@@ -60,7 +61,6 @@ public class TurnManager : MonoBehaviour
         }
         scan.leaveScanMode();
         advanceOnMapRoute();
-
     }
 
     public void setTurnToBetweenStations() {
@@ -73,11 +73,11 @@ public class TurnManager : MonoBehaviour
         //print("movi o mapa");
 
         advanceOnMapRoute();
-        StartCoroutine(BetweenStationTurnLoop());
+        turn_loop = StartCoroutine(BetweenStationTurnLoop());
 
     }
 
-    IEnumerator BetweenStationTurnLoop()
+    public IEnumerator BetweenStationTurnLoop()
     {
         yield return new WaitForSeconds(time_between_turns);
         setTurnToAtStation();

@@ -10,6 +10,7 @@ public class MapManager : MonoBehaviour {
     public GameObject station_prefab;
     public GameObject connection_prefab;
     public List<GameObject> routeMap = new List<GameObject>();
+    public int ending_trigger_index = 2;
 	//public List<StationData> stations;
 
     private bool map_window_active = false;
@@ -35,6 +36,11 @@ public class MapManager : MonoBehaviour {
         }
         routeMap[index].transform.GetChild(0).gameObject.SetActive(true);
         //print("==> " + routeMap[index].transform.GetChild(0).gameObject.name);
+        if (index == ending_trigger_index) {
+            print("index: " + index);
+            Ending end = FindObjectOfType<Ending>();
+            end.triggerEnd();
+        }
     }
 
 	public void _showStationInfo(GameObject go) {

@@ -2,6 +2,27 @@
 using System.Collections.Generic;
 using System.Collections;
 
+public class Leaver {
+	private int id;
+	private IDPosFromDoor pos;
+
+	public Leaver(int id) {
+		this.id = id;
+	}
+    public void setID(int id) {
+		this.id = id;
+	} 
+	public void setPos(IDPosFromDoor pos) {
+		this.pos = pos;
+	}
+	public int getID() {
+		return this.id;
+	}
+	public IDPosFromDoor getPos() {
+		return this.pos;
+	}
+}
+
 public enum Direction {
 	RIGHT, LEFT, UP, DOWN
 }
@@ -11,11 +32,12 @@ public class AtStation : MonoBehaviour {
 	public float swap_duration;
     public float adtional_time_between_phases;
 
+    public List<Leaver> leavers;
+    public Coroutine leaving_coroutine;
 
     private int max_of_leavers = 2; // 9 = (1/4) dos sentados
 	private Grid grid;
 	private TurnManager tm;
-    private List<Leaver> leavers;
 	private List<Leaver> enterers;
     private bool player_up;
 	private bool player_left;
@@ -23,26 +45,6 @@ public class AtStation : MonoBehaviour {
     private int added;
     private bool ready_to_advance = false;
 
-	class Leaver {
-		private int id;
-		private IDPosFromDoor pos;
-
-		public Leaver(int id) {
-			this.id = id;
-		}
-        public void setID(int id) {
-			this.id = id;
-		} 
-		public void setPos(IDPosFromDoor pos) {
-			this.pos = pos;
-		}
-		public int getID() {
-			return this.id;
-		}
-		public IDPosFromDoor getPos() {
-			return this.pos;
-		}
-	}
 
 	void Start () {
 		grid = FindObjectOfType<Grid>();
@@ -54,7 +56,7 @@ public class AtStation : MonoBehaviour {
 
 	void startStationLeaving()
 	{
-		StartCoroutine (stationLeavingCoroutine());
+        leaving_coroutine = StartCoroutine(stationLeavingCoroutine());
 	}
 
 	IEnumerator stationLeavingCoroutine() {
@@ -226,7 +228,6 @@ public class AtStation : MonoBehaviour {
         }
 		nextDir = calculateNextDir(pos, id, player_id);
 		callNextLeaver(id, nextDir);
-
     }
 
 	Direction calculateNextDir(IDPosFromDoor pos, int id, int player_id) {
@@ -301,11 +302,12 @@ public class AtStation : MonoBehaviour {
         return forbiddenDirs;
     }
 
-    IEnumerator leavingLoop()
+    public IEnumerator leavingLoop()
     {
         int leavers_count = leavers.Count;
         foreach (Leaver l in leavers)
         {
+            print("id #" + l.getID() + ", pos: " + l.getPos());
             if (l.getPos() == IDPosFromDoor.ON_DOOR)
             {
                 Destroy(grid.passengers[l.getID()]);
@@ -357,6 +359,9 @@ public class AtStation : MonoBehaviour {
                     int id = l.getID();
                     if (l.getPos() == IDPosFromDoor.ON_DOOR) {
                         GameObject go = grid.passengers[l.getID()];
+                        print("id aaa : " + l.getID());
+                        print("id bbb : " + grid.passengers[l.getID()]);
+
                         PassengerType p_type = go.GetComponent<Passenger>().getPassengerType();
                         grid.types_counter[p_type]--;
                         Destroy(go);
