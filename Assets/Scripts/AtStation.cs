@@ -236,20 +236,28 @@ public class AtStation : MonoBehaviour {
                     return Direction.DOWN;
                 else if (isOnHorizontalDown(id) && isOnHorizontalDown(player_id))
                     return Direction.UP;
+				else if (passengerOnFirstLineOfSeats(id) || passengerOnSecondLineOfSeats(id))
+					return Direction.DOWN;
+				else if (passengerOnFirstLastLineOfSeats(id) || passengerOnSecondLastLineOfSeats(id))
+					return Direction.UP;
                 else
                     return Direction.RIGHT;
             case IDPosFromDoor.RIGHT:
                 if (isOnHorizontalUp(id) && isOnHorizontalUp(player_id))
                     return Direction.DOWN;
                 else if (isOnHorizontalDown(id) && isOnHorizontalDown(player_id))
-                    return Direction.UP;
+					return Direction.UP;
+				else if (passengerOnFirstLineOfSeats(id) || passengerOnSecondLineOfSeats(id))
+					return Direction.DOWN;
+				else if (passengerOnFirstLastLineOfSeats(id) || passengerOnSecondLastLineOfSeats(id))
+					return Direction.UP;
                 else
                     return Direction.LEFT;
             case IDPosFromDoor.MID:
                 if (isOnVerticalLeft(id) && isOnVerticalLeft(player_id))
                     return Direction.RIGHT;
                 else if (isOnVerticalRight(id) && isOnVerticalRight(player_id))
-                    return Direction.LEFT;
+					return Direction.LEFT;
                 else
                     return Direction.DOWN;
 			default:
@@ -334,14 +342,18 @@ public class AtStation : MonoBehaviour {
                     IDPosFromDoor tile_pos = grid.posFromDoor(tile_id);
                     bool empty = grid.tileIsEmpty(tile_id);
 
-                    Direction tileDir = calculateDirByID(id, tile_id);
-                    Direction doorDir = calculateNextDir(pos, id, player_id);
-                    //List<Direction> forbidden = forbiddenDirections(pos, id);
-
                     if (empty) {
+						Direction tileDir = calculateDirByID(id, tile_id);
+						Direction doorDir = calculateNextDir(pos, id, player_id);
+
+						if (id == 13) {
+							print ("Tile_DIR: " + tileDir +", Door_DIR: " + doorDir);
+						}
+
                         if (/*forbidden.Contains(tileDir) || */tileDir != doorDir) {
                             continue;
                         }
+
                         //print ("Tile #" + tile_id + " is empty (detected by passenger #" + id + ").");
                         float mov_threshold = 0.3f;
                         float mov_time = Random.Range(swap_duration - mov_threshold, swap_duration + mov_threshold);
@@ -559,19 +571,19 @@ public class AtStation : MonoBehaviour {
         return id + 1;
     }
 
-    bool passengerOnFirstLineOfSeats(int id) {
+    public static bool passengerOnFirstLineOfSeats(int id) {
 		return id >= 0 && id < 10;
 	}
 
-	bool passengerOnSecondLineOfSeats(int id) {
+	public static bool passengerOnSecondLineOfSeats(int id) {
 		return id >= 10 && id < 20;
 	}
 
-	bool passengerOnFirstLastLineOfSeats(int id) {
+	public static bool passengerOnFirstLastLineOfSeats(int id) {
 		return (id >= 40 && id < 44) || (id >= 46 && id < 50);
 	}
 
-	bool passengerOnSecondLastLineOfSeats(int id) {
+	public static bool passengerOnSecondLastLineOfSeats(int id) {
 		return (id >= 50 && id < 54) || (id >= 56 && id < 60);
 	}
 

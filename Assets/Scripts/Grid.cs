@@ -48,7 +48,7 @@ public class Grid : MonoBehaviour {
 
     void Start()
     {
-        passengers = new GameObject[60];
+		passengers = new GameObject[width*height];
         //print("passengers.count: " + passengers.Length);
         scan = FindObjectOfType<Scan>();
         pachinko = FindObjectOfType<Pachinko>();
@@ -174,10 +174,38 @@ public class Grid : MonoBehaviour {
         if (FindObjectOfType<Player>().getTileId() == id)
             adj_list.Add(tiles[id]); //player eh adj a ele mesmo
 
-        if (id % width == 0 || id == 44 || id == 54)
-            adj_list.Add(tiles[id + 1]);
-        else if (id % width == width - 1 || id == 45 || id == 55)
-            adj_list.Add(tiles[id - 1]);
+		List<int> assentos = getAllSeats(); 
+		if (assentos.Contains (id)) {
+			if (AtStation.passengerOnFirstLineOfSeats(id)) {
+				adj_list.Add(tiles[id + width]);
+			} else if (AtStation.passengerOnSecondLineOfSeats(id)) {
+				adj_list.Add(tiles[id - width]);
+
+				if (id + width == getPlayerID ()) {
+					adj_list.Add (tiles [id + width * 2]);
+				} else {
+					adj_list.Add (tiles [id + width]);
+				}
+			} 
+
+			if (AtStation.passengerOnFirstLastLineOfSeats(id)) {
+				adj_list.Add (tiles[id - width]);
+				adj_list.Add (tiles[id + width]);
+
+				if (id - width == getPlayerID ()) {
+					adj_list.Add (tiles [id - width * 2]);
+				} else {
+					adj_list.Add (tiles [id - width]);
+				}
+			} else if (AtStation.passengerOnSecondLastLineOfSeats(id)) {
+				adj_list.Add (tiles[id - width]);
+			}
+			return adj_list;
+		} 
+		if (id % width == 0 || id == 44 || id == 54)
+			adj_list.Add (tiles [id + 1]);
+		else if (id % width == width - 1 || id == 45 || id == 55)
+			adj_list.Add (tiles [id - 1]);
         else {
             adj_list.Add(tiles[id - 1]);
             adj_list.Add(tiles[id + 1]);
@@ -190,6 +218,7 @@ public class Grid : MonoBehaviour {
             adj_list.Add(tiles[id - width]);
             adj_list.Add(tiles[id + width]);
         }
+
         return adj_list;
     }
 
@@ -394,8 +423,8 @@ public class Grid : MonoBehaviour {
 
         //=========
 
-        if (id == door_id1 || id == door_id2)
-            return IDPosFromDoor.ON_DOOR;
+		if (id == door_id1 || id == door_id2)
+			return IDPosFromDoor.ON_DOOR;
         else if (id % 10 < door_id1 % 10)
             return IDPosFromDoor.LEFT;
         else if (id % 10 > door_id2 % 10)
@@ -411,7 +440,7 @@ public class Grid : MonoBehaviour {
         }
     }
 
-    int getPlayerID() {
+    public int getPlayerID() {
         return FindObjectOfType<Player>().getTileId();
     }
 

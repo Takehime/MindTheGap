@@ -15,17 +15,19 @@ public class Ending : MonoBehaviour {
         grid = FindObjectOfType<Grid>();
         tm = FindObjectOfType<TurnManager>();
 
-        StopIEnumerator(at.leaving_coroutine);
+		StopCoroutine(at.leaving_coroutine);
         StopCoroutine(tm.turn_loop);
 
-        List<int> not_seats = grid.getAllNotSeats();
-        for (int i = 0; i < not_seats.Count; i++) {
-            Leaver l = new Leaver(not_seats[i]);
-            l.setPos(grid.posFromDoor(not_seats[i]));
+        //List<int> not_seats = grid.getAllNotSeats();
+		for (int i = 0; i < grid.tiles.Count; i++) {
+			if (grid.getPlayerID () == i) {
+				continue;
+			}
+			Leaver l = new Leaver(i);
+			l.setPos(grid.posFromDoor(i));
             leavers.Add(l);
         }
         at.leavers = leavers;
         StartCoroutine(at.leavingLoop());
-
     }
 }

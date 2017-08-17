@@ -9072,7 +9072,12 @@ Prefab:
     - target: {fileID: 114262932204999746, guid: fc1669d741afc5e4ab6577275682b9c2,
         type: 2}
       propertyPath: swap_duration
-      value: 0.5
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114262932204999746, guid: fc1669d741afc5e4ab6577275682b9c2,
+        type: 2}
+      propertyPath: adtional_time_between_phases
+      value: 0.1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fc1669d741afc5e4ab6577275682b9c2, type: 2}
@@ -9387,7 +9392,7 @@ Prefab:
     - target: {fileID: 114275705029804510, guid: 12456dfde35beac45a59ae393c02ffbf,
         type: 2}
       propertyPath: ending_trigger_index
-      value: 10
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 12456dfde35beac45a59ae393c02ffbf, type: 2}
@@ -11621,7 +11626,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ead999f48ea4abc4d8f6d28fb26b8955, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player_spawn_point: 55
+  player_spawn_point: 36
   tile_prefab: {fileID: 1450840115785540, guid: c58ee7f2f695ddf4f9a5f5d67ca7adc7,
     type: 2}
   passenger_prefab: {fileID: 1560168658210474, guid: 0ba0002ecf91a5a4b92d918436aefee5,
