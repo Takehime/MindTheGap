@@ -22,6 +22,8 @@ public class TurnManager : MonoBehaviour
     public float time_between_turns;
     public Coroutine turn_loop;
 
+    public Animator background_animator;
+
     private Turn curr_turn;
     private MapManager mp;
     private Scan scan;
@@ -52,20 +54,23 @@ public class TurnManager : MonoBehaviour
 
     void setTurnToAtStation() {
         curr_turn = Turn.AtStation;
-        Debug.Log("turn: " + curr_turn);
+        background_animator.SetTrigger("stop");
+
         if (changeTurn != null) {
             changeTurn(curr_turn);
         }
         if (startStationLeaving != null) {
             startStationLeaving();
         }
+
         scan.leaveScanMode();
         advanceOnMapRoute();
     }
 
     public void setTurnToBetweenStations() {
         curr_turn = Turn.BetweenStations;
-        Debug.Log("turn: " + curr_turn);
+        background_animator.SetTrigger("start");
+
         if (changeTurn != null) {
             changeTurn(curr_turn);
         }
@@ -74,7 +79,6 @@ public class TurnManager : MonoBehaviour
 
         advanceOnMapRoute();
         turn_loop = StartCoroutine(BetweenStationTurnLoop());
-
     }
 
     public IEnumerator BetweenStationTurnLoop()
