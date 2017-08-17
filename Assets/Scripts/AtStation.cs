@@ -48,9 +48,13 @@ public class AtStation : MonoBehaviour {
     public Animator background_animator;
     public Animator camera_animator;
 
+    public AudioManager audio;
+    public float passenger_sfx_volume = 0.4f;
+
 	void Start () {
 		grid = FindObjectOfType<Grid>();
 		tm = FindObjectOfType<TurnManager>();
+        audio = AudioManager.Get_Audio_Manager();
         FindObjectOfType<TurnManager>().startStationLeaving += startStationLeaving;
 	}
 
@@ -63,6 +67,7 @@ public class AtStation : MonoBehaviour {
 
 	IEnumerator stationLeavingCoroutine() {
         background_animator.SetTrigger("stop");
+        audio.Play(audio.bus_stopping, 0.7f);
         yield return new WaitForSeconds(4f);
         camera_animator.SetBool("shake", false);
 
@@ -323,6 +328,7 @@ public class AtStation : MonoBehaviour {
 //            print("id #" + l.getID() + ", pos: " + l.getPos());
             if (l.getPos() == IDPosFromDoor.ON_DOOR)
             {
+                audio.Play(audio.passenger_out, passenger_sfx_volume);
                 Destroy(grid.passengers[l.getID()]);
 				grid.passengers[l.getID()] = null;
                 leavers_count--;
@@ -385,6 +391,7 @@ public class AtStation : MonoBehaviour {
 						PassengerType p_type = go.GetComponent<Passenger> ().getPassengerType ();
 						grid.types_counter [p_type]--;
 						Destroy (go);
+                        audio.Play(audio.passenger_out, passenger_sfx_volume);
 						grid.passengers [l.getID ()] = null;
 						leavers_count--;
 					}
@@ -538,6 +545,7 @@ public class AtStation : MonoBehaviour {
 
 	void createNewPassenger (int door_id)
     {
+        audio.Play(audio.passenger_in, passenger_sfx_volume);
         grid.spawnPassenger(door_id);
         Leaver l = new Leaver(door_id);
         enterers.Add(l);

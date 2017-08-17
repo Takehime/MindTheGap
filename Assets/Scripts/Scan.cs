@@ -17,8 +17,11 @@ public class Scan : MonoBehaviour
     private GameObject curr_scan_window;
     private Grid grid_ref;
 
+    public AudioManager audio;
+
     void Start()
     {
+        audio = AudioManager.Get_Audio_Manager();
         grid_ref = FindObjectOfType<Grid>();
     }
 
@@ -32,6 +35,7 @@ public class Scan : MonoBehaviour
 
     void enterScanMode()
     {
+        audio.Play(audio.scan_enter, 0.8f);
         scan_mask.enabled = true;
         print(scan_mask.enabled);
         scan_is_active = true;
@@ -40,6 +44,11 @@ public class Scan : MonoBehaviour
 
     public void leaveScanMode()
     {
+        if (!scan_is_active) {
+            return;
+        }
+        
+        audio.Play(audio.scan_leave, 0.8f);
         scan_mask.enabled = false;
         scan_is_active = false;
         grid_ref.scan_mode_active = false;

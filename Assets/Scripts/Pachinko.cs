@@ -24,9 +24,13 @@ public class Pachinko : MonoBehaviour {
     private List<string> selected_sequence = new List<string>();
     private int rounds;
 
+    public AudioManager audio;
+
     void Start()
     {
         grid = FindObjectOfType<Grid>();
+        audio = AudioManager.Get_Audio_Manager();
+
         initializeCorrectWordSequences();
         initializeGenericWordSequences();
     }
@@ -75,6 +79,7 @@ public class Pachinko : MonoBehaviour {
     IEnumerator waitForKeyDown(KeyCode keyCode)
     {
         yield return new WaitUntil(() => Input.GetKeyDown(keyCode));
+        audio.Play(audio.pachinko_button, 0.8f);
     }
 
     IEnumerator rouletteLooping()
@@ -91,13 +96,16 @@ public class Pachinko : MonoBehaviour {
 
     public void leavePachinkoMode(bool confirm)
     {
-        grid.pachinko_mode_active = false;
         string trigger = "";
         if (confirm) {
+            audio.Play(audio.pachinko_confirmation, 0.8f);
             trigger = "unshow_confirm";
         } else {
+            if (grid.pachinko_mode_active)
+                audio.Play(audio.pachinko_cancel, 0.8f);
             trigger = "unshow_cancel";
         }
+        grid.pachinko_mode_active = false;
         pachinko_go.GetComponentInChildren<Animator>().SetTrigger(trigger);
     }
     #endregion
