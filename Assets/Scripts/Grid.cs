@@ -33,6 +33,7 @@ public class Grid : MonoBehaviour {
     private int height = 6;
 	public int door_id1 = 54;
 	public int door_id2 = 55;
+	public bool ending_event = false;
     public Dictionary<PassengerType, int> types_counter = new Dictionary<PassengerType, int>();
     private List<GameObject> player_adj;
     private TurnManager.Turn curr_turn = TurnManager.Turn.BetweenStations;
@@ -90,9 +91,11 @@ public class Grid : MonoBehaviour {
                 if (tile_id == player_spawn_point)
                     spawnPlayer(tile_id);
                 else spawnPassenger(tile_id);
+
+				subscribeTileForMovement (tiles[tile_id]);
             }
         }
-        //printTypesCounter();
+        
     }
 
     public void spawnPassenger(int tile_id)
@@ -137,6 +140,11 @@ public class Grid : MonoBehaviour {
         p.GetComponent<Passenger>().scanTarget += scan.scanPassenger;
     }
 
+	void subscribeTileForMovement(GameObject t)
+	{
+		t.GetComponent<Tile>().moveToTile += checkIfPlayerCanMoveToTile;
+	}
+
     #endregion
 
     #region swap mode
@@ -144,8 +152,8 @@ public class Grid : MonoBehaviour {
     {
         if (!scan_mode_active)
         {
-            if (activate)
-                enterSwapMode(tile_id);
+			if (activate)
+				enterSwapMode (tile_id);
             else leaveSwapMode(tile_id, tile_id);
         }
     }
@@ -155,7 +163,16 @@ public class Grid : MonoBehaviour {
         swap_mode_active = true;
         tiles[tile_id].GetComponent<Image>().color = new Color32(242, 95, 78, 255);
         player_adj = calculateAdj(tile_id);
-        printList(player_adj);
+        //printList(player_adj);
+
+		for (int i = 0; i < player_adj.Count; i++) {
+			GameObject go = player_adj [i];
+			Tile tile = go.GetComponent<Tile> ();
+			int index = tile.getTileId ();
+			if (passengers [index] == null) {
+				return;
+			}
+		}
         changePassengersAlpha(player_adj, true);
     }
 
@@ -164,8 +181,17 @@ public class Grid : MonoBehaviour {
         swap_mode_active = false;
         tiles[old_tile_id].GetComponent<Image>().color = new Color32(195, 213, 255, 255);
         tiles[new_tile_id].GetComponent<Image>().color = new Color32(226, 157, 82, 255);
-        changePassengersAlpha(player_adj, false);
         player_adj = calculateAdj(new_tile_id);
+
+		for (int i = 0; i < player_adj.Count; i++) {
+			GameObject go = player_adj [i];
+			Tile tile = go.GetComponent<Tile> ();
+			int index = tile.getTileId ();
+			if (passengers [index] == null) {
+				return;
+			}
+		}
+		changePassengersAlpha(player_adj, false);
     }
 
     public List<GameObject> calculateAdj(int id)
@@ -274,7 +300,12 @@ public class Grid : MonoBehaviour {
         if (pass != null)
         {
             pass.transform.DOMove(target.transform.position, duration);
-            pass.GetComponent<Passenger>().setTileId(target_id);
+			Passenger p = pass.GetComponent<Passenger> ();
+			if (p != null) {
+				p.setTileId (target_id);
+			} else {
+				pass.GetComponent<Player> ().setTileId (target_id);
+			}
             passengers[target_id] = pass;
             passengers[id] = null;
         }
@@ -320,7 +351,7 @@ public class Grid : MonoBehaviour {
 
     #region turn management
 
-    void changeTurn(TurnManager.Turn next_turn)
+    public void changeTurn(TurnManager.Turn next_turn)
     {
         curr_turn = next_turn;
         if (curr_turn == TurnManager.Turn.AtStation) {
@@ -338,7 +369,18 @@ public class Grid : MonoBehaviour {
         tiles[temp].GetComponent<Image>().color = color;
         player_adj = calculateAdj(temp);
         swap_mode_active = false;
-        changePassengersAlpha(player_adj, false);
+
+		for (int i = 0; i < player_adj.Count; i++) {
+			//print ("passengers [player_adj [i]]: " + passengers [player_adj [i]]);
+			GameObject go = player_adj [i];
+			Tile tile = go.GetComponent<Tile> ();
+			int index = tile.getTileId ();
+			if (passengers [index] == null) {
+				FindObjectOfType<Player>().changeTurn(TurnManager.Turn.BetweenStations);
+				return;
+			}
+		}
+		changePassengersAlpha (player_adj, false);
     }
 
     void cancelPachinko() {
@@ -349,6 +391,33 @@ public class Grid : MonoBehaviour {
     }
 
     #endregion
+
+	#region ending 
+
+	void checkIfPlayerCanMoveToTile(int tile_id) {
+		int player_id = getPlayerID ();
+		var adj = player_adj;
+
+		if (swap_mode_active && ending_event) {
+			if (player_id >= 20 && player_id <= 29) {
+				adj.Add (tiles[player_id - width]);
+			}
+			if (player_id >= 30 && player_id <= 39 && player_id != 34 && player_id != 35) {
+				adj.Add (tiles[player_id + width]);
+			}
+		}
+
+		if (swap_mode_active && ending_event && player_adj.Contains (tiles [tile_id]))
+		{
+			movePassenger (player_id, tile_id, 0.25f);
+			if (AtStation.passengerOnSecondLineOfSeats (tile_id)
+			    || AtStation.passengerOnFirstLastLineOfSeats (tile_id)) {
+				End_Game ();
+			}
+		}
+	}
+
+	#endregion
 
     #region utility
     public static void printList<T>(List<T> lista)
@@ -451,4 +520,8 @@ public class Grid : MonoBehaviour {
 			if (passengers[i].tile_id)
 		}
 	}*/
+
+	public void End_Game() {
+		print("vamos embora");
+	}
 }

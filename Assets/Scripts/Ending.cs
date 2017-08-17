@@ -9,7 +9,7 @@ public class Ending : MonoBehaviour {
     private TurnManager tm;
     private List<Leaver> leavers = new List<Leaver>();
 
-    public void triggerEnd() {
+	public IEnumerator triggerEnd() {
         print("o começo do fim chegou");
         at = FindObjectOfType<AtStation>();
         grid = FindObjectOfType<Grid>();
@@ -28,6 +28,14 @@ public class Ending : MonoBehaviour {
             leavers.Add(l);
         }
         at.leavers = leavers;
-        StartCoroutine(at.leavingLoop());
+        Coroutine end_loop = StartCoroutine(at.leavingLoop());
+
+		yield return at.waitForReadyForAdvance();
+
+		grid.changeTurn (TurnManager.Turn.BetweenStations);
+		grid.ending_event = true;
+
     }
+
+
 }

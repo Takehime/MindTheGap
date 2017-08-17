@@ -101,7 +101,7 @@ public class AtStation : MonoBehaviour {
         tm.setTurnToBetweenStations();
     }
 
-    IEnumerator waitForReadyForAdvance()
+    public IEnumerator waitForReadyForAdvance()
     {
         //print("1!!!ready_for_advance: " + ready_to_advance);
         yield return new WaitUntil(() => ready_to_advance);
@@ -346,7 +346,8 @@ public class AtStation : MonoBehaviour {
 						Direction tileDir = calculateDirByID(id, tile_id);
 						Direction doorDir = calculateNextDir(pos, id, player_id);
 
-						if (id == 13) {
+						if (id == 16) {
+							print ("ID#" + id + ", tile_id#" + tile_id);
 							print ("Tile_DIR: " + tileDir +", Door_DIR: " + doorDir);
 						}
 
@@ -403,15 +404,19 @@ public class AtStation : MonoBehaviour {
 
 
 	Direction calculateDirByID (int origin, int destiny) {
-		if (getIDPassengerRight(origin) == destiny) {
+		if (getIDPassengerRight (origin) == destiny) {
 			return Direction.RIGHT;
-		} else if (getIDPassengerLeft(origin) == destiny) {
+		} else if (getIDPassengerLeft (origin) == destiny) {
 			return Direction.LEFT;
-		} else if (getIDPassengerUp(origin) == destiny) {
+		} else if (getIDPassengerUp (origin) == destiny) {
 			return Direction.UP;
-		} else if (getIDPassengerBellow(origin) == destiny) {
+		} else if (getIDPassengerBellow (origin) == destiny) {
 			return Direction.DOWN;
-		} 
+		} else if (getIDPassengerBellow (getIDPassengerBellow (origin)) == destiny) {
+			return Direction.DOWN;
+		} else if (getIDPassengerUp (getIDPassengerUp (origin)) == destiny) {
+			return Direction.UP;
+		}
 		print("opa, isso nao deveria estar acontecendo");
 		return Direction.UP;
 	}

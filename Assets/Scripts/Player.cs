@@ -36,7 +36,7 @@ public class Player : IPassenger {
         curr_tile_id = newId;
     }
 
-    void changeTurn(TurnManager.Turn turn)
+    public void changeTurn(TurnManager.Turn turn)
     {
         curr_turn = turn;
     }
@@ -47,6 +47,7 @@ public class Player : IPassenger {
         {
             if (!swap_mode_active)
             {
+
                 if (curr_turn == TurnManager.Turn.BetweenStations)
                 {
                     swap_mode_active = true;
@@ -55,6 +56,7 @@ public class Player : IPassenger {
             }
             else
             {
+
                 if (curr_turn == TurnManager.Turn.BetweenStations)
                 {
                     swap_mode_active = false;

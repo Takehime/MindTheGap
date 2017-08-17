@@ -39,7 +39,7 @@ public class MapManager : MonoBehaviour {
         if (index == ending_trigger_index) {
             print("index: " + index);
             Ending end = FindObjectOfType<Ending>();
-            end.triggerEnd();
+			StartCoroutine(end.triggerEnd());
         }
     }
 

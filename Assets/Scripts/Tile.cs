@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour {
 
+	public delegate void InteractWithTile(int id);
+	public event InteractWithTile moveToTile;
+
     private int id;
 
     public void generateTile(int tile_id)
@@ -16,4 +19,12 @@ public class Tile : MonoBehaviour {
     {
         return id;
     }
+
+	public void _onMoveMode()
+	{
+		if (moveToTile != null)
+		{
+			moveToTile(id);
+		}
+	}
 }

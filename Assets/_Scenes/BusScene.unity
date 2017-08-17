@@ -108,31 +108,6 @@ NavMeshSettings:
     tileSize: 256
     accuratePlacement: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &1012725 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 1450840115785540, guid: c58ee7f2f695ddf4f9a5f5d67ca7adc7,
-    type: 2}
-  m_PrefabInternal: {fileID: 332137421}
---- !u!223 &1012726
-Canvas:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1012725}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_RenderMode: 2
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
-  m_PixelPerfect: 0
-  m_ReceivesEvents: 1
-  m_OverrideSorting: 1
-  m_OverridePixelPerfect: 0
-  m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
-  m_SortingLayerID: 0
-  m_SortingOrder: -1
-  m_TargetDisplay: 0
 --- !u!1001 &3782099
 Prefab:
   m_ObjectHideFlags: 0
@@ -557,31 +532,6 @@ RectTransform:
   m_PrefabParentObject: {fileID: 224721769174044024, guid: 9fd8a58a51899a143a9fc34bcd8a1612,
     type: 2}
   m_PrefabInternal: {fileID: 40129109}
---- !u!1 &40584888 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 1450840115785540, guid: c58ee7f2f695ddf4f9a5f5d67ca7adc7,
-    type: 2}
-  m_PrefabInternal: {fileID: 1787057951}
---- !u!223 &40584889
-Canvas:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 40584888}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_RenderMode: 2
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
-  m_PixelPerfect: 0
-  m_ReceivesEvents: 1
-  m_OverrideSorting: 1
-  m_OverridePixelPerfect: 0
-  m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
-  m_SortingLayerID: 0
-  m_SortingOrder: -1
-  m_TargetDisplay: 0
 --- !u!1001 &45383551
 Prefab:
   m_ObjectHideFlags: 0
@@ -1688,31 +1638,6 @@ CanvasRenderer:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 179622555}
---- !u!1 &190056636 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 1450840115785540, guid: c58ee7f2f695ddf4f9a5f5d67ca7adc7,
-    type: 2}
-  m_PrefabInternal: {fileID: 990664318}
---- !u!223 &190056637
-Canvas:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 190056636}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_RenderMode: 2
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
-  m_PixelPerfect: 0
-  m_ReceivesEvents: 1
-  m_OverrideSorting: 1
-  m_OverridePixelPerfect: 0
-  m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
-  m_SortingLayerID: 0
-  m_SortingOrder: -1
-  m_TargetDisplay: 0
 --- !u!1001 &218111413
 Prefab:
   m_ObjectHideFlags: 0
@@ -2296,31 +2221,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: -2
   m_TargetDisplay: 0
---- !u!1 &302303149 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 1450840115785540, guid: c58ee7f2f695ddf4f9a5f5d67ca7adc7,
-    type: 2}
-  m_PrefabInternal: {fileID: 1646544937}
---- !u!223 &302303150
-Canvas:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 302303149}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_RenderMode: 2
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
-  m_PixelPerfect: 0
-  m_ReceivesEvents: 1
-  m_OverrideSorting: 1
-  m_OverridePixelPerfect: 0
-  m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
-  m_SortingLayerID: 0
-  m_SortingOrder: -1
-  m_TargetDisplay: 0
 --- !u!1 &308217580
 GameObject:
   m_ObjectHideFlags: 0
@@ -2694,31 +2594,6 @@ GameObject:
   m_PrefabParentObject: {fileID: 1348636323329108, guid: 9fd8a58a51899a143a9fc34bcd8a1612,
     type: 2}
   m_PrefabInternal: {fileID: 262146024}
---- !u!1 &362135610 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 1450840115785540, guid: c58ee7f2f695ddf4f9a5f5d67ca7adc7,
-    type: 2}
-  m_PrefabInternal: {fileID: 166947360}
---- !u!223 &362135611
-Canvas:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 362135610}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_RenderMode: 2
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
-  m_PixelPerfect: 0
-  m_ReceivesEvents: 1
-  m_OverrideSorting: 1
-  m_OverridePixelPerfect: 0
-  m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
-  m_SortingLayerID: 0
-  m_SortingOrder: -1
-  m_TargetDisplay: 0
 --- !u!1001 &369452091
 Prefab:
   m_ObjectHideFlags: 0
@@ -3942,31 +3817,6 @@ RectTransform:
   m_PrefabParentObject: {fileID: 224295794267303852, guid: c58ee7f2f695ddf4f9a5f5d67ca7adc7,
     type: 2}
   m_PrefabInternal: {fileID: 607840682}
---- !u!1 &615284264 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 1450840115785540, guid: c58ee7f2f695ddf4f9a5f5d67ca7adc7,
-    type: 2}
-  m_PrefabInternal: {fileID: 852145695}
---- !u!223 &615284265
-Canvas:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 615284264}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_RenderMode: 2
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
-  m_PixelPerfect: 0
-  m_ReceivesEvents: 1
-  m_OverrideSorting: 1
-  m_OverridePixelPerfect: 0
-  m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
-  m_SortingLayerID: 0
-  m_SortingOrder: -1
-  m_TargetDisplay: 0
 --- !u!1 &618076528
 GameObject:
   m_ObjectHideFlags: 0
@@ -4330,6 +4180,12 @@ RectTransform:
   m_PrefabParentObject: {fileID: 224295794267303852, guid: c58ee7f2f695ddf4f9a5f5d67ca7adc7,
     type: 2}
   m_PrefabInternal: {fileID: 637588219}
+--- !u!114 &646026465 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114221807685310136, guid: c58ee7f2f695ddf4f9a5f5d67ca7adc7,
+    type: 2}
+  m_PrefabInternal: {fileID: 1385195809}
+  m_Script: {fileID: 11500000, guid: d2d47840de002054982010007c4102ed, type: 3}
 --- !u!1001 &682298312
 Prefab:
   m_ObjectHideFlags: 0
@@ -4658,31 +4514,6 @@ RectTransform:
   m_PrefabParentObject: {fileID: 224295794267303852, guid: c58ee7f2f695ddf4f9a5f5d67ca7adc7,
     type: 2}
   m_PrefabInternal: {fileID: 692656972}
---- !u!1 &701610710 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 1450840115785540, guid: c58ee7f2f695ddf4f9a5f5d67ca7adc7,
-    type: 2}
-  m_PrefabInternal: {fileID: 862083243}
---- !u!223 &701610711
-Canvas:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 701610710}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_RenderMode: 2
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
-  m_PixelPerfect: 0
-  m_ReceivesEvents: 1
-  m_OverrideSorting: 1
-  m_OverridePixelPerfect: 0
-  m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
-  m_SortingLayerID: 0
-  m_SortingOrder: -1
-  m_TargetDisplay: 0
 --- !u!1001 &706817894
 Prefab:
   m_ObjectHideFlags: 0
@@ -6306,31 +6137,6 @@ RectTransform:
   m_PrefabParentObject: {fileID: 224295794267303852, guid: c58ee7f2f695ddf4f9a5f5d67ca7adc7,
     type: 2}
   m_PrefabInternal: {fileID: 905558133}
---- !u!1 &912703735 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 1450840115785540, guid: c58ee7f2f695ddf4f9a5f5d67ca7adc7,
-    type: 2}
-  m_PrefabInternal: {fileID: 706817894}
---- !u!223 &912703736
-Canvas:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 912703735}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_RenderMode: 2
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
-  m_PixelPerfect: 0
-  m_ReceivesEvents: 1
-  m_OverrideSorting: 1
-  m_OverridePixelPerfect: 0
-  m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
-  m_SortingLayerID: 0
-  m_SortingOrder: -1
-  m_TargetDisplay: 0
 --- !u!1001 &949660288
 Prefab:
   m_ObjectHideFlags: 0
@@ -6744,31 +6550,6 @@ RectTransform:
   m_PrefabParentObject: {fileID: 224295794267303852, guid: c58ee7f2f695ddf4f9a5f5d67ca7adc7,
     type: 2}
   m_PrefabInternal: {fileID: 990664318}
---- !u!1 &1000156955 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 1450840115785540, guid: c58ee7f2f695ddf4f9a5f5d67ca7adc7,
-    type: 2}
-  m_PrefabInternal: {fileID: 1838738518}
---- !u!223 &1000156956
-Canvas:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1000156955}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_RenderMode: 2
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
-  m_PixelPerfect: 0
-  m_ReceivesEvents: 1
-  m_OverrideSorting: 1
-  m_OverridePixelPerfect: 0
-  m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
-  m_SortingLayerID: 0
-  m_SortingOrder: -1
-  m_TargetDisplay: 0
 --- !u!1001 &1011485238
 Prefab:
   m_ObjectHideFlags: 0
@@ -8737,6 +8518,12 @@ RectTransform:
   m_PrefabParentObject: {fileID: 224295794267303852, guid: c58ee7f2f695ddf4f9a5f5d67ca7adc7,
     type: 2}
   m_PrefabInternal: {fileID: 1299966555}
+--- !u!114 &1305500082 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114221807685310136, guid: c58ee7f2f695ddf4f9a5f5d67ca7adc7,
+    type: 2}
+  m_PrefabInternal: {fileID: 2125644301}
+  m_Script: {fileID: 11500000, guid: d2d47840de002054982010007c4102ed, type: 3}
 --- !u!1001 &1314960912
 Prefab:
   m_ObjectHideFlags: 0
@@ -9072,12 +8859,12 @@ Prefab:
     - target: {fileID: 114262932204999746, guid: fc1669d741afc5e4ab6577275682b9c2,
         type: 2}
       propertyPath: swap_duration
-      value: 0.3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114262932204999746, guid: fc1669d741afc5e4ab6577275682b9c2,
         type: 2}
       propertyPath: adtional_time_between_phases
-      value: 0.1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fc1669d741afc5e4ab6577275682b9c2, type: 2}
@@ -9268,6 +9055,21 @@ Prefab:
       value: 
       objectReference: {fileID: 21300000, guid: 5be709dec54b5b34e870aeb1a971e035,
         type: 3}
+    - target: {fileID: 114824909726929534, guid: c58ee7f2f695ddf4f9a5f5d67ca7adc7,
+        type: 2}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 646026465}
+    - target: {fileID: 114824909726929534, guid: c58ee7f2f695ddf4f9a5f5d67ca7adc7,
+        type: 2}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: _onMoveMode
+      objectReference: {fileID: 0}
+    - target: {fileID: 114824909726929534, guid: c58ee7f2f695ddf4f9a5f5d67ca7adc7,
+        type: 2}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c58ee7f2f695ddf4f9a5f5d67ca7adc7, type: 2}
   m_IsPrefabParent: 0
@@ -10182,31 +9984,6 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
   m_SortingOrder: -4
-  m_TargetDisplay: 0
---- !u!1 &1495401997 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 1450840115785540, guid: c58ee7f2f695ddf4f9a5f5d67ca7adc7,
-    type: 2}
-  m_PrefabInternal: {fileID: 3782099}
---- !u!223 &1495401998
-Canvas:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1495401997}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_RenderMode: 2
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
-  m_PixelPerfect: 0
-  m_ReceivesEvents: 1
-  m_OverrideSorting: 1
-  m_OverridePixelPerfect: 0
-  m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
-  m_SortingLayerID: 0
-  m_SortingOrder: -1
   m_TargetDisplay: 0
 --- !u!1001 &1497856456
 Prefab:
@@ -11344,31 +11121,6 @@ RectTransform:
   m_PrefabParentObject: {fileID: 224295794267303852, guid: c58ee7f2f695ddf4f9a5f5d67ca7adc7,
     type: 2}
   m_PrefabInternal: {fileID: 1604746289}
---- !u!1 &1611324084 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 1450840115785540, guid: c58ee7f2f695ddf4f9a5f5d67ca7adc7,
-    type: 2}
-  m_PrefabInternal: {fileID: 2117660050}
---- !u!223 &1611324085
-Canvas:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1611324084}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_RenderMode: 2
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
-  m_PixelPerfect: 0
-  m_ReceivesEvents: 1
-  m_OverrideSorting: 1
-  m_OverridePixelPerfect: 0
-  m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
-  m_SortingLayerID: 0
-  m_SortingOrder: -1
-  m_TargetDisplay: 0
 --- !u!4 &1618037505 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4806545956149580, guid: fc1669d741afc5e4ab6577275682b9c2,
@@ -11626,7 +11378,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ead999f48ea4abc4d8f6d28fb26b8955, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player_spawn_point: 36
+  player_spawn_point: 26
   tile_prefab: {fileID: 1450840115785540, guid: c58ee7f2f695ddf4f9a5f5d67ca7adc7,
     type: 2}
   passenger_prefab: {fileID: 1560168658210474, guid: 0ba0002ecf91a5a4b92d918436aefee5,
@@ -11646,6 +11398,7 @@ MonoBehaviour:
   pachinko_mode_active: 0
   door_id1: 54
   door_id2: 55
+  ending_event: 0
 --- !u!1001 &1646544937
 Prefab:
   m_ObjectHideFlags: 0
@@ -14524,31 +14277,6 @@ RectTransform:
   m_PrefabParentObject: {fileID: 224295794267303852, guid: c58ee7f2f695ddf4f9a5f5d67ca7adc7,
     type: 2}
   m_PrefabInternal: {fileID: 2080297303}
---- !u!1 &2083172995 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 1450840115785540, guid: c58ee7f2f695ddf4f9a5f5d67ca7adc7,
-    type: 2}
-  m_PrefabInternal: {fileID: 2050892790}
---- !u!223 &2083172996
-Canvas:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 2083172995}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_RenderMode: 2
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
-  m_PixelPerfect: 0
-  m_ReceivesEvents: 1
-  m_OverrideSorting: 1
-  m_OverridePixelPerfect: 0
-  m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
-  m_SortingLayerID: 0
-  m_SortingOrder: -1
-  m_TargetDisplay: 0
 --- !u!1 &2083856116
 GameObject:
   m_ObjectHideFlags: 0
@@ -14925,6 +14653,21 @@ Prefab:
       value: 
       objectReference: {fileID: 21300000, guid: 5be709dec54b5b34e870aeb1a971e035,
         type: 3}
+    - target: {fileID: 114824909726929534, guid: c58ee7f2f695ddf4f9a5f5d67ca7adc7,
+        type: 2}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1305500082}
+    - target: {fileID: 114824909726929534, guid: c58ee7f2f695ddf4f9a5f5d67ca7adc7,
+        type: 2}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: _onMoveMode
+      objectReference: {fileID: 0}
+    - target: {fileID: 114824909726929534, guid: c58ee7f2f695ddf4f9a5f5d67ca7adc7,
+        type: 2}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c58ee7f2f695ddf4f9a5f5d67ca7adc7, type: 2}
   m_IsPrefabParent: 0
