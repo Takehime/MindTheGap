@@ -45,6 +45,8 @@ public class AtStation : MonoBehaviour {
     private int added;
     private bool ready_to_advance = false;
 
+    public Animator background_animator;
+    public Animator camera_animator;
 
 	void Start () {
 		grid = FindObjectOfType<Grid>();
@@ -60,6 +62,10 @@ public class AtStation : MonoBehaviour {
 	}
 
 	IEnumerator stationLeavingCoroutine() {
+        background_animator.SetTrigger("stop");
+        yield return new WaitForSeconds(4f);
+        camera_animator.SetBool("shake", false);
+
         float time_stop_mov_anim = 1f;
         yield return new WaitForSeconds(time_stop_mov_anim);
 

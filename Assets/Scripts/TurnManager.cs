@@ -23,6 +23,7 @@ public class TurnManager : MonoBehaviour
     public Coroutine turn_loop;
 
     public Animator background_animator;
+    public Animator camera_animator;
 
     private Turn curr_turn;
     private MapManager mp;
@@ -54,7 +55,7 @@ public class TurnManager : MonoBehaviour
 
     void setTurnToAtStation() {
         curr_turn = Turn.AtStation;
-        background_animator.SetTrigger("stop");
+        // background_animator.SetTrigger("stop");
 
         if (changeTurn != null) {
             changeTurn(curr_turn);
@@ -67,9 +68,16 @@ public class TurnManager : MonoBehaviour
         advanceOnMapRoute();
     }
 
+    bool first_time = true;
     public void setTurnToBetweenStations() {
+        if (first_time) {
+            first_time = false;
+        } else {
+            background_animator.SetTrigger("start");
+            camera_animator.SetBool("shake", true);
+        }
+
         curr_turn = Turn.BetweenStations;
-        background_animator.SetTrigger("start");
 
         if (changeTurn != null) {
             changeTurn(curr_turn);
@@ -101,5 +109,4 @@ public class TurnManager : MonoBehaviour
     }
 
     #endregion
-
 }

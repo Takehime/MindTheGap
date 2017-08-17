@@ -30,21 +30,21 @@ public class MapManager : MonoBehaviour {
     }
 
     public void attMap(int index) {
-        print("index #" + index + " on routeMap is a " + routeMap[index]);
+        // print("index #" + index + " on routeMap is a " + routeMap[index]);
         if (index > 0) {
             routeMap[index - 1].transform.GetChild(0).gameObject.SetActive(false);
         }
         routeMap[index].transform.GetChild(0).gameObject.SetActive(true);
         //print("==> " + routeMap[index].transform.GetChild(0).gameObject.name);
         if (index == ending_trigger_index) {
-            print("index: " + index);
+            // print("index: " + index);
             Ending end = FindObjectOfType<Ending>();
 			StartCoroutine(end.triggerEnd());
         }
     }
 
 	public void _showStationInfo(GameObject go) {
-		print ("info_window: " + info_window);
+		// print ("info_window: " + info_window);
 		if (!info_window_active) {
 			info_window.SetActive (true);
 			info_window_active = true;
