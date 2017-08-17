@@ -15,7 +15,7 @@ public class Ending : MonoBehaviour {
         grid = FindObjectOfType<Grid>();
         tm = FindObjectOfType<TurnManager>();
 
-        StopCoroutine(at.leaving_coroutine);
+        StopIEnumerator(at.leaving_coroutine);
         StopCoroutine(tm.turn_loop);
 
         List<int> not_seats = grid.getAllNotSeats();

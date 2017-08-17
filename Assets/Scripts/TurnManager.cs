@@ -31,7 +31,7 @@ public class TurnManager : MonoBehaviour
     {
         mp = FindObjectOfType<MapManager>();
         scan = FindObjectOfType<Scan>();
-        //setTurnToBetweenStations();
+        setTurnToBetweenStations();
     }
 
     void Update()

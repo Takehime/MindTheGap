@@ -2429,7 +2429,6 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
 --- !u!1001 &332137421
 Prefab:
   m_ObjectHideFlags: 0
@@ -6607,6 +6606,11 @@ Prefab:
       propertyPath: map
       value: 
       objectReference: {fileID: 1275348293}
+    - target: {fileID: 114377753158158622, guid: c080ebed948c33041aeb06669c47de58,
+        type: 2}
+      propertyPath: time_between_turns
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c080ebed948c33041aeb06669c47de58, type: 2}
   m_IsPrefabParent: 0
@@ -9065,6 +9069,11 @@ Prefab:
       propertyPath: m_Name
       value: AtStationManager
       objectReference: {fileID: 0}
+    - target: {fileID: 114262932204999746, guid: fc1669d741afc5e4ab6577275682b9c2,
+        type: 2}
+      propertyPath: swap_duration
+      value: 0.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fc1669d741afc5e4ab6577275682b9c2, type: 2}
   m_IsPrefabParent: 0
@@ -9378,7 +9387,7 @@ Prefab:
     - target: {fileID: 114275705029804510, guid: 12456dfde35beac45a59ae393c02ffbf,
         type: 2}
       propertyPath: ending_trigger_index
-      value: 2
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 12456dfde35beac45a59ae393c02ffbf, type: 2}

@@ -11,7 +11,6 @@ public enum IDPosFromDoor{
 public class Grid : MonoBehaviour {
 
     [Header("Variables")]
-    [Range(54, 55)]
     public int player_spawn_point;
     [Header("Prefabs")]
     public GameObject tile_prefab;
@@ -101,11 +100,13 @@ public class Grid : MonoBehaviour {
         GameObject go = Instantiate(passenger_prefab);
         go.transform.SetParent(gameObject.transform.GetChild(1), false);
         PassengerType p_type;
-        do
+        
+		int desistencia = 0;
+		do
         {
             p_type = go.GetComponent<Passenger>().generatePassenger(passenger_types, tile_id);
+		} while (types_counter[p_type] > max_quantity-1 && desistencia++ < 200);
 
-        } while (types_counter[p_type] > max_quantity-1);
         types_counter[p_type]++;
         //print("P_type: " + p_type + ", count : " + types_counter[p_type]);
         go.transform.position = tiles[tile_id].transform.position;
@@ -281,10 +282,10 @@ public class Grid : MonoBehaviour {
 		}
 
         //inicia o turno
-        if (!alreadySwaped) {
+        /*if (!alreadySwaped) {
             tm.setTurnToBetweenStations();
             alreadySwaped = true;
-        }
+        }*/
     }
     #endregion
 

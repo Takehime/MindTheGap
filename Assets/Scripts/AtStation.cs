@@ -64,10 +64,6 @@ public class AtStation : MonoBehaviour {
         yield return new WaitForSeconds(time_stop_mov_anim);
 
         //phase 1 : sentados vao pro corredor
-
-        //print("etrei no passo 1, vou selecionar os seats");
-        //Debug.Break();
-
         selectSeats();
 
         //print("vou esperar por wait for advance");
@@ -121,6 +117,7 @@ public class AtStation : MonoBehaviour {
     #region passo 1
     void selectSeats() {
 		List<int> leavers = new List<int>();
+
         for (int i = 0; i < max_of_leavers; i++) {
             int selected;
             do {
@@ -138,8 +135,9 @@ public class AtStation : MonoBehaviour {
             );
             leavers.Add(selected);
         }
-        //leavers.Add(42);
-        //leavers.Add(49);
+
+//        leavers.Add(42);
+//        leavers.Add(49);
         StartCoroutine(joinThreads(leavers));
 	}
 
@@ -213,7 +211,7 @@ public class AtStation : MonoBehaviour {
 
     #region passo 2
 	IDPosFromDoor getPosFromDoor(int id) {
-        print("id #" + id + ", posFromDoor: " + grid.posFromDoor(id));
+//        print("id #" + id + ", posFromDoor: " + grid.posFromDoor(id));
 		return grid.posFromDoor (id);
 	}
 
@@ -304,16 +302,16 @@ public class AtStation : MonoBehaviour {
 
     public IEnumerator leavingLoop()
     {
+		printLeaversList ();
         int leavers_count = leavers.Count;
         foreach (Leaver l in leavers)
         {
-            print("id #" + l.getID() + ", pos: " + l.getPos());
+//            print("id #" + l.getID() + ", pos: " + l.getPos());
             if (l.getPos() == IDPosFromDoor.ON_DOOR)
             {
                 Destroy(grid.passengers[l.getID()]);
 				grid.passengers[l.getID()] = null;
                 leavers_count--;
-                break;
             }
         }
 		while (leavers_count > 0) {
@@ -323,6 +321,9 @@ public class AtStation : MonoBehaviour {
 				Leaver l = leavers[i];
 				int id = l.getID();
                 IDPosFromDoor pos = l.getPos();
+
+//				print ("id #" + id + ", pos: " + pos);
+
                 if (grid.passengers[id] == null) {
                     continue;
                 }
@@ -353,27 +354,27 @@ public class AtStation : MonoBehaviour {
 					}
 				}
 			}
-            if (!moved) {
-                for (int i = 0; i < leavers.Count; i++) {
-                    Leaver l = leavers[i];
-                    int id = l.getID();
-                    if (l.getPos() == IDPosFromDoor.ON_DOOR) {
-                        GameObject go = grid.passengers[l.getID()];
-                        print("id aaa : " + l.getID());
-                        print("id bbb : " + grid.passengers[l.getID()]);
+			if (!moved) {
+				for (int i = 0; i < leavers.Count; i++) {
+					Leaver l = leavers [i];
+					int id = l.getID ();
 
-                        PassengerType p_type = go.GetComponent<Passenger>().getPassengerType();
-                        grid.types_counter[p_type]--;
-                        Destroy(go);
-                        grid.passengers[l.getID()] = null;
-                        leavers_count--;
-                        break;
-                    }
-                }
-            }
-            float cycle_threshold = 0.4f;
-            float cycle_time = Random.Range(swap_duration - cycle_threshold, swap_duration);
-            yield return new WaitForSeconds(cycle_time);
+					if (l.getPos () == IDPosFromDoor.ON_DOOR) {
+						if (grid.passengers [l.getID ()] == null)
+							continue;
+						GameObject go = grid.passengers [l.getID ()];
+						PassengerType p_type = go.GetComponent<Passenger> ().getPassengerType ();
+						grid.types_counter [p_type]--;
+						Destroy (go);
+						grid.passengers [l.getID ()] = null;
+						leavers_count--;
+					}
+				}
+			} 
+
+			float cycle_threshold = 0.4f;
+			float cycle_time = Random.Range (swap_duration - cycle_threshold, swap_duration);
+			yield return new WaitForSeconds (cycle_time);
         }
         print("Leavers.count: " + leavers.Count);
         ready_to_advance = true;
@@ -441,7 +442,12 @@ public class AtStation : MonoBehaviour {
     {
         enterers = new List<Leaver>();
         added = 0;
-        createNewPassenger();
+
+		var empty_door = getDoorID ();
+		createNewPassenger(empty_door);
+		empty_door = getDoorID ();
+		if (empty_door != -1)
+			createNewPassenger (empty_door);
 
         while (added < n_leavers)
         {
@@ -451,27 +457,35 @@ public class AtStation : MonoBehaviour {
                 int p_id = p.getID();
 
                 List<GameObject> adjs = grid.calculateAdj(p_id);
-                foreach (GameObject tile in adjs)
+
+				adjs = Sort_Tiles (adjs);
+
+				foreach (GameObject tile in adjs)
                 {
                     int player_id = getIDPlayer();
                     int tile_id = tile.GetComponent<Tile>().getTileId();
-                    bool empty = grid.tileIsEmpty(tile_id);
+					bool empty = grid.tileIsEmpty(tile_id);
 
                     if (empty)
                     {
-                        //print ("Tile #" + tile_id + " is empty (detected by passenger #" + p_id + ").");
                         float mov_threshold = 0.3f;
                         float mov_time = Random.Range(swap_duration - mov_threshold, swap_duration + mov_threshold);
                         grid.movePassenger(p_id, tile_id, mov_time);
                         p.setID(tile_id);
+//						yield return new WaitForSeconds(swap_duration);
                         break;
                     }
                 }
-                yield return new WaitForSeconds(0.3f);
             }
-            createNewPassenger();
-            yield return new WaitForSeconds(0.3f);
+
+			yield return new WaitForSeconds(swap_duration + 0.1f);
+			empty_door = getDoorID ();
+			createNewPassenger(empty_door);
+			empty_door = getDoorID ();
+			if (empty_door != -1)
+				createNewPassenger (empty_door);
         }
+
         print("aaaaaaaa, added: " + added + ", n_leavers: " + n_leavers);
         ready_to_advance = true;
 
@@ -479,25 +493,48 @@ public class AtStation : MonoBehaviour {
         Debug.Break();
     }
 
-    void createNewPassenger ()
+	List<GameObject> Sort_Tiles(List<GameObject> list) {
+		bool swapped;
+		do
+		{
+			swapped = false;
+			for (int i = 0; i < list.Count - 1; i++)
+			{
+				if (list[i].GetComponent<Tile>().getTileId() > list[i + 1].GetComponent<Tile>().getTileId())
+				{
+					GameObject temp = list[i + 1];
+					list[i + 1] = list[i];
+					list[i] = temp;
+					swapped = true;
+				}
+			}
+		} while (swapped == true);
+
+		return list;
+	}
+
+	void createNewPassenger (int door_id)
     {
-        int door_id = getDoorID();
         grid.spawnPassenger(door_id);
         Leaver l = new Leaver(door_id);
-        added++;
         enterers.Add(l);
+		added++;
     }
 
     int getDoorID()
     {
-        int door_id = grid.door_id1;
-        if (grid.passengers[door_id] == null) {
-            return door_id;
+		var door1 = grid.passengers [grid.door_id1];
+		var door2 = grid.passengers [grid.door_id2];
+
+		if (door1 == null) {
+			return grid.door_id1;
         }
-        else {
-            door_id = grid.door_id2;
-            return door_id;
+		else if (door2 == null) {
+			return grid.door_id2;
         }
+
+		print ("Fuck you");
+		return -1;
     }
 
     #endregion
