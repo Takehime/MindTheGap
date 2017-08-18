@@ -106,8 +106,8 @@ public class Pachinko : MonoBehaviour {
                 audio.Play(audio.pachinko_cancel, 0.8f);
             trigger = "unshow_cancel";
         }
-        grid.pachinko_mode_active = false;
         pachinko_go.GetComponentInChildren<Animator>().SetTrigger(trigger);
+        grid.pachinko_mode_active = false;
     }
     #endregion
 
