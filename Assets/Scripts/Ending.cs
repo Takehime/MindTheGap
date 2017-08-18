@@ -56,8 +56,8 @@ public class Ending : MonoBehaviour {
 
     IEnumerator Ending_Song() {
         yield return new WaitForSeconds(6f);
-        // audio.Play_Real(audio.libera_me);
-        // at.swap_duration = 0.8f;
+        audio.Play_Real(audio.libera_me);
+        at.swap_duration = 0.8f;
     }
 
     public IEnumerator Driver_Ending() {
