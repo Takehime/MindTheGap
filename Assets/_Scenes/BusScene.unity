@@ -775,7 +775,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 809682193}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2285,10 +2285,21 @@ MonoBehaviour:
     type: 2}
   inner_window_info: {fileID: 1787385774917432, guid: c77f7ca618658444588571a19c79023d,
     type: 2}
-  estudante_info: {fileID: 21300000, guid: a22581b305318e84fa318c0aeae10c37, type: 3}
-  idoso_info: {fileID: 21300000, guid: c4ccb85285e7108449dd8ad7b8ce86f8, type: 3}
-  turista_info: {fileID: 21300000, guid: dad06e78d33df9640a63d67b044431d4, type: 3}
-  varejista_info: {fileID: 21300000, guid: fb39e61b5248a5243b6023b8975853ea, type: 3}
+  estudante_info:
+  - {fileID: 21300000, guid: c1abf02c29b5fdb42b02b4eaf712cd4f, type: 3}
+  - {fileID: 21300000, guid: 047c6a8c320106c4e93ea03f0480e9e7, type: 3}
+  - {fileID: 21300000, guid: 755b037e6a0ff82439c0f703685964d7, type: 3}
+  idoso_info:
+  - {fileID: 21300000, guid: 594f2a4f582064f44bb0881d0fd954be, type: 3}
+  - {fileID: 21300000, guid: bf66c1bfd6af83c4ab169c1ab227233f, type: 3}
+  turista_info:
+  - {fileID: 21300000, guid: 139714412ac935243b8067ce3ab55568, type: 3}
+  - {fileID: 21300000, guid: 3f52abca75050874882c484bf47f21d3, type: 3}
+  - {fileID: 21300000, guid: 2b58a66824c58b9408013f68e032510e, type: 3}
+  varejista_info:
+  - {fileID: 21300000, guid: 4b7924d1ad820324fb4a60d2b4013d00, type: 3}
+  - {fileID: 21300000, guid: 8ba14fdc0c4581a4b8aeec3a2040a0eb, type: 3}
+  trabalhador_info: []
 --- !u!212 &308217584
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5251,8 +5262,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 81307668}
   - {fileID: 812658655}
+  - {fileID: 81307668}
   m_Father: {fileID: 1674334293}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5323,7 +5334,7 @@ RectTransform:
   m_LocalScale: {x: 50.05682, y: 50.05682, z: 1.10125}
   m_Children: []
   m_Father: {fileID: 809682193}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -6416,7 +6427,7 @@ Prefab:
     - target: {fileID: 114377753158158622, guid: c080ebed948c33041aeb06669c47de58,
         type: 2}
       propertyPath: time_between_turns
-      value: 2
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 114377753158158622, guid: c080ebed948c33041aeb06669c47de58,
         type: 2}
