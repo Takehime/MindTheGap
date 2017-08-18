@@ -42,6 +42,7 @@ public class MapManager : MonoBehaviour {
         if (index > 0) {
             routeMap[index - 1].transform.GetChild(0).gameObject.SetActive(false);
         }
+
         routeMap[index].transform.GetChild(0).gameObject.SetActive(true);
         //print("==> " + routeMap[index].transform.GetChild(0).gameObject.name);
         if (index == ending_trigger_index) {

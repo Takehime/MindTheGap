@@ -30,13 +30,14 @@ public class TurnManager : MonoBehaviour
     private Scan scan;
     private Pachinko pachinko;
     private static int routeMapIndex = 0;
+    bool first_time = true;
 
     void Start()
     {
         mp = FindObjectOfType<MapManager>();
         scan = FindObjectOfType<Scan>();
         pachinko = FindObjectOfType<Pachinko>();
-        setTurnToBetweenStations();
+        //setTurnToBetweenStations();
     }
 
     void Update()
@@ -57,7 +58,7 @@ public class TurnManager : MonoBehaviour
 
     void setTurnToAtStation() {
         curr_turn = Turn.AtStation;
-        // background_animator.SetTrigger("stop");
+        //background_animator.SetTrigger("stop");
 
         if (changeTurn != null) {
             changeTurn(curr_turn);
@@ -71,7 +72,6 @@ public class TurnManager : MonoBehaviour
         pachinko.makePachinkoFaster();
     }
 
-    bool first_time = true;
     public void setTurnToBetweenStations() {
         if (first_time) {
             first_time = false;
@@ -85,11 +85,21 @@ public class TurnManager : MonoBehaviour
         if (changeTurn != null) {
             changeTurn(curr_turn);
         }
+            advanceOnMapRoute();
         //moveMap();
         //print("movi o mapa");
 
-        advanceOnMapRoute();
         turn_loop = StartCoroutine(BetweenStationTurnLoop());
+    }
+
+    public void setTurnToBetweenStations_Ending() {
+        background_animator.SetTrigger("stop");
+        camera_animator.SetTrigger("stop_shake");
+
+        curr_turn = Turn.BetweenStations;
+        if (changeTurn != null) {
+            changeTurn(curr_turn);
+        }
     }
 
     public IEnumerator BetweenStationTurnLoop()

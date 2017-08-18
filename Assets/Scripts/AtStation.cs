@@ -265,7 +265,9 @@ public class AtStation : MonoBehaviour {
                 else
                     return Direction.LEFT;
             case IDPosFromDoor.MID:
-                if (isOnVerticalLeft(id) && isOnVerticalLeft(player_id))
+                if (passengerOnFirstLineOfSeats(id) || passengerOnSecondLineOfSeats(id))
+                    return Direction.DOWN;
+                else if (isOnVerticalLeft(id) && isOnVerticalLeft(player_id))
                     return Direction.RIGHT;
                 else if (isOnVerticalRight(id) && isOnVerticalRight(player_id))
 					return Direction.LEFT;
@@ -358,7 +360,7 @@ public class AtStation : MonoBehaviour {
 						Direction tileDir = calculateDirByID(id, tile_id);
 						Direction doorDir = calculateNextDir(pos, id, player_id);
 
-						if (id == 16) {
+						if (id == 15) {
 							print ("ID#" + id + ", tile_id#" + tile_id);
 							print ("Tile_DIR: " + tileDir +", Door_DIR: " + doorDir);
 						}
@@ -502,7 +504,7 @@ public class AtStation : MonoBehaviour {
                         float mov_time = Random.Range(swap_duration - mov_threshold, swap_duration + mov_threshold);
                         grid.movePassenger(p_id, tile_id, mov_time);
                         p.setID(tile_id);
-						yield return new WaitForSeconds(0.1f);
+						yield return new WaitForSeconds(0.2f);
                         break;
                     }
                 }
