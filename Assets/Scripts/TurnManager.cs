@@ -20,14 +20,20 @@ public class TurnManager : MonoBehaviour
     public GameObject map;
     public float space_between_stations_on_map;
     public float time_between_turns;
+    public Coroutine turn_loop;
+
+    public Animator background_animator;
+    public Animator camera_animator;
 
     private Turn curr_turn;
     private MapManager mp;
+    private Scan scan;
     private static int routeMapIndex = 0;
 
     void Start()
     {
         mp = FindObjectOfType<MapManager>();
+        scan = FindObjectOfType<Scan>();
         setTurnToBetweenStations();
     }
 
@@ -49,7 +55,8 @@ public class TurnManager : MonoBehaviour
 
     void setTurnToAtStation() {
         curr_turn = Turn.AtStation;
-        Debug.Log("turn: " + curr_turn);
+        // background_animator.SetTrigger("stop");
+
         if (changeTurn != null) {
             changeTurn(curr_turn);
         }
@@ -57,13 +64,21 @@ public class TurnManager : MonoBehaviour
             startStationLeaving();
         }
 
+        scan.leaveScanMode();
         advanceOnMapRoute();
-
     }
 
+    bool first_time = true;
     public void setTurnToBetweenStations() {
+        if (first_time) {
+            first_time = false;
+        } else {
+            background_animator.SetTrigger("start");
+            camera_animator.SetBool("shake", true);
+        }
+
         curr_turn = Turn.BetweenStations;
-        Debug.Log("turn: " + curr_turn);
+
         if (changeTurn != null) {
             changeTurn(curr_turn);
         }
@@ -71,11 +86,10 @@ public class TurnManager : MonoBehaviour
         //print("movi o mapa");
 
         advanceOnMapRoute();
-        StartCoroutine(BetweenStationTurnLoop());
-
+        turn_loop = StartCoroutine(BetweenStationTurnLoop());
     }
 
-    IEnumerator BetweenStationTurnLoop()
+    public IEnumerator BetweenStationTurnLoop()
     {
         yield return new WaitForSeconds(time_between_turns);
         setTurnToAtStation();
@@ -95,5 +109,4 @@ public class TurnManager : MonoBehaviour
     }
 
     #endregion
-
 }

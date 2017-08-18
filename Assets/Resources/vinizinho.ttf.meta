@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 01aa321c03f781e4abb1ac8b14ed1fea
+timeCreated: 1502841505
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: vinizinho
+  fontNames:
+  - vinizinho
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
