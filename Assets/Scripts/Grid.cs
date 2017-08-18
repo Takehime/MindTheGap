@@ -360,10 +360,10 @@ public class Grid : MonoBehaviour {
 		}
 
         //inicia o turno
-        /*if (!alreadySwaped) {
+        if (!alreadySwaped) {
             tm.setTurnToBetweenStations();
             alreadySwaped = true;
-        }*/
+        }
     }
     #endregion
 
