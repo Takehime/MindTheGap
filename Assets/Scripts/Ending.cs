@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.PostProcessing;
 
 public class Ending : MonoBehaviour {
 
@@ -13,6 +14,9 @@ public class Ending : MonoBehaviour {
 
     public DialogBox dialog;
     public Transform driver;
+
+    public Camera mainCamera;
+    public Roll credits;
 
     void Start() {
         audio = AudioManager.Get_Audio_Manager();
@@ -88,12 +92,19 @@ public class Ending : MonoBehaviour {
 
        yield return Roll_Credits();
 
+       yield return new WaitForSeconds(3.0f);
+
+       audio.Play(audio.passenger_in, 1f);
+       yield return new WaitForSeconds(0.3f);
+
        Application.Quit();
     }
 
     public static bool final_breath = false;
 
     IEnumerator Roll_Credits() {
-        yield break;
+        credits.gameObject.SetActive(true);
+        mainCamera.GetComponentInChildren<PostProcessingBehaviour>().enabled = true;
+        yield return new WaitUntil(() => credits.ended);
     }
 }
