@@ -27,6 +27,7 @@ public class AudioManager : MonoBehaviour {
 	public AudioClip scan_enter;
 	public AudioClip scan_leave;
 	public AudioClip libera_me;
+	public AudioClip enya_time;
 
 	public void Play(AudioClip clip, float volume) {
 		source.PlayOneShot(clip, volume);

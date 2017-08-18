@@ -74,7 +74,7 @@ public class TurnManager : MonoBehaviour
             first_time = false;
         } else {
             background_animator.SetTrigger("start");
-            camera_animator.SetBool("shake", true);
+            camera_animator.SetTrigger("start_shake");
         }
 
         curr_turn = Turn.BetweenStations;

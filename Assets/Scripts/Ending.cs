@@ -11,6 +11,7 @@ public class Ending : MonoBehaviour {
     private List<Leaver> leavers = new List<Leaver>();
     private AudioManager audio;
 
+    public DialogBox dialog;
     public Transform driver;
 
     void Start() {
@@ -80,9 +81,19 @@ public class Ending : MonoBehaviour {
             driver.DOMove(player.transform.position + new Vector3(0, 1), time * 10);
             yield return new WaitForSeconds(time*10);
         }
-        
-        // yield return new WaitForSeconds(time*10);
+
+       yield return dialog.Text();
+       
+       audio.Play_Real(audio.enya_time);
+
+       yield return Roll_Credits();
+
+       Application.Quit();
     }
 
     public static bool final_breath = false;
+
+    IEnumerator Roll_Credits() {
+        yield break;
+    }
 }

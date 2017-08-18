@@ -69,7 +69,7 @@ public class AtStation : MonoBehaviour {
         background_animator.SetTrigger("stop");
         audio.Play(audio.bus_stopping, 0.7f);
         yield return new WaitForSeconds(4f);
-        camera_animator.SetBool("shake", false);
+        camera_animator.SetTrigger("stop_shake");
 
         float time_stop_mov_anim = 1f;
         yield return new WaitForSeconds(time_stop_mov_anim);

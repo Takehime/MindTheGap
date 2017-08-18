@@ -181,6 +181,7 @@ public class Grid : MonoBehaviour {
 
     void leaveSwapMode(int old_tile_id, int new_tile_id )
     {
+		changePassengersAlpha(player_adj, false);
         swap_mode_active = false;
         tiles[old_tile_id].GetComponent<Image>().color = new Color32(195, 213, 255, 255);
         tiles[new_tile_id].GetComponent<Image>().color = new Color32(226, 157, 82, 255);
@@ -194,7 +195,6 @@ public class Grid : MonoBehaviour {
 				return;
 			}
 		}
-		changePassengersAlpha(player_adj, false);
     }
 
     public List<GameObject> calculateAdj(int id)
@@ -262,6 +262,9 @@ public class Grid : MonoBehaviour {
         {
             if (adj_list.Count != 0 && !adj_list.Contains(tiles[i]))
             {
+                if (passengers[i] == null) 
+                    continue;
+                    
                 var color = passengers[i].GetComponent<Image>().color;
                 passengers[i].GetComponent<Image>().color = new Color(
                     color.r,
