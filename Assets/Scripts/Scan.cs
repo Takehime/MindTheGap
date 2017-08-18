@@ -19,11 +19,13 @@ public class Scan : MonoBehaviour
     private GameObject curr_scan_window;
     private Grid grid_ref;
     private List<Sprite> sprites_to_passengers = new List<Sprite>();
+    private TurnManager tm;
 
     public AudioManager audio;
 
     void Start()
     {
+        tm = FindObjectOfType<TurnManager>();
         audio = AudioManager.Get_Audio_Manager();
         grid_ref = FindObjectOfType<Grid>();
 
@@ -34,7 +36,7 @@ public class Scan : MonoBehaviour
 
     public void _checkIfScanWasActivated()
     {
-        if (!scan_is_active)
+        if (!scan_is_active && tm.curr_turn != TurnManager.Turn.AtStation)
             enterScanMode();
         else
             leaveScanMode();
@@ -111,6 +113,10 @@ public class Scan : MonoBehaviour
             case PassengerType.VAREJISTA:
                 selected = Random.Range(0, varejista_info.Count);
                 go.GetComponent<Image>().sprite = varejista_info[selected];
+                break;
+            case PassengerType.TRABALHADOR:
+                selected = Random.Range(0, trabalhador_info.Count);
+                go.GetComponent<Image>().sprite = trabalhador_info[selected];
                 break;
         }
         return go.GetComponent<Image>().sprite;

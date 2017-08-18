@@ -226,6 +226,12 @@ public class Pachinko : MonoBehaviour {
         else
             return false;
     }
+
+    public void makePachinkoFaster() {
+        time_roulette_spot_is_selected -= 0.2f;
+        time_to_start_next_roulette_round -= 0.05f;
+    }
+
     #endregion
 
     #region signal management

@@ -19,21 +19,23 @@ public class TurnManager : MonoBehaviour
 
     public GameObject map;
     public float space_between_stations_on_map;
-    public float time_between_turns;
+    public float initial_time_between_turns;
     public Coroutine turn_loop;
+    public Turn curr_turn;
 
     public Animator background_animator;
     public Animator camera_animator;
 
-    private Turn curr_turn;
     private MapManager mp;
     private Scan scan;
+    private Pachinko pachinko;
     private static int routeMapIndex = 0;
 
     void Start()
     {
         mp = FindObjectOfType<MapManager>();
         scan = FindObjectOfType<Scan>();
+        pachinko = FindObjectOfType<Pachinko>();
         setTurnToBetweenStations();
     }
 
@@ -66,6 +68,7 @@ public class TurnManager : MonoBehaviour
 
         scan.leaveScanMode();
         advanceOnMapRoute();
+        pachinko.makePachinkoFaster();
     }
 
     bool first_time = true;
@@ -91,7 +94,7 @@ public class TurnManager : MonoBehaviour
 
     public IEnumerator BetweenStationTurnLoop()
     {
-        yield return new WaitForSeconds(time_between_turns);
+        yield return new WaitForSeconds(initial_time_between_turns);
         setTurnToAtStation();
     }
     #endregion
@@ -100,7 +103,7 @@ public class TurnManager : MonoBehaviour
 
     void moveMap() {
         Vector3 target = map.transform.position - new Vector3(space_between_stations_on_map, 0, 0);
-        map.transform.DOMove(target, time_between_turns);
+        map.transform.DOMove(target, initial_time_between_turns);
     }
 
     void advanceOnMapRoute() {

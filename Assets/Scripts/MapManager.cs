@@ -16,10 +16,12 @@ public class MapManager : MonoBehaviour {
 
     private bool map_window_active = false;
 	private bool info_window_active = false;
+    private TurnManager tm;
 
-	void Start() {
+    void Start() {
 		info_window.GetComponentInChildren<TextMeshProUGUI> ().text = "<b>estaçao</b>:\n<b>perfil</b>:";
-	}
+        tm = FindObjectOfType<TurnManager>();
+    }
 
     public void _openCloseMap() {
         bool aux;
@@ -46,6 +48,10 @@ public class MapManager : MonoBehaviour {
             // print("index: " + index);
             Ending end = FindObjectOfType<Ending>();
 			StartCoroutine(end.triggerEnd());
+        } else if (index == 2) { //segunda estação (Mercadão)
+            tm.initial_time_between_turns = 45;
+        } else if (index == 4) { //quarta estação (Penha)
+            tm.initial_time_between_turns = 30;
         }
     }
 

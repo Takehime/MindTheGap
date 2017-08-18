@@ -519,7 +519,7 @@ public class AtStation : MonoBehaviour {
         print("aaaaaaaa, added: " + added + ", n_leavers: " + n_leavers);
         ready_to_advance = true;
 
-        print("vou pausar");
+        //print("vou pausar");
         Debug.Break();
     }
 

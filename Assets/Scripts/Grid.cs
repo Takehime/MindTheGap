@@ -175,7 +175,6 @@ public class Grid : MonoBehaviour {
 				return;
 			}
 		}
-
         changePassengersAlpha(player_adj, true);
     }
 
