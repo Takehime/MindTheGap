@@ -8,14 +8,17 @@ public class Scan : MonoBehaviour
     public Image scan_mask;
     public GameObject outer_window_info;
     public GameObject inner_window_info;
-    public Sprite estudante_info;
-    public Sprite idoso_info;
-    public Sprite turista_info;
-    public Sprite varejista_info;
-    
+    [Header("Sprites")]
+    public List<Sprite> estudante_info;
+    public List<Sprite> idoso_info;
+    public List<Sprite> turista_info;
+    public List<Sprite> varejista_info;
+    public List<Sprite> trabalhador_info;
+
     private bool scan_is_active;
     private GameObject curr_scan_window;
     private Grid grid_ref;
+    private List<Sprite> sprites_to_passengers = new List<Sprite>();
 
     public AudioManager audio;
 
@@ -23,6 +26,10 @@ public class Scan : MonoBehaviour
     {
         audio = AudioManager.Get_Audio_Manager();
         grid_ref = FindObjectOfType<Grid>();
+
+        for (int i = 0; i < 60; i++) {
+            sprites_to_passengers.Add(null);
+        }
     }
 
     public void _checkIfScanWasActivated()
@@ -37,7 +44,6 @@ public class Scan : MonoBehaviour
     {
         audio.Play(audio.scan_enter, 0.8f);
         scan_mask.enabled = true;
-        print(scan_mask.enabled);
         scan_is_active = true;
         grid_ref.scan_mode_active = true;
     }
@@ -85,23 +91,29 @@ public class Scan : MonoBehaviour
         spawnInnerInfoWindow(tile_id, p_type);
     }
 
-    void setImageByPassengerType(GameObject go, PassengerType p_type)
+    Sprite setImageByPassengerType(GameObject go, PassengerType p_type)
     {
+        int selected = -1;
         switch (p_type)
         {
             case PassengerType.TURISTA:
-                go.GetComponent<Image>().sprite = turista_info;
+                selected = Random.Range(0, turista_info.Count);
+                go.GetComponent<Image>().sprite = turista_info[selected];
                 break;
             case PassengerType.IDOSO:
-                go.GetComponent<Image>().sprite = idoso_info;
+                selected = Random.Range(0, idoso_info.Count);
+                go.GetComponent<Image>().sprite = idoso_info[selected];
                 break;
             case PassengerType.ESTUDANTE:
-                go.GetComponent<Image>().sprite = estudante_info;
+                selected = Random.Range(0, estudante_info.Count);
+                go.GetComponent<Image>().sprite = estudante_info[selected];
                 break;
             case PassengerType.VAREJISTA:
-                go.GetComponent<Image>().sprite = varejista_info;
+                selected = Random.Range(0, varejista_info.Count);
+                go.GetComponent<Image>().sprite = varejista_info[selected];
                 break;
         }
+        return go.GetComponent<Image>().sprite;
     }
 
     void setGameObjectPosition(GameObject go, int tile_id, float offset)
@@ -128,7 +140,14 @@ public class Scan : MonoBehaviour
         child.transform.SetParent(curr_scan_window.transform, false);
         child.transform.localPosition = new Vector3(0, 0, 0);
         setGameObjectScale(child, tile_id, 0.5f);
-        setImageByPassengerType(child, p_type);
+
+        if (sprites_to_passengers[tile_id] == null) {
+            print("nenhum sprite foi ainda gerado pra esse passageiro");
+            Sprite s = setImageByPassengerType(child, p_type);
+            sprites_to_passengers[tile_id] = s;
+        } else {
+            child.GetComponent<Image>().sprite = sprites_to_passengers[tile_id];
+        }
     }
 
 }
