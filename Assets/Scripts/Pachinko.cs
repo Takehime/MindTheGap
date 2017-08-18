@@ -52,7 +52,11 @@ public class Pachinko : MonoBehaviour {
         setPassengerColor(color);
         setCorrectWordSequence();
         initializeWordSequenceText();
-        StartCoroutine(startRouletteLoop());
+        
+        if (roulette_running != null) {
+            StopCoroutine(roulette_running);
+        }
+        roulette_running = StartCoroutine(startRouletteLoop());
     }
 
     void setNextRound(int value)
@@ -61,12 +65,19 @@ public class Pachinko : MonoBehaviour {
         setNextWordSequences(value);
     }
 
+    Coroutine roulette_running = null;
+    Coroutine roulette_loop = null;
     IEnumerator startRouletteLoop()
     {
+        if (roulette_loop != null) {
+            StopCoroutine(roulette_loop);
+            roulette_loop = null;
+        }
+
         for (int i = 0; i < rounds; i++)
         {
             setNextRound(i);
-            Coroutine roulette_loop = StartCoroutine(rouletteLooping());
+            roulette_loop = StartCoroutine(rouletteLooping());
             yield return StartCoroutine(waitForKeyDown(KeyCode.F));
             StopCoroutine(roulette_loop);
             updateWordSequence();
@@ -74,6 +85,7 @@ public class Pachinko : MonoBehaviour {
             resetRouletteScale();
         }
         //checkMark.SetActive(true);
+        roulette_running = null;
         leavePachinkoMode(true);
     }
 
@@ -97,6 +109,14 @@ public class Pachinko : MonoBehaviour {
 
     public void leavePachinkoMode(bool confirm)
     {
+        // if (roulette_running == null) {
+        //     return;
+        // }
+        // else {
+        //     StopCoroutine(roulette_running);
+        //     roulette_running = null;
+        // }
+
         string trigger = "";
         if (confirm) {
             audio.Play(audio.pachinko_confirmation, 0.8f);

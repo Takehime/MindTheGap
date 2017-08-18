@@ -42,9 +42,10 @@ public class Passenger : IPassenger {
 
     public void onSwapMode()
     {
-        if (swapTarget != null)
+        if (swapTarget != null && !in_cooldown)
         {
             swapTarget(curr_tile_id, p_type);
+            StartCoroutine(Cooldown());
         }
     }
 
@@ -54,6 +55,13 @@ public class Passenger : IPassenger {
         {
             scanTarget(curr_tile_id, p_type);
         }
+    }
+
+    bool in_cooldown = false;
+    IEnumerator Cooldown() {
+        in_cooldown = true;
+        yield return new WaitForSeconds(1f);
+        in_cooldown = false;
     }
 
 }

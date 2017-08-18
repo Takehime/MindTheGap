@@ -23,7 +23,13 @@ public class Ending : MonoBehaviour {
         at = FindObjectOfType<AtStation>();
         grid = FindObjectOfType<Grid>();
         tm = FindObjectOfType<TurnManager>();
-        // StartCoroutine(Driver_Ending());
+
+        // StartCoroutine(Foo());
+    }
+
+    IEnumerator Foo() {
+        yield return new WaitForSeconds(2f);
+        StartCoroutine(Roll_Credits(GameObject.FindGameObjectWithTag("Player")));
     }
 
 	public IEnumerator triggerEnd() {
@@ -47,8 +53,9 @@ public class Ending : MonoBehaviour {
         }
         at.leavers = leavers;
         
-        yield return new WaitForSeconds(4.0f);
-		mainCamera.GetComponent<Animator>().SetTrigger("stop");
+        yield return new WaitForSeconds(2.0f);
+		mainCamera.GetComponent<Animator>().SetTrigger("stop_shake");
+        yield return new WaitForSeconds(2.0f);
         Coroutine end_loop = StartCoroutine(at.leavingLoop());
 
 		yield return at.waitForReadyForAdvance();
@@ -92,6 +99,7 @@ public class Ending : MonoBehaviour {
        yield return dialog.Text();
        
        audio.Play_Real(audio.enya_time);
+       yield return new WaitForSeconds(1.0f);
 
        yield return Roll_Credits(player);
 
@@ -106,17 +114,23 @@ public class Ending : MonoBehaviour {
     public static bool final_breath = false;
 
     IEnumerator Roll_Credits(GameObject player) {
-        credits.gameObject.SetActive(true);
         mainCamera.GetComponentInChildren<PostProcessingBehaviour>().enabled = true;
+        mainCamera.GetComponent<Animator>().enabled = false;
         
-        mainCamera.transform.SetParent(player.transform);
-        mainCamera.transform.DOMove(
-            new Vector3(-6.23f, 0, -10),
-            2f
-        );
         yield return new WaitForSeconds(2f);
-		mainCamera.DOOrthoSize(0.34f, 60);
+        credits.gameObject.SetActive(true);
 
+        var aux = mainCamera.transform.position;
+        mainCamera.transform.SetParent(player.transform);
+        mainCamera.transform.DOLocalMove(
+            new Vector3(
+                - 6.23f,
+                0,
+                -10),
+            200f
+        );
+		mainCamera.DOOrthoSize(0.34f, 200f);
+        
 		yield return new WaitUntil(() => credits.ended);
     }
 }

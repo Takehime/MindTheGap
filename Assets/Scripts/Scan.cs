@@ -36,7 +36,7 @@ public class Scan : MonoBehaviour
 
     public void _checkIfScanWasActivated()
     {
-        if (!scan_is_active && tm.curr_turn != TurnManager.Turn.AtStation)
+        if (!scan_is_active && (tm.curr_turn != TurnManager.Turn.AtStation || !grid_ref.alreadySwaped))
             enterScanMode();
         else
             leaveScanMode();
@@ -144,11 +144,12 @@ public class Scan : MonoBehaviour
     {
         GameObject child = Instantiate(inner_window_info);
         child.transform.SetParent(curr_scan_window.transform, false);
-        child.transform.localPosition = new Vector3(0, 0, 0);
         setGameObjectScale(child, tile_id, 0.5f);
 
+        child.transform.localPosition = new Vector3(0, -5, 0);
+
         if (sprites_to_passengers[tile_id] == null) {
-            print("nenhum sprite foi ainda gerado pra esse passageiro");
+            // print("nenhum sprite foi ainda gerado pra esse passageiro");
             Sprite s = setImageByPassengerType(child, p_type);
             sprites_to_passengers[tile_id] = s;
         } else {

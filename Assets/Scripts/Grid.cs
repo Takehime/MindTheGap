@@ -43,7 +43,7 @@ public class Grid : MonoBehaviour {
     private Pachinko pachinko;
     private Coroutine swapMode;
     private TurnManager tm;
-    private bool alreadySwaped = false;
+    public bool alreadySwaped = false;
 
     public Ending ending;
 

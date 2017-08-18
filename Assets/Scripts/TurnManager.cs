@@ -58,6 +58,7 @@ public class TurnManager : MonoBehaviour
 
     void setTurnToAtStation() {
         curr_turn = Turn.AtStation;
+        print("At stations");
         //background_animator.SetTrigger("stop");
 
         if (changeTurn != null) {
@@ -73,6 +74,7 @@ public class TurnManager : MonoBehaviour
     }
 
     public void setTurnToBetweenStations() {
+        print("Between stations");
         if (first_time) {
             first_time = false;
         } else {

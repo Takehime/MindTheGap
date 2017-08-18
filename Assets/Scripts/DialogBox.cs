@@ -7,10 +7,9 @@ public class DialogBox : MonoBehaviour {
 
 	[SerializeField]
 	TextMeshProUGUI dialogText;
-	[SerializeField]
-	AudioManager audio;
 
 	public GameObject dialogBox;
+	public AudioSource audio;
 
 	bool skip_display = false;
 	bool next_dialog = false;
@@ -18,7 +17,6 @@ public class DialogBox : MonoBehaviour {
 	bool dialog_active = false;
 
 	void Start() {
-		audio = AudioManager.Get_Audio_Manager();
 		dialogBox.SetActive(false);
 	}
 
@@ -50,7 +48,7 @@ public class DialogBox : MonoBehaviour {
 			}
 
 			dialogText.text = text.Substring(0, current_character++) + "<color=#00000000>a</color>";
-			audio.Play(audio.shake_f_sound, 0.4f);			
+			audio.Play();			
 			yield return HushPuppy.WaitForEndOfFrames(speed);
 		}
 
