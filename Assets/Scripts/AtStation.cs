@@ -68,7 +68,7 @@ public class AtStation : MonoBehaviour {
 	IEnumerator stationLeavingCoroutine() {
         background_animator.SetTrigger("stop");
         audio.Play(audio.bus_stopping, 0.7f);
-        yield return new WaitForSeconds(4f);
+        yield return new WaitForSeconds(3f);
         camera_animator.SetBool("shake", false);
 
         float time_stop_mov_anim = 1f;
@@ -519,7 +519,7 @@ public class AtStation : MonoBehaviour {
         print("aaaaaaaa, added: " + added + ", n_leavers: " + n_leavers);
         ready_to_advance = true;
 
-        print("vou pausar");
+        //print("vou pausar");
         Debug.Break();
     }
 
