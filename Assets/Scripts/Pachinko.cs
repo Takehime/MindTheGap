@@ -229,7 +229,7 @@ public class Pachinko : MonoBehaviour {
 
     public void makePachinkoFaster() {
         time_roulette_spot_is_selected -= 0.2f;
-        time_to_start_next_roulette_round -= 0.05f;
+        time_to_start_next_roulette_round -= 0.1f;
     }
 
     #endregion

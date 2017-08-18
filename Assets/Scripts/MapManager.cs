@@ -42,6 +42,12 @@ public class MapManager : MonoBehaviour {
         if (index > 0) {
             routeMap[index - 1].transform.GetChild(0).gameObject.SetActive(false);
         }
+        print("index: " + index);
+        print("routeMap[index]: " + routeMap[index]);
+        print("routeMap[index].transform: " + routeMap[index].transform);
+        print("routeMap[index].transform.GetChild(0): " + routeMap[index].transform.GetChild(0));
+        print("routeMap[index].transform.GetChild(0).gameObject: " + routeMap[index].transform.GetChild(0).gameObject);
+
         routeMap[index].transform.GetChild(0).gameObject.SetActive(true);
         //print("==> " + routeMap[index].transform.GetChild(0).gameObject.name);
         if (index == ending_trigger_index) {
