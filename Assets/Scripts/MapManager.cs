@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
+using TMPro;
 
 public class MapManager : MonoBehaviour {
 
@@ -16,10 +17,15 @@ public class MapManager : MonoBehaviour {
     private bool map_window_active = false;
 	private bool info_window_active = false;
 
+	void Start() {
+		info_window.GetComponentInChildren<TextMeshProUGUI> ().text = "<b>estaçao</b>:\n<b>perfil</b>:";
+	}
+
     public void _openCloseMap() {
         bool aux;
 		if (!map_window_active) {
             aux = true;
+			info_window.SetActive (true);
         } else {
             aux = false;
 			info_window.SetActive (false);
@@ -55,9 +61,9 @@ public class MapManager : MonoBehaviour {
 
 	void setInfoText(StationData st) {
 		//StationData data = info_window.GetComponentInChildren<Station> ().sd;
-		string infoText = "ESTAÇÃO: " + st.name + "\nPERFIS: ";
+		string infoText = "<b>estaçao</b>: <color=#7A7A7A>" + st.name + "</color>";
+		infoText += "\n<b>perfil</b>: <color=#7A7A7A>";
 		string perfis = "";
-		Grid.printList (st.perfis);
 		for (int i = 0; i < st.perfis.Count; i++) {
 			perfis += st.perfis[i];
 			if (i < st.perfis.Count - 1) {
@@ -65,7 +71,8 @@ public class MapManager : MonoBehaviour {
 			}
 		}
 		infoText += perfis.ToLower();
-		info_window.GetComponentInChildren<Text> ().text = infoText;
+		infoText += "</color>";
+		info_window.GetComponentInChildren<TextMeshProUGUI> ().text = infoText;
 	}
 
 }
