@@ -45,6 +45,8 @@ public class Grid : MonoBehaviour {
     private TurnManager tm;
     private bool alreadySwaped = false;
 
+    public Ending ending;
+
     #region initialization
 
     void Start()
@@ -412,6 +414,10 @@ public class Grid : MonoBehaviour {
 		int player_id = getPlayerID ();
 		var adj = player_adj;
 
+        if (Ending.final_breath) {
+            return;
+        }
+
 		if (swap_mode_active && ending_event) {
 			if (player_id >= 20 && player_id <= 29) {
 				adj.Add (tiles[player_id - width]);
@@ -536,6 +542,6 @@ public class Grid : MonoBehaviour {
 	}*/
 
 	public void End_Game() {
-		print("vamos embora");
+        StartCoroutine(ending.Driver_Ending());
 	}
 }

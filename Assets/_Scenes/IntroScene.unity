@@ -1970,6 +1970,78 @@ RectTransform:
   m_PrefabParentObject: {fileID: 224071708734508356, guid: 615a1c21959c16747bde9153540f793a,
     type: 2}
   m_PrefabInternal: {fileID: 411383461}
+--- !u!1001 &426671993
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4302834430825092, guid: ed6c9101a56ea4c4fbd89dad3302967d, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4302834430825092, guid: ed6c9101a56ea4c4fbd89dad3302967d, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 5.3327494
+      objectReference: {fileID: 0}
+    - target: {fileID: 4302834430825092, guid: ed6c9101a56ea4c4fbd89dad3302967d, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4302834430825092, guid: ed6c9101a56ea4c4fbd89dad3302967d, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4302834430825092, guid: ed6c9101a56ea4c4fbd89dad3302967d, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4302834430825092, guid: ed6c9101a56ea4c4fbd89dad3302967d, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4302834430825092, guid: ed6c9101a56ea4c4fbd89dad3302967d, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4302834430825092, guid: ed6c9101a56ea4c4fbd89dad3302967d, type: 2}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 82548087210782940, guid: ed6c9101a56ea4c4fbd89dad3302967d,
+        type: 2}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 82800655823829222, guid: ed6c9101a56ea4c4fbd89dad3302967d,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114374595043563362, guid: ed6c9101a56ea4c4fbd89dad3302967d,
+        type: 2}
+      propertyPath: bus_stopping_fast
+      value: 
+      objectReference: {fileID: 8300000, guid: e3979edcef48150469d30e8366f85650, type: 3}
+    - target: {fileID: 114374595043563362, guid: ed6c9101a56ea4c4fbd89dad3302967d,
+        type: 2}
+      propertyPath: metal_pesado
+      value: 
+      objectReference: {fileID: 8300000, guid: 5d3c23eff74d14a459005dc533250626, type: 3}
+    - target: {fileID: 114374595043563362, guid: ed6c9101a56ea4c4fbd89dad3302967d,
+        type: 2}
+      propertyPath: city_noises
+      value: 
+      objectReference: {fileID: 8300000, guid: 7943ef2ef92a7ac418af9dc4c6dc6757, type: 3}
+    - target: {fileID: 114374595043563362, guid: ed6c9101a56ea4c4fbd89dad3302967d,
+        type: 2}
+      propertyPath: shake_f_sound
+      value: 
+      objectReference: {fileID: 8300000, guid: 45aadbb45d0e6154ab21e56c991120bc, type: 3}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: ed6c9101a56ea4c4fbd89dad3302967d, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1 &451826290
 GameObject:
   m_ObjectHideFlags: 0

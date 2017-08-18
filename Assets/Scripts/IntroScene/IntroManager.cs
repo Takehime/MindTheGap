@@ -32,7 +32,11 @@ public class IntroManager : MonoBehaviour {
     [SerializeField]
     Image logo;
 
+    AudioManager audio;
+
     void Start () {
+        audio = AudioManager.Get_Audio_Manager();
+
         coroutine_shake_player = StartCoroutine(Shake_Target(player.transform));
         StartCoroutine(Handle_Bus_Behaviour());
         //StartCoroutine(QTE_Timer());
@@ -44,6 +48,7 @@ public class IntroManager : MonoBehaviour {
 
     void Update () {
 		if (bus.is_bus_at_platform && Input.GetKeyDown(KeyCode.F)) {
+            audio.Play(audio.shake_f_sound, 0.7f);
             last_apm++;
         }
 	}
@@ -54,11 +59,14 @@ public class IntroManager : MonoBehaviour {
     }
 
     IEnumerator Handle_Bus_Behaviour() {
+        audio.Play_Real(audio.city_noises);
         yield return new WaitUntil(() => vtvom.times_checked == 10);
 
         StartCoroutine(Put_Background_Door());
+        audio.Play(audio.bus_stopping_fast, 0.8f);
         yield return bus.Enter_Scene();
         yield return Passengers_To_Bus();
+        audio.Play_Real(audio.metal_pesado);
 
         indicator.SetActive(true);
         bus_countdown.gameObject.SetActive(true);
@@ -82,14 +90,13 @@ public class IntroManager : MonoBehaviour {
 
     IEnumerator QTE_Timer() {
         while (true) {
-            if (last_apm > 20) {
+            if (last_apm > 40) {
                 yield break;
             }
 
-            print("APM in the last 5 seconds: " + last_apm);
             last_apm = 0;
 
-            yield return new WaitForSeconds(5f);
+            yield return new WaitForSeconds(10f);
         }
     }
 

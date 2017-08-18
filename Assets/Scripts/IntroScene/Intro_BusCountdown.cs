@@ -11,7 +11,7 @@ public class Intro_BusCountdown : MonoBehaviour {
 	void Update () {
         rect.sizeDelta = new Vector2(
             rect.rect.width,
-            rect.rect.height + Time.deltaTime * 50
+            rect.rect.height + Time.deltaTime * 25
         );
 	}
 }

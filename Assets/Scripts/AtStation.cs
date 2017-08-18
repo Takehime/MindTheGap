@@ -398,8 +398,8 @@ public class AtStation : MonoBehaviour {
 				}
 			} 
 
-			float cycle_threshold = 0.4f;
-			float cycle_time = Random.Range (swap_duration - cycle_threshold, swap_duration);
+			float cycle_threshold = 0.1f;
+			float cycle_time = Random.Range (swap_duration, swap_duration + cycle_threshold);
 			yield return new WaitForSeconds (cycle_time);
         }
         print("Leavers.count: " + leavers.Count);
