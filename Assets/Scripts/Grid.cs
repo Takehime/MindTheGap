@@ -299,15 +299,29 @@ public class Grid : MonoBehaviour {
         GameObject target = tiles[target_id];
         if (pass != null)
         {
+            //animaçao
             pass.transform.DOMove(target.transform.position, duration);
+
+            //troca do curr_tile_id
 			Passenger p = pass.GetComponent<Passenger> ();
 			if (p != null) {
 				p.setTileId (target_id);
 			} else {
-				pass.GetComponent<Player> ().setTileId (target_id);
-			}
+
+                //desliga o swap_mode se o origin for o player
+                pass.GetComponent<Player> ().setTileId (target_id);
+                pass.GetComponent<Player>().setSwapMode(false);
+            }
+
+            //troca dos objetos na lista de passageiros
             passengers[target_id] = pass;
             passengers[id] = null;
+
+
+            //atualiza lista de adjacencias e reseta cor dos tiles se o origin for o player
+            if (pass.GetComponent<Player>() != null) {
+                leaveSwapMode(id, target_id);
+            }
         }
     }
 
