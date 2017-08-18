@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class Pachinko : MonoBehaviour {
 
@@ -10,7 +11,7 @@ public class Pachinko : MonoBehaviour {
     public GameObject passenger;
     public GameObject roulette;
     public GameObject signal;
-    public GameObject word_sequence;
+    public TextMeshProUGUI word_sequence;
     public GameObject checkMark;
 
     [Header("Timers")]
@@ -66,7 +67,7 @@ public class Pachinko : MonoBehaviour {
         {
             setNextRound(i);
             Coroutine roulette_loop = StartCoroutine(rouletteLooping());
-            yield return StartCoroutine(waitForKeyDown(KeyCode.Space));
+            yield return StartCoroutine(waitForKeyDown(KeyCode.F));
             StopCoroutine(roulette_loop);
             updateWordSequence();
             yield return new WaitForSeconds(time_to_start_next_roulette_round);
@@ -166,12 +167,12 @@ public class Pachinko : MonoBehaviour {
 
     void initializeWordSequenceText()
     {
-        word_sequence.GetComponent<Text>().text = "";
+        word_sequence.text = "";
     }
 
     void updateWordSequence()
     {
-        word_sequence.GetComponent<Text>().text += " " + selected.transform.GetChild(0).GetComponent<Text>().text;
+        word_sequence.text += " " + selected.transform.GetChild(0).GetComponent<Text>().text;
     }
 
     void setCorrectWordSequence()
