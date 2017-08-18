@@ -368,7 +368,7 @@ public class AtStation : MonoBehaviour {
                         }
 
                         //print ("Tile #" + tile_id + " is empty (detected by passenger #" + id + ").");
-                        float mov_threshold = 0.3f;
+                        float mov_threshold = 0.1f;
                         float mov_time = Random.Range(swap_duration - mov_threshold, swap_duration + mov_threshold);
                         grid.movePassenger(id, tile_id, mov_time);
                         moved = true;
@@ -502,7 +502,7 @@ public class AtStation : MonoBehaviour {
                         float mov_time = Random.Range(swap_duration - mov_threshold, swap_duration + mov_threshold);
                         grid.movePassenger(p_id, tile_id, mov_time);
                         p.setID(tile_id);
-//						yield return new WaitForSeconds(swap_duration);
+						yield return new WaitForSeconds(0.1f);
                         break;
                     }
                 }
@@ -520,7 +520,7 @@ public class AtStation : MonoBehaviour {
         ready_to_advance = true;
 
         //print("vou pausar");
-        Debug.Break();
+        //Debug.Break();
     }
 
 	List<GameObject> Sort_Tiles(List<GameObject> list) {
