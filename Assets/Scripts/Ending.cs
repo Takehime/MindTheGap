@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.PostProcessing;
 
 public class Ending : MonoBehaviour {
 
@@ -14,12 +15,21 @@ public class Ending : MonoBehaviour {
     public DialogBox dialog;
     public Transform driver;
 
+    public Camera mainCamera;
+    public Roll credits;
+
     void Start() {
         audio = AudioManager.Get_Audio_Manager();
         at = FindObjectOfType<AtStation>();
         grid = FindObjectOfType<Grid>();
         tm = FindObjectOfType<TurnManager>();
-        // StartCoroutine(Driver_Ending());
+
+        // StartCoroutine(Foo());
+    }
+
+    IEnumerator Foo() {
+        yield return new WaitForSeconds(2f);
+        StartCoroutine(Roll_Credits(GameObject.FindGameObjectWithTag("Player")));
     }
 
 	public IEnumerator triggerEnd() {
@@ -42,18 +52,22 @@ public class Ending : MonoBehaviour {
             leavers.Add(l);
         }
         at.leavers = leavers;
+        
+        yield return new WaitForSeconds(2.0f);
+		mainCamera.GetComponent<Animator>().SetTrigger("stop_shake");
+        yield return new WaitForSeconds(2.0f);
         Coroutine end_loop = StartCoroutine(at.leavingLoop());
 
 		yield return at.waitForReadyForAdvance();
 
-		grid.changeTurn (TurnManager.Turn.BetweenStations);
+		tm.setTurnToBetweenStations_Ending();
 		grid.ending_event = true;
     }
 
     IEnumerator Ending_Song() {
         yield return new WaitForSeconds(6f);
-        // audio.Play_Real(audio.libera_me);
-        // at.swap_duration = 0.8f;
+        audio.Play_Real(audio.libera_me);
+        //at.swap_duration = 0.6f;
     }
 
     public IEnumerator Driver_Ending() {
@@ -85,15 +99,38 @@ public class Ending : MonoBehaviour {
        yield return dialog.Text();
        
        audio.Play_Real(audio.enya_time);
+       yield return new WaitForSeconds(1.0f);
 
-       yield return Roll_Credits();
+       yield return Roll_Credits(player);
+
+       yield return new WaitForSeconds(3.0f);
+
+       audio.Play(audio.passenger_in, 1f);
+       yield return new WaitForSeconds(0.3f);
 
        Application.Quit();
     }
 
     public static bool final_breath = false;
 
-    IEnumerator Roll_Credits() {
-        yield break;
+    IEnumerator Roll_Credits(GameObject player) {
+        mainCamera.GetComponentInChildren<PostProcessingBehaviour>().enabled = true;
+        mainCamera.GetComponent<Animator>().enabled = false;
+        
+        yield return new WaitForSeconds(2f);
+        credits.gameObject.SetActive(true);
+
+        var aux = mainCamera.transform.position;
+        mainCamera.transform.SetParent(player.transform);
+        mainCamera.transform.DOLocalMove(
+            new Vector3(
+                - 6.23f,
+                0,
+                -10),
+            200f
+        );
+		mainCamera.DOOrthoSize(0.34f, 200f);
+        
+		yield return new WaitUntil(() => credits.ended);
     }
 }

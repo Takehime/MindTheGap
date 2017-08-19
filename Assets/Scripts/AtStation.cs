@@ -502,9 +502,9 @@ public class AtStation : MonoBehaviour {
                     {
                         float mov_threshold = 0.3f;
                         float mov_time = Random.Range(swap_duration - mov_threshold, swap_duration + mov_threshold);
-                        grid.movePassenger(p_id, tile_id, mov_time);
+                        grid.movePassenger(p_id, tile_id, swap_duration);
                         p.setID(tile_id);
-						yield return new WaitForSeconds(0.2f);
+						yield return new WaitForSeconds(0.1f);
                         break;
                     }
                 }

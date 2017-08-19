@@ -8,6 +8,7 @@ public class Scan : MonoBehaviour
     public Image scan_mask;
     public GameObject outer_window_info;
     public GameObject inner_window_info;
+    public GameObject driver_info_window;
     [Header("Sprites")]
     public List<Sprite> estudante_info;
     public List<Sprite> idoso_info;
@@ -20,6 +21,7 @@ public class Scan : MonoBehaviour
     private Grid grid_ref;
     private List<Sprite> sprites_to_passengers = new List<Sprite>();
     private TurnManager tm;
+    private bool driver_info_window_active;
 
     public AudioManager audio;
 
@@ -36,7 +38,7 @@ public class Scan : MonoBehaviour
 
     public void _checkIfScanWasActivated()
     {
-        if (!scan_is_active && tm.curr_turn != TurnManager.Turn.AtStation)
+        if (!scan_is_active && (tm.curr_turn != TurnManager.Turn.AtStation || !grid_ref.alreadySwaped))
             enterScanMode();
         else
             leaveScanMode();
@@ -70,11 +72,22 @@ public class Scan : MonoBehaviour
     {
         if (scan_is_active)
         {
-            //TODO: deixar o passageiro targeteado sem a mask verde por cima
-
             //se existe janela de scan ja ativa, destroi ela antes de abrir uma nova
             checkIfWindowAlreadyExists();
             spawnOuterInfoWindow(tile_id, p_type);
+        }
+    }
+
+    public void _scanBabyDriver() {
+        if (scan_is_active) {
+            if (driver_info_window_active) {
+                //driver_info_window.SetActive(false);
+                //driver_info_window_active = false;
+            } else {
+                checkIfWindowAlreadyExists();
+                driver_info_window.SetActive(true);
+                driver_info_window_active = true;
+            }
         }
     }
 
@@ -82,6 +95,11 @@ public class Scan : MonoBehaviour
     {
         if (curr_scan_window != null)
             Destroy(curr_scan_window);
+        if (driver_info_window_active) {
+            print("active");
+            driver_info_window.SetActive(false);
+            driver_info_window_active = false;
+        }
     }
 
     void spawnOuterInfoWindow(int tile_id, PassengerType p_type)
@@ -144,11 +162,12 @@ public class Scan : MonoBehaviour
     {
         GameObject child = Instantiate(inner_window_info);
         child.transform.SetParent(curr_scan_window.transform, false);
-        child.transform.localPosition = new Vector3(0, 0, 0);
         setGameObjectScale(child, tile_id, 0.5f);
 
+        child.transform.localPosition = new Vector3(0, -5, 0);
+
         if (sprites_to_passengers[tile_id] == null) {
-            print("nenhum sprite foi ainda gerado pra esse passageiro");
+            // print("nenhum sprite foi ainda gerado pra esse passageiro");
             Sprite s = setImageByPassengerType(child, p_type);
             sprites_to_passengers[tile_id] = s;
         } else {

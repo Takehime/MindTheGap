@@ -43,7 +43,7 @@ public class Grid : MonoBehaviour {
     private Pachinko pachinko;
     private Coroutine swapMode;
     private TurnManager tm;
-    private bool alreadySwaped = false;
+    public bool alreadySwaped = false;
 
     public Ending ending;
 
@@ -302,29 +302,32 @@ public class Grid : MonoBehaviour {
 		//Debug.Log ("movi o passageiro de id = " + id);
         GameObject pass = passengers[id];
         GameObject target = tiles[target_id];
-        if (pass != null)
+        if (pass != null) 
         {
-            //animaçao
-            pass.transform.DOMove(target.transform.position, duration);
+            if (id != target_id) {
 
-            //troca do curr_tile_id
-			Passenger p = pass.GetComponent<Passenger> ();
-			if (p != null) {
-				p.setTileId (target_id);
-			} else {
+                //animaçao
+                pass.transform.DOMove(target.transform.position, duration);
 
-                //desliga o swap_mode se o origin for o player
-                pass.GetComponent<Player> ().setTileId (target_id);
-                pass.GetComponent<Player>().setSwapMode(false);
-            }
+                //troca do curr_tile_id
+			    Passenger p = pass.GetComponent<Passenger> ();
+			    if (p != null) {
+				    p.setTileId (target_id);
+			    } else {
 
-            //troca dos objetos na lista de passageiros
-            passengers[target_id] = pass;
-            passengers[id] = null;
+                    //desliga o swap_mode se o origin for o player
+                    pass.GetComponent<Player> ().setTileId (target_id);
+                    pass.GetComponent<Player>().setSwapMode(false);
+                }
 
-            //atualiza lista de adjacencias e reseta cor dos tiles se o origin for o player
-            if (pass.GetComponent<Player>() != null) {
-                leaveSwapMode(id, target_id);
+                //troca dos objetos na lista de passageiros
+                passengers[target_id] = pass;
+                passengers[id] = null;
+
+                //atualiza lista de adjacencias e reseta cor dos tiles se o origin for o player
+                if (pass.GetComponent<Player>() != null) {
+                    leaveSwapMode(id, target_id);
+                }
             }
         }
     }

@@ -58,6 +58,7 @@ public class TurnManager : MonoBehaviour
 
     void setTurnToAtStation() {
         curr_turn = Turn.AtStation;
+        print("At stations");
         //background_animator.SetTrigger("stop");
 
         if (changeTurn != null) {
@@ -73,9 +74,9 @@ public class TurnManager : MonoBehaviour
     }
 
     public void setTurnToBetweenStations() {
+        print("Between stations");
         if (first_time) {
             first_time = false;
-        
         } else {
             background_animator.SetTrigger("start");
             camera_animator.SetTrigger("start_shake");
@@ -94,6 +95,9 @@ public class TurnManager : MonoBehaviour
     }
 
     public void setTurnToBetweenStations_Ending() {
+        background_animator.SetTrigger("stop");
+        camera_animator.SetTrigger("stop_shake");
+
         curr_turn = Turn.BetweenStations;
         if (changeTurn != null) {
             changeTurn(curr_turn);

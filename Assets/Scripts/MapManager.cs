@@ -19,8 +19,12 @@ public class MapManager : MonoBehaviour {
     private TurnManager tm;
 
     void Start() {
-		info_window.GetComponentInChildren<TextMeshProUGUI> ().text = "<b>estaçao</b>:\n<b>perfil</b>:";
+        setInfoTextDefault();
         tm = FindObjectOfType<TurnManager>();
+    }
+
+    void setInfoTextDefault() {
+        info_window.GetComponentInChildren<TextMeshProUGUI>().text = "<b>estaçao</b>:\n<b>perfil</b>:";
     }
 
     public void _openCloseMap() {
@@ -32,6 +36,7 @@ public class MapManager : MonoBehaviour {
             aux = false;
 			info_window.SetActive (false);
 			info_window_active = false;
+            setInfoTextDefault();
         }
 		map_window_active = aux;
         map_window.SetActive(aux);
@@ -42,11 +47,6 @@ public class MapManager : MonoBehaviour {
         if (index > 0) {
             routeMap[index - 1].transform.GetChild(0).gameObject.SetActive(false);
         }
-        print("index: " + index);
-        print("routeMap[index]: " + routeMap[index]);
-        print("routeMap[index].transform: " + routeMap[index].transform);
-        print("routeMap[index].transform.GetChild(0): " + routeMap[index].transform.GetChild(0));
-        print("routeMap[index].transform.GetChild(0).gameObject: " + routeMap[index].transform.GetChild(0).gameObject);
 
         routeMap[index].transform.GetChild(0).gameObject.SetActive(true);
         //print("==> " + routeMap[index].transform.GetChild(0).gameObject.name);
@@ -54,11 +54,16 @@ public class MapManager : MonoBehaviour {
             // print("index: " + index);
             Ending end = FindObjectOfType<Ending>();
 			StartCoroutine(end.triggerEnd());
-        } else if (index == 2) { //segunda estação (Mercadão)
+        } else if (index == 2) { //segunda estação 
+            tm.initial_time_between_turns = 65;
+        } else if (index == 4) { //terceira estação 
+            tm.initial_time_between_turns = 60;
+        } else if (index == 6) { //quarta estação
             tm.initial_time_between_turns = 45;
-        } else if (index == 4) { //quarta estação (Penha)
+        } else if (index == 10) { //sexta estação
             tm.initial_time_between_turns = 30;
         }
+
     }
 
 	public void _showStationInfo(GameObject go) {
