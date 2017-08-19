@@ -11,11 +11,11 @@ public class HealthBars : MonoBehaviour {
 	void Update() {
         bar_decrease.sizeDelta = new Vector2(
             bar_decrease.rect.width,
-            bar_decrease.rect.height - Time.deltaTime / 3f
+            bar_decrease.rect.height - Time.deltaTime / 2f
         );
         bar_increase.sizeDelta = new Vector2(
             bar_increase.rect.width,
-            bar_increase.rect.height + Time.deltaTime / 3f
+            bar_increase.rect.height + Time.deltaTime / 2f
         );
 	}
 
