@@ -17,6 +17,7 @@ public class Ending : MonoBehaviour {
 
     public Camera mainCamera;
     public Roll credits;
+    public HealthBars health;
 
     void Start() {
         audio = AudioManager.Get_Audio_Manager();
@@ -70,10 +71,11 @@ public class Ending : MonoBehaviour {
         //at.swap_duration = 0.6f;
     }
 
-    public IEnumerator Driver_Ending() {
+    public IEnumerator Driver_Ending() {        
         float time = 1f;
         final_breath = true;
         yield return new WaitForSeconds(time);
+        health.Stop_Shake_Player();
         driver.DOLocalMoveY(driver.transform.localPosition.y + 65, time);
         yield return new WaitForSeconds(time);
         driver.localScale = new Vector3(

@@ -287,7 +287,7 @@ public class Grid : MonoBehaviour {
 
     void checkIfPassengerCanSwap(int tile_id, PassengerType p_type)
     {
-        if (!swap_mode_active && !scan.scan_is_active) {
+        if (!swap_mode_active && !scan.scan_is_active && curr_turn == TurnManager.Turn.BetweenStations) {
             if (player_glowing != null) {
                 StopCoroutine(player_glowing);
             }
@@ -355,6 +355,8 @@ public class Grid : MonoBehaviour {
 
                 //atualiza lista de adjacencias e reseta cor dos tiles se o origin for o player
                 if (pass.GetComponent<Player>() != null) {
+                    StartCoroutine(health.Pause_Shake_Player(duration));
+                    health.original_player_position = target.transform.position;
                     leaveSwapMode(id, target_id);
                 }
             }
@@ -388,8 +390,9 @@ public class Grid : MonoBehaviour {
 
         //atualiza lista de adjacencias e reseta cor dos tiles se o origin for o player
         if (origin.GetComponent<Player> () != null) {
-			leaveSwapMode (origin_id, target_id);
             health.original_player_position = target.transform.position;
+            StartCoroutine(health.Pause_Shake_Player(duration));
+			leaveSwapMode (origin_id, target_id);
 		}
 
         //inicia o turno

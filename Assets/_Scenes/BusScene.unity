@@ -9687,6 +9687,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bar_decrease: {fileID: 957058607}
   bar_increase: {fileID: 2060477542}
+  is_shaking: 0
   original_player_position: {x: 0, y: 0, z: 0}
 --- !u!1 &1078387269
 GameObject:
@@ -13018,6 +13019,7 @@ MonoBehaviour:
   driver: {fileID: 716537847}
   mainCamera: {fileID: 1994378207}
   credits: {fileID: 1928569006}
+  health: {fileID: 1065072462}
 --- !u!1 &1460308208 stripped
 GameObject:
   m_PrefabParentObject: {fileID: 1944150734647510, guid: bf5a5dd62a379f94fbcd99a21c84023a,
