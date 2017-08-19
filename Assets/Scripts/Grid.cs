@@ -45,7 +45,13 @@ public class Grid : MonoBehaviour {
     private TurnManager tm;
     public bool alreadySwaped = false;
 
+    Color swap_active_color = new Color32(242, 95, 78, 255);
+    Color swap_inactive_color = new Color32(226, 157, 82, 255);
+    Color normal_color = new Color32(195, 213, 255, 255);
+
     public Ending ending;
+    public HealthBars health;
+    public AudioManager audio;
 
     #region initialization
 
@@ -56,6 +62,7 @@ public class Grid : MonoBehaviour {
         scan = FindObjectOfType<Scan>();
         pachinko = FindObjectOfType<Pachinko>();
         tm = FindObjectOfType<TurnManager>();
+        audio = AudioManager.Get_Audio_Manager();
         FindObjectOfType<TurnManager>().changeTurn += changeTurn;
         max_quantity = width * height / passenger_types.Capacity;
         initializeCounterList();
@@ -129,7 +136,7 @@ public class Grid : MonoBehaviour {
         go.gameObject.name = "Player";
         passengers[tile_id] = go;
         go.GetComponent<Player>().swapMode += onSwapMode;
-        tiles[tile_id].GetComponent<Image>().color = new Color32(226, 157, 82, 255);
+        tiles[tile_id].GetComponent<Image>().color = swap_inactive_color;
     }
 
     void subscribePassengerForSwap(GameObject p)
@@ -162,8 +169,9 @@ public class Grid : MonoBehaviour {
 
     void enterSwapMode(int tile_id)
     {
+        audio.Play(audio.enter_swap, 0.4f);
         swap_mode_active = true;
-        tiles[tile_id].GetComponent<Image>().color = new Color32(242, 95, 78, 255);
+        tiles[tile_id].GetComponent<Image>().color = swap_active_color;
         player_adj = calculateAdj(tile_id);
         //printList(player_adj);
 
@@ -182,8 +190,8 @@ public class Grid : MonoBehaviour {
     {
 		changePassengersAlpha(player_adj, false);
         swap_mode_active = false;
-        tiles[old_tile_id].GetComponent<Image>().color = new Color32(195, 213, 255, 255);
-        tiles[new_tile_id].GetComponent<Image>().color = new Color32(226, 157, 82, 255);
+        tiles[old_tile_id].GetComponent<Image>().color = normal_color;
+        tiles[new_tile_id].GetComponent<Image>().color = swap_inactive_color;
         player_adj = calculateAdj(new_tile_id);
 
 		for (int i = 0; i < player_adj.Count; i++) {
@@ -275,8 +283,17 @@ public class Grid : MonoBehaviour {
         }
     }
 
+    Coroutine player_glowing = null;
+
     void checkIfPassengerCanSwap(int tile_id, PassengerType p_type)
     {
+        if (!swap_mode_active && !scan.scan_is_active) {
+            if (player_glowing != null) {
+                StopCoroutine(player_glowing);
+            }
+            player_glowing = StartCoroutine(Glow_Player_Tile());
+        }
+
         if (swap_mode_active && player_adj.Contains(tiles[tile_id]))
         {
             pachinko.enterPachinkoMode(passengers[tile_id].GetComponent<Image>().color);
@@ -284,6 +301,18 @@ public class Grid : MonoBehaviour {
 			int player_id = FindObjectOfType<Player>().getTileId();
 			swapMode = StartCoroutine(startSwapMode(player_id, tile_id, 0.25f));
         }
+    }
+
+    IEnumerator Glow_Player_Tile() {
+        audio.Play(audio.pachinko_cancel, 0.4f);
+        Image player_tile = tiles[getPlayerID()].GetComponentInChildren<Image>();
+        float time = 0.2f;
+
+        player_tile.DOColor(swap_active_color, time);
+        yield return new WaitForSeconds(time);
+        player_tile.DOColor(swap_inactive_color, time);
+
+        player_glowing = null;
     }
 
 	IEnumerator startSwapMode(int origin_id, int target_id, float duration) {
@@ -334,7 +363,7 @@ public class Grid : MonoBehaviour {
 
     public void swapTwoPassengers(int origin_id, int target_id, float duration)
     {
-		GameObject origin = passengers [origin_id];
+		GameObject origin = passengers[origin_id];
         GameObject target = passengers[target_id];
 
         //animaçao
@@ -360,6 +389,7 @@ public class Grid : MonoBehaviour {
         //atualiza lista de adjacencias e reseta cor dos tiles se o origin for o player
         if (origin.GetComponent<Player> () != null) {
 			leaveSwapMode (origin_id, target_id);
+            health.original_player_position = target.transform.position;
 		}
 
         //inicia o turno
@@ -376,9 +406,9 @@ public class Grid : MonoBehaviour {
     {
         curr_turn = next_turn;
         if (curr_turn == TurnManager.Turn.AtStation) {
-            cancelSwap(new Color32(195, 213, 255, 255));
+            cancelSwap(normal_color);
         } else {
-            cancelSwap(new Color32(226, 157, 82, 255));
+            cancelSwap(swap_inactive_color);
         }
         cancelPachinko();
     }

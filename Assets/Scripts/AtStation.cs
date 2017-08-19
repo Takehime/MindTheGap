@@ -146,9 +146,6 @@ public class AtStation : MonoBehaviour {
             );
             leavers.Add(selected);
         }
-
-//        leavers.Add(42);
-//        leavers.Add(49);
         StartCoroutine(joinThreads(leavers));
 	}
 
@@ -475,11 +472,10 @@ public class AtStation : MonoBehaviour {
         enterers = new List<Leaver>();
         added = 0;
 
-		var empty_door = getDoorID ();
-		createNewPassenger(empty_door);
-		empty_door = getDoorID ();
-		if (empty_door != -1)
-			createNewPassenger (empty_door);
+        if (is_door_empty(Door.DOOR_1))
+    		createNewPassenger(getDoorID(Door.DOOR_1));
+        if (is_door_empty(Door.DOOR_2))
+    		createNewPassenger(getDoorID(Door.DOOR_2));
 
         while (added < n_leavers)
         {
@@ -511,11 +507,11 @@ public class AtStation : MonoBehaviour {
             }
 
 			yield return new WaitForSeconds(swap_duration + 0.1f);
-			empty_door = getDoorID ();
-			createNewPassenger(empty_door);
-			empty_door = getDoorID ();
-			if (empty_door != -1)
-				createNewPassenger (empty_door);
+
+            if (is_door_empty(Door.DOOR_1))
+                createNewPassenger(getDoorID(Door.DOOR_1));
+            if (is_door_empty(Door.DOOR_2))
+                createNewPassenger(getDoorID(Door.DOOR_2));
         }
 
         print("aaaaaaaa, added: " + added + ", n_leavers: " + n_leavers);
@@ -554,20 +550,24 @@ public class AtStation : MonoBehaviour {
 		added++;
     }
 
-    int getDoorID()
+    int getDoorID(Door door)
     {
-		var door1 = grid.passengers [grid.door_id1];
-		var door2 = grid.passengers [grid.door_id2];
-
-		if (door1 == null) {
-			return grid.door_id1;
+        if (door == Door.DOOR_1) return grid.door_id1;
+        else if (door == Door.DOOR_2) return grid.door_id2;
+        else {
+            print("This should not be happening.");
+            return -1;
         }
-		else if (door2 == null) {
-			return grid.door_id2;
-        }
+    }
 
-		print ("Fuck you");
-		return -1;
+    enum Door {DOOR_1, DOOR_2};
+    bool is_door_empty(Door door) {
+        if (door == Door.DOOR_1) return grid.passengers [grid.door_id1] == null;
+        else if (door == Door.DOOR_2) return grid.passengers [grid.door_id2] == null;
+        else {
+            print("This should not be happening.");
+            return false;
+        }
     }
 
     #endregion

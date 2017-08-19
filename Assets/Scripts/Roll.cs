@@ -24,7 +24,7 @@ public class Roll : MonoBehaviour {
 	void Update () {
 		if (!can_roll) return;
 		rect.gameObject.transform.position += new Vector3(0, Time.deltaTime * 30);
-		if (this.transform.position.y > 1800) {
+		if (rect.gameObject.transform.position.y > 1800) {
 			ended = true;
 		}
 	}

@@ -16,7 +16,7 @@ public class Scan : MonoBehaviour
     public List<Sprite> varejista_info;
     public List<Sprite> trabalhador_info;
 
-    private bool scan_is_active;
+    public bool scan_is_active;
     private GameObject curr_scan_window;
     private Grid grid_ref;
     private List<Sprite> sprites_to_passengers = new List<Sprite>();
@@ -77,6 +77,7 @@ public class Scan : MonoBehaviour
         if (scan_is_active)
         {
             //se existe janela de scan ja ativa, destroi ela antes de abrir uma nova
+            // audio.Play(audio.scan_passenger, 0.3f);
             checkIfWindowAlreadyExists();
             spawnOuterInfoWindow(tile_id, p_type);
         }
