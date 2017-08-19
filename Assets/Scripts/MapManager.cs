@@ -19,8 +19,12 @@ public class MapManager : MonoBehaviour {
     private TurnManager tm;
 
     void Start() {
-		info_window.GetComponentInChildren<TextMeshProUGUI> ().text = "<b>estaçao</b>:\n<b>perfil</b>:";
+        setInfoTextDefault();
         tm = FindObjectOfType<TurnManager>();
+    }
+
+    void setInfoTextDefault() {
+        info_window.GetComponentInChildren<TextMeshProUGUI>().text = "<b>estaçao</b>:\n<b>perfil</b>:";
     }
 
     public void _openCloseMap() {
@@ -32,6 +36,7 @@ public class MapManager : MonoBehaviour {
             aux = false;
 			info_window.SetActive (false);
 			info_window_active = false;
+            setInfoTextDefault();
         }
 		map_window_active = aux;
         map_window.SetActive(aux);
