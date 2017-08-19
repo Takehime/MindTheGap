@@ -8259,6 +8259,11 @@ RectTransform:
   m_PrefabParentObject: {fileID: 224295794267303852, guid: c58ee7f2f695ddf4f9a5f5d67ca7adc7,
     type: 2}
   m_PrefabInternal: {fileID: 949660288}
+--- !u!224 &957058607 stripped
+RectTransform:
+  m_PrefabParentObject: {fileID: 224868815663037136, guid: 1fa8c81fca7809b4e8abc8902602ba5d,
+    type: 2}
+  m_PrefabInternal: {fileID: 1973162512}
 --- !u!1 &963209333
 GameObject:
   m_ObjectHideFlags: 0
@@ -9446,7 +9451,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad687e5c80d8f5643bec85dbd1d74e79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bar_decrease: {fileID: 2076921051}
+  bar_decrease: {fileID: 957058607}
   bar_increase: {fileID: 2060477542}
 --- !u!1 &1078387269
 GameObject:
@@ -9764,7 +9769,7 @@ Prefab:
     - target: {fileID: 224495435263409784, guid: 1fa8c81fca7809b4e8abc8902602ba5d,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: 115
+      value: 758.2
       objectReference: {fileID: 0}
     - target: {fileID: 224495435263409784, guid: 1fa8c81fca7809b4e8abc8902602ba5d,
         type: 2}
@@ -9774,7 +9779,7 @@ Prefab:
     - target: {fileID: 224495435263409784, guid: 1fa8c81fca7809b4e8abc8902602ba5d,
         type: 2}
       propertyPath: m_SizeDelta.y
-      value: 236.8
+      value: 4500
       objectReference: {fileID: 0}
     - target: {fileID: 224868815663037136, guid: 1fa8c81fca7809b4e8abc8902602ba5d,
         type: 2}
@@ -17746,11 +17751,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2073190462}
---- !u!224 &2076921051 stripped
-RectTransform:
-  m_PrefabParentObject: {fileID: 224495435263409784, guid: 1fa8c81fca7809b4e8abc8902602ba5d,
-    type: 2}
-  m_PrefabInternal: {fileID: 1973162512}
 --- !u!1001 &2080297303
 Prefab:
   m_ObjectHideFlags: 0
