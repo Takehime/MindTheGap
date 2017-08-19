@@ -42,7 +42,7 @@ RenderSettings:
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 9
+  serializedVersion: 11
   m_GIWorkflowMode: 1
   m_GISettings:
     serializedVersion: 2
@@ -54,7 +54,7 @@ LightmapSettings:
     m_EnableBakedLightmaps: 0
     m_EnableRealtimeLightmaps: 0
   m_LightmapEditorSettings:
-    serializedVersion: 8
+    serializedVersion: 9
     m_Resolution: 2
     m_BakeResolution: 40
     m_TextureWidth: 1024
@@ -87,7 +87,7 @@ LightmapSettings:
     m_PVRFilteringAtrousNormalSigma: 1
     m_PVRFilteringAtrousPositionSigma: 1
   m_LightingDataAsset: {fileID: 0}
-  m_ShadowMaskMode: 2
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -3311,6 +3311,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 0
+  m_MaskInteraction: 0
 --- !u!1001 &332137421
 Prefab:
   m_ObjectHideFlags: 0
@@ -9721,7 +9722,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad687e5c80d8f5643bec85dbd1d74e79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bar_decrease: {fileID: 2076921051}
+  bar_decrease: {fileID: 2030617533}
   bar_increase: {fileID: 2060477542}
 --- !u!1 &1078387269
 GameObject:
@@ -10049,7 +10050,7 @@ Prefab:
     - target: {fileID: 224495435263409784, guid: 1fa8c81fca7809b4e8abc8902602ba5d,
         type: 2}
       propertyPath: m_SizeDelta.y
-      value: 236.8
+      value: 4500
       objectReference: {fileID: 0}
     - target: {fileID: 224868815663037136, guid: 1fa8c81fca7809b4e8abc8902602ba5d,
         type: 2}
@@ -17509,6 +17510,11 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2027865201}
+--- !u!224 &2030617533 stripped
+RectTransform:
+  m_PrefabParentObject: {fileID: 224868815663037136, guid: 1fa8c81fca7809b4e8abc8902602ba5d,
+    type: 2}
+  m_PrefabInternal: {fileID: 1973162512}
 --- !u!1 &2048022108
 GameObject:
   m_ObjectHideFlags: 0
@@ -18027,11 +18033,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2073190462}
---- !u!224 &2076921051 stripped
-RectTransform:
-  m_PrefabParentObject: {fileID: 224495435263409784, guid: 1fa8c81fca7809b4e8abc8902602ba5d,
-    type: 2}
-  m_PrefabInternal: {fileID: 1973162512}
 --- !u!1001 &2080297303
 Prefab:
   m_ObjectHideFlags: 0
