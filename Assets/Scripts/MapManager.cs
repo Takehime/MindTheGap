@@ -53,7 +53,7 @@ public class MapManager : MonoBehaviour {
         if (index == ending_trigger_index) {
             // print("index: " + index);
             Ending end = FindObjectOfType<Ending>();
-			StartCoroutine(end.triggerEnd());
+            StartCoroutine(end.triggerEnd());
         } else if (index == 2) { //segunda estação 
             tm.initial_time_between_turns = 65;
         } else if (index == 4) { //terceira estação 
@@ -63,6 +63,7 @@ public class MapManager : MonoBehaviour {
         } else if (index == 10) { //sexta estação
             tm.initial_time_between_turns = 30;
         }
+         //}   tm.initial_time_between_turns = 5;
 
     }
 

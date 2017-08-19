@@ -66,6 +66,10 @@ public class Scan : MonoBehaviour
         //se existir janela de scan ativa, destroi ela
         if (curr_scan_window != null)
             Destroy(curr_scan_window);
+        if (driver_info_window != null) {
+            driver_info_window.SetActive(false);
+            driver_info_window_active = false;
+        }
     }
 
     public void scanPassenger(int tile_id, PassengerType p_type)
