@@ -54,11 +54,16 @@ public class MapManager : MonoBehaviour {
             // print("index: " + index);
             Ending end = FindObjectOfType<Ending>();
 			StartCoroutine(end.triggerEnd());
-        } else if (index == 2) { //segunda estação (Mercadão)
+        } else if (index == 2) { //segunda estação 
+            tm.initial_time_between_turns = 65;
+        } else if (index == 4) { //terceira estação 
+            tm.initial_time_between_turns = 60;
+        } else if (index == 6) { //quarta estação
             tm.initial_time_between_turns = 45;
-        } else if (index == 4) { //quarta estação (Penha)
+        } else if (index == 10) { //sexta estação
             tm.initial_time_between_turns = 30;
         }
+
     }
 
 	public void _showStationInfo(GameObject go) {
