@@ -23,9 +23,10 @@ public class Roll : MonoBehaviour {
 
 	void Update () {
 		if (!can_roll) return;
-		rect.gameObject.transform.position += new Vector3(0, Time.deltaTime * 30);
-		if (rect.gameObject.transform.position.y > 1800) {
+		rect.gameObject.transform.position += new Vector3(0, Time.deltaTime * 200);
+		if (rect.gameObject.transform.position.y > 3000) {
 			ended = true;
+			Debug.Break();
 		}
 	}
 
