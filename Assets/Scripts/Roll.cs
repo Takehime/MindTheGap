@@ -10,28 +10,16 @@ public class Roll : MonoBehaviour {
 	public bool ended = false;
 	public Image logo;
 	public Image background;
+	public GameObject target;
 
 	public float time = 8.4f;
 
 	void Start() {
 		logo.DOFade(1, time);
 		background.DOFade(1, time);
-		StartCoroutine(Start_Rolling());
 	}
-
-	bool can_roll = false;
-
-	void Update () {
-		if (!can_roll) return;
-		rect.gameObject.transform.position += new Vector3(0, Time.deltaTime * 200);
-		if (rect.gameObject.transform.position.y > 3000) {
-			ended = true;
-			Debug.Break();
-		}
-	}
-
-	IEnumerator Start_Rolling() {
-		yield return new WaitForSeconds(time);
-		can_roll = true;
+	
+	void End_Animation() {
+		ended = true;
 	}
 }
